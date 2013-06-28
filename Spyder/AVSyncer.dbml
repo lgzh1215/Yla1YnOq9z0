@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="AVSyncer" Class="AVSyncerDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=localhost;Initial Catalog=AVSyncer;Integrated Security=True" SettingsObjectName="Spyder.Properties.Settings" SettingsPropertyName="AVSyncerConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Actress" Member="Actress">
+    <Type Name="Actress">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="Actress_ActressMovie" Member="ActressMovie" ThisKey="id" OtherKey="actressId" Type="ActressMovie" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Movie" Member="Movie">
+    <Type Name="Movie">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="mvid" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="title" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="maker_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="label_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="series_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="rating" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="cid" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="publishDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="releaseDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="pageHref" Type="System.String" DbType="Text NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="coverHref" Type="System.String" DbType="Text NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="thumbnail" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Association Name="Movie_ActressMovie" Member="ActressMovie" ThisKey="id" OtherKey="movieId" Type="ActressMovie" />
+      <Association Name="Label_Movie" Member="Label" ThisKey="label_id" OtherKey="id" Type="Label" IsForeignKey="true" />
+      <Association Name="Maker_Movie" Member="Maker" ThisKey="maker_id" OtherKey="id" Type="Maker" IsForeignKey="true" />
+      <Association Name="Series_Movie" Member="Series" ThisKey="series_id" OtherKey="id" Type="Series" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ActressMovie" Member="ActressMovie">
+    <Type Name="ActressMovie">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="actressId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="movieId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="actressOrder" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Actress_ActressMovie" Member="Actress" ThisKey="actressId" OtherKey="id" Type="Actress" IsForeignKey="true" />
+      <Association Name="Movie_ActressMovie" Member="Movie" ThisKey="movieId" OtherKey="id" Type="Movie" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Label" Member="Label">
+    <Type Name="Label">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="Label_Movie" Member="Movie" ThisKey="id" OtherKey="label_id" Type="Movie" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Maker" Member="Maker">
+    <Type Name="Maker">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="description" Type="System.String" DbType="NText NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="url" Type="System.String" DbType="NVarChar(2083) NOT NULL" CanBeNull="false" />
+      <Column Name="enable" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Maker_Movie" Member="Movie" ThisKey="id" OtherKey="maker_id" Type="Movie" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Series" Member="Series">
+    <Type Name="Series">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="Series_Movie" Member="Movie" ThisKey="id" OtherKey="series_id" Type="Movie" />
+    </Type>
+  </Table>
+</Database>

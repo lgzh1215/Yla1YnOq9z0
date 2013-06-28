@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="AVSyncer">
+  <DataContextMoniker Name="/AVSyncerDataContext" />
+  <nestedChildShapes>
+    <classShape Id="46cd4226-442c-44b0-af59-7d7d4178d4f5" absoluteBounds="3.5, 7, 2, 1.1939925130208335">
+      <DataClassMoniker Name="/AVSyncerDataContext/Actress" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a7411727-12c5-4f61-8e7f-cf31a530992d" absoluteBounds="3.515, 7.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="6ee35acc-aaf4-4749-be09-162e0a627d66" absoluteBounds="3.5, 2, 2, 3.3093082682291666">
+      <DataClassMoniker Name="/AVSyncerDataContext/Movie" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4a08b042-a5a4-47ca-9c78-9d2218106fcc" absoluteBounds="3.515, 2.46, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b11cb862-7cc9-4c04-9555-ef767e15d39d" absoluteBounds="6.25, 2.875, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/AVSyncerDataContext/ActressMovie" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3f95fb59-5c53-4f27-97e4-9bbe2379fd29" absoluteBounds="6.265, 3.335, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="916c8e09-6f55-4273-b4e8-6dd69c010cc4" absoluteBounds="0.75, 3, 2, 1.1939925130208335">
+      <DataClassMoniker Name="/AVSyncerDataContext/Label" />
+      <nestedChildShapes>
+        <elementListCompartment Id="624b08c3-5624-4596-94c3-db431da7b2b8" absoluteBounds="0.765, 3.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="c9406376-17e9-4795-a545-b4fbe3148509" absoluteBounds="0.75, 5.75, 2, 1.7708968098958327">
+      <DataClassMoniker Name="/AVSyncerDataContext/Maker" />
+      <nestedChildShapes>
+        <elementListCompartment Id="45366af9-9a93-46e1-b3a1-2e42d4d9de4e" absoluteBounds="0.765, 6.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="05b9f0ec-eeaf-4681-87ff-86a4775815d2" absoluteBounds="0.75, 0.75, 2, 1.1939925130208335">
+      <DataClassMoniker Name="/AVSyncerDataContext/Series" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6b8a190e-686b-4260-bd8b-ddb6409da761" absoluteBounds="0.765, 1.21, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(5.5 : 7.59699625651042); (7.25 : 7.59699625651042); (7.25 : 4.45359537760417)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/AVSyncerDataContext/Actress/Actress_ActressMovie" />
+      <nodes>
+        <classShapeMoniker Id="46cd4226-442c-44b0-af59-7d7d4178d4f5" />
+        <classShapeMoniker Id="b11cb862-7cc9-4c04-9555-ef767e15d39d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 3.66429768880208); (6.25 : 3.66429768880208)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/AVSyncerDataContext/Movie/Movie_ActressMovie" />
+      <nodes>
+        <classShapeMoniker Id="6ee35acc-aaf4-4749-be09-162e0a627d66" />
+        <classShapeMoniker Id="b11cb862-7cc9-4c04-9555-ef767e15d39d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 3.59699625651042); (3.5 : 3.59699625651042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/AVSyncerDataContext/Label/Label_Movie" />
+      <nodes>
+        <classShapeMoniker Id="916c8e09-6f55-4273-b4e8-6dd69c010cc4" />
+        <classShapeMoniker Id="6ee35acc-aaf4-4749-be09-162e0a627d66" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 5.75); (3.125 : 5.375); (3.125 : 5.68584572976763); (3.50153746153846 : 5.30930826822917)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/AVSyncerDataContext/Maker/Maker_Movie" />
+      <nodes>
+        <classShapeMoniker Id="c9406376-17e9-4795-a545-b4fbe3148509" />
+        <classShapeMoniker Id="6ee35acc-aaf4-4749-be09-162e0a627d66" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 1.34699625651042); (4.5 : 1.34699625651042); (4.5 : 2)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/AVSyncerDataContext/Series/Series_Movie" />
+      <nodes>
+        <classShapeMoniker Id="05b9f0ec-eeaf-4681-87ff-86a4775815d2" />
+        <classShapeMoniker Id="6ee35acc-aaf4-4749-be09-162e0a627d66" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

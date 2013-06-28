@@ -1,0 +1,91 @@
+﻿<Window x:Class="SSWSyncer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SSWSyncer" Height="539" Width="517" Top="500" Left="1080">
+    <Grid>
+        <ListBox HorizontalAlignment="Right" Margin="0,41,12,22" Name="listBox1" VerticalAlignment="Stretch" Width="187" PreviewMouseDown="listBox1_PreviewMouseDown" />
+        <CheckBox HorizontalAlignment="Right" Margin="0,0,110,0" Name="chkMultiUser" VerticalAlignment="Bottom" Content="多重帳號登入" />
+        <ComboBox HorizontalAlignment="Right" Margin="0,12,12,0" Name="cmbInitState" VerticalAlignment="Top" Width="187" />
+        <WrapPanel Height="Auto" HorizontalAlignment="Left" Name="wrapPanel1" VerticalAlignment="Top" Width="280" ItemHeight="56" ItemWidth="56">
+            <Button x:Uid="btnLogin" Click="btnLogin_Click">
+                <TextBlock>登入</TextBlock>
+            </Button>
+            <Button x:Uid="btnEnterGalaxy" Click="btnEnterGalaxy_Click">
+                <TextBlock TextWrapping="Wrap">進入銀河系</TextBlock>
+            </Button>
+            <Button x:Uid="btnGalxyMoving" Click="btnGalxyMoving_Click">
+                <TextBlock TextWrapping="Wrap">移到銀河系座標</TextBlock>
+            </Button>
+            <Button x:Uid="btnRecruit" Click="btnRecruit_Click">
+                <TextBlock TextWrapping="Wrap">招募</TextBlock>
+            </Button>
+            <Button x:Uid="btnOpenMission" Click="btnOpenMission_Click">
+                <TextBlock TextWrapping="Wrap">打開任務面板</TextBlock>
+            </Button>
+            <Button x:Uid="btnHarvest" Click="btnHarvest_Click">
+                <TextBlock TextWrapping="Wrap">完成任務</TextBlock>
+            </Button>
+            <Button x:Uid="btnCloseMission" Click="btnCloseMission_Click">
+                <TextBlock TextWrapping="Wrap">關閉任務面板</TextBlock>
+            </Button>
+            <Button x:Uid="btnEnterPlanetary" Click="btnEnterPlanetary_Click">
+                <TextBlock TextWrapping="Wrap">進入行星系</TextBlock>
+            </Button>
+            <Button x:Uid="btnEnterPlanet" Click="btnEnterPlanet_Click">
+                <TextBlock TextWrapping="Wrap">進入星球</TextBlock>
+            </Button>
+            <Button x:Uid="btnOpenPlanetMenu" Click="btnOpenPlanetMenu_Click">
+                <TextBlock TextWrapping="Wrap">開啟星球面板</TextBlock>
+            </Button>
+            <Button x:Uid="btnClosePlanetMenu" Click="btnClosePlanetMenu_Click">
+                <TextBlock TextWrapping="Wrap">關閉星球面板</TextBlock>
+            </Button>
+            <Button x:Uid="btnFacility" Click="btnFacility_Click">
+                <TextBlock TextWrapping="Wrap">開啟設施面板</TextBlock>
+            </Button>
+            <Button x:Uid="btnBuildFacility" Click="btnBuildFacility_Click">
+                <TextBlock TextWrapping="Wrap">建造設施</TextBlock>
+            </Button>
+            <Button x:Uid="btnCloseFacility" Click="btnCloseFacility_Click">
+                <TextBlock TextWrapping="Wrap">關閉設施面板</TextBlock>
+            </Button>
+            <Button x:Uid="btnLeavePlanet" Click="btnLeavePlanet_Click">
+                <TextBlock TextWrapping="Wrap">退出星球</TextBlock>
+            </Button>
+            <Button x:Uid="btnSleep" Click="btnSleep_Click">
+                <TextBlock TextWrapping="Wrap">等待</TextBlock>
+            </Button>
+            <Button x:Uid="btnLogout" Click="btnLogout_Click">
+                <TextBlock TextWrapping="Wrap">登出</TextBlock>
+            </Button>
+            <Button x:Uid="btnVerify" Click="btnVerify_Click">
+                <TextBlock TextWrapping="Wrap">驗證指令順序</TextBlock>
+            </Button>
+            <Button x:Uid="btnInvoke" Click="btnInvoke_Click">
+                <TextBlock TextWrapping="Wrap">執行指令</TextBlock>
+            </Button>
+            <Button x:Uid="btnClear" Click="btnClear_Click">
+                <TextBlock TextWrapping="Wrap">清除所有指令</TextBlock>
+            </Button>
+            <Button x:Uid="btnDeleteCommand" Click="btnDeleteCommand_Click">
+                <TextBlock TextWrapping="Wrap">刪除指令</TextBlock>
+            </Button>
+            <Button x:Uid="btnMoveUp" Click="btnMoveUp_Click">
+                <TextBlock TextWrapping="Wrap">上移一層</TextBlock>
+            </Button>
+            <Button x:Uid="btnMoveDown" Click="btnMoveDown_Click">
+                <TextBlock TextWrapping="Wrap">下移一層</TextBlock>
+            </Button>
+            <Button x:Uid="btnSave" Click="btnSave_Click">
+                <TextBlock TextWrapping="Wrap">儲存指令集</TextBlock>
+            </Button>
+            <Button x:Uid="btnLoad" Click="btnLoad_Click">
+                <TextBlock TextWrapping="Wrap">載入指令集</TextBlock>
+            </Button>
+            <Button x:Uid="btnQuartz" Click="btnQuartz_Click">
+                <TextBlock TextWrapping="Wrap">Quartz</TextBlock>
+            </Button>
+        </WrapPanel>
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="280" Margin="0,342,0,0" Name="grid" />
+    </Grid>
+</Window>
