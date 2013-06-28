@@ -399,11 +399,16 @@ namespace SSWSyncer {
             context.Add("Type", type);
             foreach (PropertyInfo propertyInfo in propertyInfos) {
                 MethodInfo getMethod = propertyInfo.GetGetMethod();
-                string name = propertyInfo.PropertyType.Name;
-                if (name == "String" || name == "Int32") {
-                    CreateTextRowStuff(j, propertyInfo.Name, context);
+                string typeName = propertyInfo.PropertyType.Name;
+                string propertyName = propertyInfo.Name;
+                if (typeName == "String" || typeName == "Int32") {
+                    CreateTextRowStuff(j, propertyName, context);
                     j++;
-                } else if (name == "Point") {
+                    if (instance != null) {
+                        var value = getMethod.Invoke(instance, null);
+                        (context[propertyName] as TextBox).Text = value.ToString();
+                    }
+                } else if (typeName == "Point") {
                     CreateTextRowStuff(j, "PointX", context);
                     j++;
                     CreateTextRowStuff(j, "PointY", context);
@@ -413,15 +418,28 @@ namespace SSWSyncer {
                         (context["PointX"] as TextBox).Text = point.X.ToString();
                         (context["PointY"] as TextBox).Text = point.Y.ToString();
                     }
-                } else if (name == "Boolean" || name == "bool") {
-                    CreateCheckBoxRowStuff(j, propertyInfo.Name, context);
+                } else if (typeName == "Boolean" || typeName == "bool") {
+                    CreateCheckBoxRowStuff(j, propertyName, context);
                     j++;
-                } else if (name == "FacilityType") {
+                    if (instance != null) {
+                        bool value = (bool) getMethod.Invoke(instance, null);
+                        (context[propertyName] as CheckBox).IsChecked = value;
+                    }
+                } else if (typeName == "FacilityType") {
                     CreateComboBoxRowStuff(j, "Facility", OpenFacilityBuildPanelCommand.Facility.Values, context);
                     j++;
-                } else if (name == "UserInfo") {
+                    if (instance != null) {
+                        FacilityType facilityType = (FacilityType) getMethod.Invoke(instance, null);
+                        string selected = OpenFacilityBuildPanelCommand.Facility[facilityType];
+                        (context["Facility"] as ComboBox).SelectedValue = selected;
+                    }
+                } else if (typeName == "UserInfo") {
                     CreateComboBoxRowStuff(j, "UserInfo", users, context);
                     j++;
+                    if (instance != null) {
+                        UserInfo userInfo = (UserInfo) getMethod.Invoke(instance, null);
+                        (context["UserInfo"] as ComboBox).SelectedValue = userInfo;
+                    }
                 }
             }
             if (j != 1) {

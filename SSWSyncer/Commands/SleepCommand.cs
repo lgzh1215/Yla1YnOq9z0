@@ -14,6 +14,14 @@ namespace SSWSyncer.Commands {
         }
 
         public SleepCommand (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        public override void Update (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        private void ParserForm (Dictionary<string, object> context) {
             TextBox txtSecond = context["Second"] as TextBox;
             Second = Convert.ToInt32(txtSecond.Text);
         }

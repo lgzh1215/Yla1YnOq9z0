@@ -14,6 +14,14 @@ namespace SSWSyncer.Commands {
         }
 
         public BuildFacilityCommand (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        public override void Update (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        private void ParserForm (Dictionary<string, object> context) {
             TextBox txtHarvest = context["Index"] as TextBox;
             Index = Convert.ToInt32(txtHarvest.Text);
         }

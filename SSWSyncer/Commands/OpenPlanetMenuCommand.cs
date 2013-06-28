@@ -15,6 +15,14 @@ namespace SSWSyncer.Commands {
         }
 
         public OpenPlanetMenuCommand (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        public override void Update (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        private void ParserForm (Dictionary<string, object> context) {
             TextBox txtPlanetMenuX = context["PointX"] as TextBox;
             TextBox txtPlanetMenuY = context["PointY"] as TextBox;
             Point point = new Point(Convert.ToInt32(txtPlanetMenuX.Text), Convert.ToInt32(txtPlanetMenuY.Text));

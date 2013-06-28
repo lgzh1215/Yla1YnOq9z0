@@ -18,6 +18,14 @@ namespace SSWSyncer.Commands {
         }
 
         public EnterPlanetCommand (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        public override void Update (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        private void ParserForm (Dictionary<string, object> context) {
             TextBox txtPlanetMenuX = context["PointX"] as TextBox;
             TextBox txtPlanetMenuY = context["PointY"] as TextBox;
             CheckBox cb = context["FirstTime"] as CheckBox;
@@ -50,7 +58,11 @@ namespace SSWSyncer.Commands {
         }
 
         public override string ToString () {
-            return "進入行星: (" + Point + ")" + FirstTime;
+            string result = "進入行星: (" + Point + ")";
+            if (FirstTime) {
+                result = "首次" + result;
+            }
+            return result;
         }
 
     }

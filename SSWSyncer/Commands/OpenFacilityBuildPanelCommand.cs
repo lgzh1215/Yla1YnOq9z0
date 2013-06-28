@@ -39,6 +39,14 @@ namespace SSWSyncer.Commands {
         }
 
         public OpenFacilityBuildPanelCommand (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        public override void Update (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        private void ParserForm (Dictionary<string, object> context) {
             ComboBox Combobox = context["Facility"] as ComboBox;
             string selected = Combobox.SelectedItem as string;
             Type = 設施[selected];

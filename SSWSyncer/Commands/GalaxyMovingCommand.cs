@@ -15,6 +15,14 @@ namespace SSWSyncer.Commands {
         }
 
         public GalaxyMovingCommand (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        public override void Update (Dictionary<string, object> context) {
+            ParserForm(context);
+        }
+
+        private void ParserForm (Dictionary<string, object> context) {
             TextBox txtPlanetaryX = context["PointX"] as TextBox;
             TextBox txtPlanetaryY = context["PointY"] as TextBox;
             Point point = new Point(Convert.ToInt32(txtPlanetaryX.Text), Convert.ToInt32(txtPlanetaryY.Text));
