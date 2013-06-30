@@ -332,6 +332,10 @@ namespace SSWSyncer {
         private void btnSleep_Click (object sender, RoutedEventArgs e) {
             CreateControls(typeof(SleepCommand));
         }
+
+        private void btnFleet_Click (object sender, RoutedEventArgs e) {
+            CreateControls(typeof(FleetCommand));
+        }
         #endregion
 
         #region function

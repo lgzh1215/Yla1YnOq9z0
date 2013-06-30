@@ -32,7 +32,7 @@ namespace SSWSyncer.Commands {
             int y = 190 + (Index * 47) - 47;
             if (isSimulate) {
                 if (Index <= 5) {
-                    sim.Mouse.MoveMouseTo(x * xf, y * yf).Sleep(100).LeftButtonClick().Sleep(5000);
+                    sim.Mouse.MoveMouseTo(x * xf, y * yf).Sleep(100).LeftButtonClick().Sleep(1000).LeftButtonClick();
                 } else {
                     // TODO
                     throw new NotSupportedException();
