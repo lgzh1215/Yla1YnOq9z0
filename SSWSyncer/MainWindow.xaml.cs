@@ -297,6 +297,10 @@ namespace SSWSyncer {
             ListItems.Add(new LeavePlanetCommand());
         }
 
+        private void btnFleet_Click (object sender, RoutedEventArgs e) {
+            CreateControls(typeof(SP02Command));
+        }
+
         private void btnLogin_Click (object sender, RoutedEventArgs e) {
             CreateControls(typeof(LoginCommand));
         }
@@ -333,9 +337,6 @@ namespace SSWSyncer {
             CreateControls(typeof(SleepCommand));
         }
 
-        private void btnFleet_Click (object sender, RoutedEventArgs e) {
-            CreateControls(typeof(FleetCommand));
-        }
         #endregion
 
         #region function

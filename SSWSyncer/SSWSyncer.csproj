@@ -86,7 +86,7 @@
     <Compile Include="Commands\EnterGalaxyCommand.cs" />
     <Compile Include="Commands\EnterPlanetaryCommand.cs" />
     <Compile Include="Commands\EnterPlanetCommand.cs" />
-    <Compile Include="Commands\FleetCommand.cs" />
+    <Compile Include="Commands\SP02Command.cs" />
     <Compile Include="Commands\GalaxyMovingCommand.cs" />
     <Compile Include="Commands\HarvestMissionCommand.cs" />
     <Compile Include="Commands\LeavePlanetCommand.cs" />

@@ -59,7 +59,7 @@
                 <TextBlock TextWrapping="Wrap">登出</TextBlock>
             </Button>
             <Button x:Uid="btnFleet" Click="btnFleet_Click">
-                <TextBlock TextWrapping="Wrap">創建艦隊</TextBlock>
+                <TextBlock TextWrapping="Wrap">第2階段</TextBlock>
             </Button>
             <Button x:Uid="btnVerify" Click="btnVerify_Click">
                 <TextBlock TextWrapping="Wrap">驗證指令順序</TextBlock>
