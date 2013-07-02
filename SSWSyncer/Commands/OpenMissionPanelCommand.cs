@@ -12,7 +12,7 @@ namespace SSWSyncer.Commands {
             log.Debug("Open mission panel");
             StateContainer.EnterMissionPanel();
             if (isSimulate) {
-                sim.Mouse.MoveMouseTo(923 * xf, 767 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
+                sim.Mouse.MoveMouseTo(923 * xf, 767 * yf).Sleep(100).LeftButtonClick().Sleep(500);
             }
         }
 

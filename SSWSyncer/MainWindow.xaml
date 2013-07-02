@@ -64,17 +64,20 @@
             <Button x:Uid="btnVerify" Click="btnVerify_Click">
                 <TextBlock TextWrapping="Wrap">驗證指令順序</TextBlock>
             </Button>
-            <Button x:Uid="btnInvoke" Click="btnInvoke_Click">
-                <TextBlock TextWrapping="Wrap">執行指令</TextBlock>
-            </Button>
             <Button x:Uid="btnClear" Click="btnClear_Click">
                 <TextBlock TextWrapping="Wrap">清除所有指令</TextBlock>
+            </Button>
+            <Button x:Uid="btnInvoke" Click="btnInvoke_Click">
+                <TextBlock TextWrapping="Wrap">執行指令</TextBlock>
             </Button>
             <Button x:Uid="btnDeleteCommand" Click="btnDeleteCommand_Click">
                 <TextBlock TextWrapping="Wrap">刪除指令</TextBlock>
             </Button>
             <Button x:Uid="btnMoveUp" Click="btnMoveUp_Click">
                 <TextBlock TextWrapping="Wrap">上移一層</TextBlock>
+            </Button>
+            <Button x:Uid="btnNext" Click="btnNext_Click">
+                <TextBlock TextWrapping="Wrap">下個帳號</TextBlock>
             </Button>
             <Button x:Uid="btnMoveDown" Click="btnMoveDown_Click">
                 <TextBlock TextWrapping="Wrap">下移一層</TextBlock>
@@ -87,9 +90,6 @@
             </Button>
             <Button x:Uid="btnQuartz" Click="btnQuartz_Click">
                 <TextBlock TextWrapping="Wrap">Quartz</TextBlock>
-            </Button>
-            <Button x:Uid="btnNext" Click="btnNext_Click">
-                <TextBlock TextWrapping="Wrap">下個帳號</TextBlock>
             </Button>
             <Button x:Uid="btnCancelNext" Click="btnCancelNext_Click">
                 <TextBlock TextWrapping="Wrap">跳過下個帳號</TextBlock>

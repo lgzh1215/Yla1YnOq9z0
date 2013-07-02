@@ -105,10 +105,10 @@ namespace SSWSyncer {
 
         private void btnNext_Click (object sender, RoutedEventArgs e) {
             script.ChangeState("GalaxyState");
-            script.Enqueue(new SleepCommand(5));
+            script.Enqueue(new SleepCommand(2));
             script.Enqueue(new LogoutCommand());
             script.Enqueue(new LoginCommand(nextUser));
-            script.Invoke(false);
+            script.Invoke(true);
             nextUser = scriptlet.Dequeue();
             displayNextUser();
         }

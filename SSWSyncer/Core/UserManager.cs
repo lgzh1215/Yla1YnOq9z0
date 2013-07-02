@@ -49,8 +49,9 @@ namespace SSWSyncer.Core {
             users.Add(new UserInfo("hd0003@hd.com", "123456"));
             users.Add(new UserInfo("kin8591@hotmail.com", "livelihooh"));
 
+            string password;
             // duo series
-            string password = "123123";
+            password = "123123";
             for (var i = 100; i < 160; i++) {
                 string account = "s" + i + "@qq.com";
                 scriptlet.Add(new UserInfo(account, password));
@@ -61,6 +62,7 @@ namespace SSWSyncer.Core {
                 string account = "gfgf" + i + "zc@126.com";
                 scriptlet.Add(new UserInfo(account, password));
             }
+
         }
 
     }

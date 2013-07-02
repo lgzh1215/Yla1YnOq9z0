@@ -52,7 +52,7 @@ namespace SSWSyncer.Commands {
                     sim.Mouse.MoveMouseTo(610 * xf, 635 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // 託管
                     sim.Mouse.MoveMouseTo(350 * xf, 450 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                } else if (Stage == 20) {
+                } else if (Stage == 3) {
                     // 創艦隊
                     sim.Mouse.MoveMouseTo(990 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // 第二種船
@@ -83,15 +83,25 @@ namespace SSWSyncer.Commands {
                     sim.Mouse.MoveMouseTo(380 * xf, 210 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     sim.Keyboard.TextEntry("a").Sleep(100);
                     // 下一步
-                    sim.Mouse.MoveMouseTo(570 * xf, 670 * yf).Sleep(100).LeftButtonClick().Sleep(600);
+                    sim.Mouse.MoveMouseTo(570 * xf, 670 * yf).Sleep(100).LeftButtonClick().Sleep(1500);
                     // 大功告成
-                    sim.Mouse.MoveMouseTo(566 * xf, 675 * yf).Sleep(100).LeftButtonClick().Sleep(600);
+                    sim.Mouse.MoveMouseTo(566 * xf, 675 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                     // 最大值
-                    sim.Mouse.MoveMouseTo(320 * xf, 530 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    sim.Mouse.MoveMouseTo(320 * xf, 530 * yf).Sleep(100).LeftButtonClick().Sleep(1000);
                     // 裝貨
                     sim.Mouse.MoveMouseTo(420 * xf, 550 * yf).Sleep(100).LeftButtonClick().Sleep(1000);
                     // 關閉
                     sim.Mouse.MoveMouseTo(661 * xf, 646 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                } else if (Stage == 40) {
+                    // 研究
+                    sim.Mouse.MoveMouseTo(850 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    // 第一次確定
+                    sim.Mouse.MoveMouseTo(608 * xf, 493 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    // 地質學
+                    sim.Mouse.MoveMouseTo(200 * xf, 220 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    // close
+                    sim.Mouse.MoveMouseTo(615 * xf, 635 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                 } else if (Stage == 30) {
                     // 殖民
                     sim.Mouse.MoveMouseTo(987 * xf, 406 * yf).Sleep(100).LeftButtonClick().Sleep(300);
