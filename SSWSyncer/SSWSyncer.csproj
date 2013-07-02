@@ -101,6 +101,7 @@
     <Compile Include="Commands\SleepCommand.cs" />
     <Compile Include="Core\UserInfo.cs" />
     <Compile Include="Core\SSWScript.cs" />
+    <Compile Include="Core\UserManager.cs" />
     <Compile Include="States\AbstractState.cs" />
     <Compile Include="States\CommanderState.cs" />
     <Compile Include="States\GalaxyState.cs" />

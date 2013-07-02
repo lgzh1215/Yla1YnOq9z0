@@ -24,7 +24,11 @@ namespace SSWSyncer {
 
         StateContainer script = new StateContainer();
 
+        Queue<UserInfo> scriptlet = new Queue<UserInfo>();
+
         List<UserInfo> users = new List<UserInfo>();
+
+        UserInfo nextUser;
 
         ObservableCollection<Command> ListItems = new ObservableCollection<Command> { };
 
@@ -42,38 +46,29 @@ namespace SSWSyncer {
                 cmbInitState.Items.Add(script.StateMap[key]);
             }
             cmbInitState.SelectedIndex = 0;
-            users.Add(new UserInfo("chen.guan.hwa@gmail.com", "1qaz@WSX"));
-            users.Add(new UserInfo("76450106@qq.com", "5462606"));
-            users.Add(new UserInfo("cwc12345@gmail.com", "cwc12345"));
-            users.Add(new UserInfo("cwc54321@gmail.com", "cwc12345"));
-            users.Add(new UserInfo("sanakan0202@yahoo.com.tw", "74107410"));
-            users.Add(new UserInfo("sephiroth8571@hotmail.com", "955593597"));
-            users.Add(new UserInfo("hd0001@hd.com", "123456"));
-            users.Add(new UserInfo("hd0002@hd.com", "123456"));
-            users.Add(new UserInfo("hd0003@hd.com", "123456"));
-            users.Add(new UserInfo("kin8591@hotmail.com", "livelihooh"));
-            users.Add(new UserInfo("qazwsx@yahoo.com", "qazwsxedcrfv"));
-            users.Add(new UserInfo("cwc12345cwc@gmail.com", "cwc12345"));
-            users.Add(new UserInfo("weijack1524@hotmail.com", "jack1985"));
-            users.Add(new UserInfo("76550001@qq.com", "123456"));
-            users.Add(new UserInfo("76550002@qq.com", "123456"));
-            users.Add(new UserInfo("s109@qq.com", "123123"));
-            users.Add(new UserInfo("s110@qq.com", "123123"));
-            users.Add(new UserInfo("s111@qq.com", "123123"));
-            users.Add(new UserInfo("s112@qq.com", "123123"));
-            users.Add(new UserInfo("s113@qq.com", "123123"));
-            users.Add(new UserInfo("s114@qq.com", "123123"));
-            users.Add(new UserInfo("s115@qq.com", "123123"));
-            users.Add(new UserInfo("s116@qq.com", "123123"));
-            users.Add(new UserInfo("s117@qq.com", "123123"));
-            users.Add(new UserInfo("s118@qq.com", "123123"));
-            users.Add(new UserInfo("s119@qq.com", "123123"));
-            users.Add(new UserInfo("s120@qq.com", "123123"));
-            users.Add(new UserInfo("s121@qq.com", "123123"));
+
+            users = UserManager.getInstance().Users;
+            foreach (UserInfo user in UserManager.getInstance().Scriptlet) {
+                scriptlet.Enqueue(user);
+            }
+            nextUser = scriptlet.Dequeue();
+            displayNextUser();
+        }
+
+        private void displayNextUser () {
+            if (nextUser != null) {
+                labNext.Content = "Next user:" + nextUser.Account;
+            }
         }
 
         public delegate void SSWScriptInvoker ();
 
+        private void initScheduler () {
+            scheduler = schedulerFactory.GetScheduler();
+            scheduler.Start();
+        }
+
+        #region ScriptFunction
         public void LoadScript (SSWScript sswScript) {
             listBox1.ItemsSource = null;
             ListItems.Clear();
@@ -84,66 +79,45 @@ namespace SSWSyncer {
 
         public void VerifyScript () {
             ClearCommandGrid();
-            if (chkMultiUser.IsChecked == true) {
-                //foreach (LoginCommand aLogin in users) {
-                //    script.Clear();
-                //    script.ChangeState("NotLoggedinState");
-                //    script.Enqueue(aLogin);
-                //    foreach (Command command in ListItems) {
-                //        script.Enqueue(command);
-                //    }
-                //    script.Enqueue(new LogoutCommand());
-                //    try {
-                //        script.Invoke(false);
-                //    } catch (Exception ex) {
-                //        log.info(ex.Message);
-                //    }
-                //}
-            } else {
-                script.Clear();
-                script.ChangeState(cmbInitState.SelectedItem.GetType().Name);
-                foreach (Command command in ListItems) {
-                    script.Enqueue(command);
-                }
-                try {
-                    script.Invoke(false);
-                } catch (NotSupportedCommandException ex) {
-                    log.Error(ex.Message);
-                    listBox1.SelectedItem = ex.Command;
-                    listBox1.Focus();
-                }
+            script.Clear();
+            script.ChangeState(cmbInitState.SelectedItem.GetType().Name);
+            foreach (Command command in ListItems) {
+                script.Enqueue(command);
+            }
+            try {
+                script.Invoke(false);
+            } catch (NotSupportedCommandException ex) {
+                log.Error(ex.Message);
+                listBox1.SelectedItem = ex.Command;
+                listBox1.Focus();
             }
         }
 
         public void InvokeScript () {
             ClearCommandGrid();
-            if (chkMultiUser.IsChecked == true) {
-                //foreach (LoginCommand aLogin in users) {
-                //    script.Clear();
-                //    script.ChangeState("NotLoggedinState");
-                //    script.Enqueue(aLogin);
-                //    foreach (Command command in ListItems) {
-                //        script.Enqueue(command);
-                //    }
-                //    script.Enqueue(new LogoutCommand());
-                //    script.Invoke(true);
-                //}
-            } else {
-                script.Clear();
-                script.ChangeState(cmbInitState.SelectedItem.GetType().Name);
-                foreach (Command command in ListItems) {
-                    script.Enqueue(command);
-                }
-                script.Invoke(true);
+            script.Clear();
+            script.ChangeState(cmbInitState.SelectedItem.GetType().Name);
+            foreach (Command command in ListItems) {
+                script.Enqueue(command);
             }
+            script.Invoke(true);
         }
 
-        private void initScheduler () {
-            scheduler = schedulerFactory.GetScheduler();
-            scheduler.Start();
+        private void btnNext_Click (object sender, RoutedEventArgs e) {
+            script.ChangeState("GalaxyState");
+            script.Enqueue(new SleepCommand(5));
+            script.Enqueue(new LogoutCommand());
+            script.Enqueue(new LoginCommand(nextUser));
+            script.Invoke(false);
+            nextUser = scriptlet.Dequeue();
+            displayNextUser();
         }
 
-        #region ScriptFunction
+        private void btnCancelNext_Click (object sender, RoutedEventArgs e) {
+            nextUser = scriptlet.Dequeue();
+            displayNextUser();
+        }
+
         private void btnVerify_Click (object sender, RoutedEventArgs e) {
             VerifyScript();
         }
@@ -251,50 +225,59 @@ namespace SSWSyncer {
                 }
             }
         }
+
+        private void InsertOrAddItem (Command command) {
+            var index = listBox1.SelectedIndex;
+            if (index > 0) {
+                ListItems.Insert(index + 1, command);
+            } else {
+                ListItems.Add(command);
+            }
+        }
         #endregion
 
 
         #region CommandDelegate
         private void btnRecruit_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
-            ListItems.Add(new OpenCommanderPanelCommand());
-            ListItems.Add(new RecruitCommand());
-            ListItems.Add(new CloseCommanderPanelCommand());
+            InsertOrAddItem(new OpenCommanderPanelCommand());
+            InsertOrAddItem(new RecruitCommand());
+            InsertOrAddItem(new CloseCommanderPanelCommand());
         }
 
         private void btnOpenMission_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
-            ListItems.Add(new OpenMissionPanelCommand());
+            InsertOrAddItem(new OpenMissionPanelCommand());
         }
 
         private void btnCloseMission_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
-            ListItems.Add(new CloseMissionPanelCommand());
+            InsertOrAddItem(new CloseMissionPanelCommand());
         }
 
         private void btnEnterGalaxy_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
-            ListItems.Add(new EnterGalaxyCommand());
+            InsertOrAddItem(new EnterGalaxyCommand());
         }
 
         private void btnLogout_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
-            ListItems.Add(new LogoutCommand());
+            InsertOrAddItem(new LogoutCommand());
         }
 
         private void btnClosePlanetMenu_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
-            ListItems.Add(new ClosePlanetMenuCommand());
+            InsertOrAddItem(new ClosePlanetMenuCommand());
         }
 
         private void btnCloseFacility_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
-            ListItems.Add(new CloseFacilityBuildPanelCommand());
+            InsertOrAddItem(new CloseFacilityBuildPanelCommand());
         }
 
         private void btnLeavePlanet_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
-            ListItems.Add(new LeavePlanetCommand());
+            InsertOrAddItem(new LeavePlanetCommand());
         }
 
         private void btnFleet_Click (object sender, RoutedEventArgs e) {
@@ -513,7 +496,7 @@ namespace SSWSyncer {
             ConstructorInfo ci = type.GetConstructor(new Type[1] { typeof(Dictionary<string, object>) });
             try {
                 Command cmd = ci.Invoke(new object[] { context }) as Command;
-                ListItems.Add(cmd);
+                InsertOrAddItem(cmd);
             } catch (Exception ex) {
                 log.Info(ex.Message);
             }
@@ -533,16 +516,16 @@ namespace SSWSyncer {
                 log.Info(ex.Message);
             }
         }
-        #endregion
 
         private void listBox1_PreviewMouseDown (object sender, System.Windows.Input.MouseButtonEventArgs e) {
             try {
                 var item = ItemsControl.ContainerFromElement(listBox1, e.OriginalSource as DependencyObject) as ListBoxItem;
                 CreateControls(item.Content.GetType(), item.Content);
-            } catch (Exception ex) {
-                log.Error(ex.Message);
+            } catch (Exception) {
+                listBox1.SelectedItem = null;
             }
         }
+        #endregion
 
     }
 

@@ -3,7 +3,7 @@
 namespace SSWSyncer.Core {
 
     [Serializable]
-    class UserInfo {
+    public class UserInfo {
 
         public string Account { get; set; }
 
