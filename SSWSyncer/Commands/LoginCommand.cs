@@ -11,13 +11,10 @@ namespace SSWSyncer.Commands {
 
         public UserInfo UserInfo { get; set; }
 
-        //public int Waiting { get; set; }
-
         private static int defaultWaiting = 20;
 
         public LoginCommand (UserInfo userInfo) {
             UserInfo = userInfo;
-            //Waiting = defaultWaiting;
         }
 
         public LoginCommand (Dictionary<string, object> context) {
@@ -30,15 +27,8 @@ namespace SSWSyncer.Commands {
 
         private void ParserForm (Dictionary<string, object> context) {
             ComboBox Combobox = context["UserInfo"] as ComboBox;
-            //TextBox txtWaiting = context["Waiting"] as TextBox;
             UserInfo selected = Combobox.SelectedItem as UserInfo;
             UserInfo = selected;
-            //int waiting = defaultWaiting;
-            //try {
-                //waiting = Convert.ToInt32(txtWaiting.Text);
-            //} catch (Exception) {
-            //}
-            //Waiting = waiting;
         }
 
         public override void Invoke (bool isSimulate) {
@@ -51,7 +41,6 @@ namespace SSWSyncer.Commands {
                 sim.Mouse.MoveMouseTo(480 * xf, 610 * yf).Sleep(250).LeftButtonClick().Sleep(500);
                 sim.Keyboard.TextEntry(UserInfo.Password).Sleep(500);
                 sim.Mouse.MoveMouseTo(608 * xf, 644 * yf).Sleep(250).LeftButtonClick();
-                //sim.Mouse.Sleep(Waiting * 1000);
             }
         }
 

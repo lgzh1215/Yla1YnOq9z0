@@ -33,6 +33,8 @@ namespace SSWSyncer.States {
 
         private Queue<Command> tasks;
 
+        public bool OnInvoke { get; private set; }
+
         public Point ExtentMin { get; set; }
 
         public Point ExtentMax { get; set; }
@@ -68,6 +70,7 @@ namespace SSWSyncer.States {
             tasks = new Queue<Command>();
             ExtentMin = new Point(0, 0);
             ExtentMax = new Point(790, 660);
+            OnInvoke = false;
         }
 
         public void ChangeState (string typeName) {
@@ -85,11 +88,16 @@ namespace SSWSyncer.States {
         }
 
         public void Invoke (bool isSimulate) {
+            if (OnInvoke) {
+                log.Info("前一個腳本還在執行中");
+                return;
+            }
             if (isSimulate) {
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += new DoWorkEventHandler(
                     delegate(object o, DoWorkEventArgs args) {
                         BackgroundWorker b = o as BackgroundWorker;
+                        OnInvoke = true;
                         try {
                             while (tasks.Count > 0) {
                                 Command job = tasks.Dequeue();
@@ -100,6 +108,7 @@ namespace SSWSyncer.States {
                     });
                 bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
                     delegate(object o, RunWorkerCompletedEventArgs args) {
+                        OnInvoke = false;
                         log.Debug("BackgroundWorker fin.");
                     });
                 bw.RunWorkerAsync();
