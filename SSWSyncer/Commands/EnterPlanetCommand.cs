@@ -46,6 +46,7 @@ namespace SSWSyncer.Commands {
                     sim.Mouse.LeftButtonClick().Sleep(100).LeftButtonClick().Sleep(100).LeftButtonClick().Sleep(100);
                 }
 
+                sim.Mouse.MoveMouseTo(500 * xf, 560 * yf);
                 sim.Mouse.LeftButtonDown().Sleep(200);
                 sim.Mouse.MoveMouseBy(0, -5).Sleep(200);
                 sim.Mouse.LeftButtonUp().Sleep(200);

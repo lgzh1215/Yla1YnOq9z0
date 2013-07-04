@@ -27,7 +27,7 @@ namespace SSWSyncer.Commands {
         }
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("Harvest mission: " + Index);
+            log.Debug("Build Facility: " + Index);
             int x = 355;
             int y = 190 + (Index * 47) - 47;
             if (isSimulate) {

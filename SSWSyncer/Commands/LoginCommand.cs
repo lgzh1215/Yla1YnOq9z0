@@ -13,7 +13,7 @@ namespace SSWSyncer.Commands {
 
         //public int Waiting { get; set; }
 
-        private static int defaultWaiting = 20;
+        //private static int defaultWaiting = 20;
 
         public LoginCommand (UserInfo userInfo) {
             UserInfo = userInfo;
