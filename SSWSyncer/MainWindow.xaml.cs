@@ -107,6 +107,7 @@ namespace SSWSyncer {
             script.ChangeState("GalaxyState");
             script.Enqueue(new SleepCommand(2));
             script.Enqueue(new LogoutCommand());
+            script.Enqueue(new SleepCommand(8));
             script.Enqueue(new LoginCommand(nextUser));
             script.Invoke(true);
             nextUser = scriptlet.Dequeue();
@@ -235,7 +236,6 @@ namespace SSWSyncer {
             }
         }
         #endregion
-
 
         #region CommandDelegate
         private void btnRecruit_Click (object sender, RoutedEventArgs e) {

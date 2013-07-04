@@ -30,6 +30,7 @@ namespace SSWSyncer.Commands {
             log.Debug("第2階段特殊指令");
             if (isSimulate) {
                 if (Stage == 1) {
+                    #region s1
                     // 研究
                     sim.Mouse.MoveMouseTo(850 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // 第一次確定
@@ -39,7 +40,9 @@ namespace SSWSyncer.Commands {
                     sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // close
                     sim.Mouse.MoveMouseTo(615 * xf, 635 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    #endregion
                 } else if (Stage == 2) {
+                    #region s2
                     // M874II
                     sim.Mouse.MoveMouseTo(307 * xf, 443 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                     // 造船
@@ -52,7 +55,9 @@ namespace SSWSyncer.Commands {
                     sim.Mouse.MoveMouseTo(610 * xf, 635 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // 託管
                     sim.Mouse.MoveMouseTo(350 * xf, 450 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    #endregion
                 } else if (Stage == 3) {
+                    #region s3
                     // 創艦隊
                     sim.Mouse.MoveMouseTo(990 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // 第二種船
@@ -92,17 +97,21 @@ namespace SSWSyncer.Commands {
                     sim.Mouse.MoveMouseTo(420 * xf, 550 * yf).Sleep(100).LeftButtonClick().Sleep(1000);
                     // 關閉
                     sim.Mouse.MoveMouseTo(661 * xf, 646 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                } else if (Stage == 40) {
+                    #endregion
+                } else if (Stage == 4) {
                     // 研究
                     sim.Mouse.MoveMouseTo(850 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // 第一次確定
                     sim.Mouse.MoveMouseTo(608 * xf, 493 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    // 地質學
+                    // 殖民 >> x?,y?
+                    sim.Mouse.MoveMouseTo(200 * xf, 220 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    // 娛樂科技 >> x?,y?
                     sim.Mouse.MoveMouseTo(200 * xf, 220 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // close
                     sim.Mouse.MoveMouseTo(615 * xf, 635 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                } else if (Stage == 30) {
+                } else if (Stage == 5) {
                     // 殖民
                     sim.Mouse.MoveMouseTo(987 * xf, 406 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // M874III
