@@ -100,15 +100,18 @@ namespace SSWSyncer.Commands {
                     #endregion
                 } else if (Stage == 4) {
                     // 研究
-                    sim.Mouse.MoveMouseTo(850 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    sim.Mouse.MoveMouseTo(850 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(1500);
                     // 第一次確定
-                    sim.Mouse.MoveMouseTo(608 * xf, 493 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    // 殖民 >> x?,y?
-                    sim.Mouse.MoveMouseTo(200 * xf, 220 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    // 娛樂科技 >> x?,y?
-                    sim.Mouse.MoveMouseTo(200 * xf, 220 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    sim.Mouse.MoveMouseTo(608 * xf, 493 * yf).Sleep(100).LeftButtonClick().Sleep(600);
+                    // 工業
+                    sim.Mouse.MoveMouseTo(200 * xf, 243 * yf).Sleep(100).LeftButtonClick().Sleep(400);
+                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(1200);
+                    // 殖民
+                    sim.Mouse.MoveMouseTo(200 * xf, 268 * yf).Sleep(100).LeftButtonClick().Sleep(400);
+                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(1200);
+                    // 娛樂科技
+                    sim.Mouse.MoveMouseTo(200 * xf, 288 * yf).Sleep(100).LeftButtonClick().Sleep(400);
+                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(1200);
                     // close
                     sim.Mouse.MoveMouseTo(615 * xf, 635 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                 } else if (Stage == 5) {
