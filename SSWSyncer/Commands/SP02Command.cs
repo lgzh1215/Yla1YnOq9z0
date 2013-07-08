@@ -115,22 +115,18 @@ namespace SSWSyncer.Commands {
                     // close
                     sim.Mouse.MoveMouseTo(615 * xf, 635 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                 } else if (Stage == 5) {
-                    // 殖民
-                    sim.Mouse.MoveMouseTo(987 * xf, 406 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    // M874III
-                    sim.Mouse.MoveMouseTo(262 * xf, 705 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
-                    // 確定
-                    sim.Mouse.MoveMouseTo(600 * xf, 490 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // 點船
                     sim.Mouse.MoveMouseTo(356 * xf, 438 * yf).Sleep(100).LeftButtonClick().Sleep(1000);
+                    // 卸貨
+                    sim.Mouse.MoveMouseTo(987 * xf, 434 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    // M874II
+                    sim.Mouse.MoveMouseTo(307 * xf, 443 * yf).Sleep(100).LeftButtonClick().Sleep(1000);
+                    // 確定
+                    sim.Mouse.MoveMouseTo(508 * xf, 490 * yf).Sleep(100).LeftButtonClick().Sleep(1500);
                     // 解散
-                    sim.Mouse.MoveMouseTo(911 * xf, 485 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    sim.Mouse.MoveMouseTo(911 * xf, 485 * yf).Sleep(100).LeftButtonClick().Sleep(1000);
                     // 確定
                     sim.Mouse.MoveMouseTo(500 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    // M874II
-                    sim.Mouse.MoveMouseTo(307 * xf, 443 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
-                    // 託管
-                    sim.Mouse.MoveMouseTo(350 * xf, 450 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                 }
             }
         }
