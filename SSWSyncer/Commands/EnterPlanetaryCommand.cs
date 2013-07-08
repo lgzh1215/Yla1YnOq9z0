@@ -30,7 +30,7 @@ namespace SSWSyncer.Commands {
         }
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("Enter planetary");
+            log.Debug(this.ToString());
             StateContainer.EnterPlanetary();
             if (isSimulate) {
                 if (Point.X < StateContainer.ExtentMin.X || Point.Y < StateContainer.ExtentMin.Y ||

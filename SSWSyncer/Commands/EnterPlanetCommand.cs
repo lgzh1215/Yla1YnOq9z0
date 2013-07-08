@@ -38,7 +38,7 @@ namespace SSWSyncer.Commands {
             OpenPlanetMenuCommand openPlanetMenuCommand = new OpenPlanetMenuCommand(Point);
             openPlanetMenuCommand.StateContainer = StateContainer;
             openPlanetMenuCommand.Invoke(isSimulate);
-            log.Debug("Open planet menu: " + Point);
+            log.Debug(this.ToString());
             StateContainer.EnterPlanet();
             if (isSimulate) {
                 sim.Mouse.MoveMouseBy(0, -25).Sleep(100).LeftButtonClick().Sleep(1000);

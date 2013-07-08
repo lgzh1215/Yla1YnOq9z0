@@ -27,7 +27,7 @@ namespace SSWSyncer.Commands {
         }
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("第2階段特殊指令");
+            log.Debug(this.ToString());
             if (isSimulate) {
                 if (Stage == 1) {
                     #region s1

@@ -9,13 +9,21 @@ namespace SSWSyncer.Core {
 
         public string Password { get; set; }
 
+        public string Name { get; set; }
+
         public UserInfo (string account, string password) {
             Account = account;
             Password = password;
         }
 
+        public UserInfo (string account, string password, string name) {
+            Account = account;
+            Password = password;
+            Name = name;
+        }
+
         public override string ToString () {
-            return "使用者(" + Account + "/" + Password + ")";
+            return Name + "\t" + Account + "\t" + Password + ")";
         }
 
     }

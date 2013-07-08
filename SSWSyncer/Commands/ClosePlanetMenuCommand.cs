@@ -8,7 +8,7 @@ namespace SSWSyncer.Commands {
     class ClosePlanetMenuCommand : AbstractCommand {
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("Close planet menu");
+            log.Debug(this.ToString());
             StateContainer.EnterPlanetary();
             if (isSimulate) {
                 sim.Mouse.MoveMouseTo(487 * xf, 530 * yf).Sleep(100).LeftButtonClick().Sleep(1000);

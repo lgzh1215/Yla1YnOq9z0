@@ -53,7 +53,7 @@ namespace SSWSyncer.Commands {
         }
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("Open facility build panel");
+            log.Debug(this.ToString());
             StateContainer.EnterResourceBuildingList();
             if (isSimulate) {
                 Point target;

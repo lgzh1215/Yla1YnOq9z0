@@ -6,7 +6,7 @@ namespace SSWSyncer.Commands {
     class LogoutCommand : AbstractCommand {
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("Logout");
+            log.Debug(this.ToString());
             StateContainer.Logout();
             if (isSimulate) {
                 sim.Mouse.MoveMouseTo(1000 * xf, 765 * yf).Sleep(500).LeftButtonClick().Sleep(1500);

@@ -6,7 +6,7 @@ namespace SSWSyncer.Commands {
     class CloseCommanderPanelCommand : AbstractCommand {
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("Close commander panel");
+            log.Debug(this.ToString());
             StateContainer.EnterGalaxy();
             if (isSimulate) {
                 sim.Mouse.MoveMouseTo(654 * xf, 612 * yf).Sleep(100).LeftButtonClick().Sleep(500);

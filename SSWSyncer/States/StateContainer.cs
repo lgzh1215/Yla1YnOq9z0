@@ -109,7 +109,7 @@ namespace SSWSyncer.States {
                 bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
                     delegate(object o, RunWorkerCompletedEventArgs args) {
                         OnInvoke = false;
-                        log.Debug("BackgroundWorker fin.");
+                        log.Debug("指令執行完畢");
                     });
                 bw.RunWorkerAsync();
             } else {

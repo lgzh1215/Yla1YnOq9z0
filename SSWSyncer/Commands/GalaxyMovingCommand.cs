@@ -30,7 +30,7 @@ namespace SSWSyncer.Commands {
         }
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("Galaxy move to: (" + Point + ")");
+            log.Debug(this.ToString());
             // M874 = 114 * xf, 167 * yf
             // zero point = 14, 67
             // box = 790 x 660

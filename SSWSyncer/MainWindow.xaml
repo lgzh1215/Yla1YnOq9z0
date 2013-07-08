@@ -1,10 +1,10 @@
 ﻿<Window x:Class="SSWSyncer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SSWSyncer" Height="539" Width="517">
+        Title="SSWSyncer" Height="600" Width="501" Top="0">
     <Grid>
-        <ListBox HorizontalAlignment="Right" Margin="0,41,12,35" Name="listBox1" VerticalAlignment="Stretch" Width="187" PreviewMouseDown="listBox1_PreviewMouseDown" />
-        <Label Content="Next user:" Height="28" HorizontalAlignment="Right" Margin="0,472,12,0" Name="labNext" VerticalAlignment="Bottom" Width="187" />
+        <ListBox HorizontalAlignment="Right" Margin="0,41,12,12" Name="listBox1" VerticalAlignment="Stretch" Width="187" PreviewMouseDown="listBox1_PreviewMouseDown" />
+        <Label Height="28" HorizontalAlignment="Right" Margin="0,432,209,0" Name="labNext" VerticalAlignment="Top" Width="180" />
         <ComboBox HorizontalAlignment="Right" Margin="0,12,12,0" Name="cmbInitState" VerticalAlignment="Top" Width="187" />
         <WrapPanel Height="Auto" HorizontalAlignment="Left" Name="wrapPanel1" VerticalAlignment="Top" Width="270" ItemHeight="28" ItemWidth="90">
             <Button x:Uid="btnLogin" Click="btnLogin_Click">
@@ -94,7 +94,20 @@
             <Button x:Uid="btnCancelNext" Click="btnCancelNext_Click">
                 <TextBlock TextWrapping="Wrap">跳過下個帳號</TextBlock>
             </Button>
+            <Button>
+                <TextBlock TextWrapping="Wrap"></TextBlock>
+            </Button>
+            <Button x:Uid="btnJump2SSK" Click="btnJump2SSK_Click">
+                <TextBlock TextWrapping="Wrap">西西卡系列</TextBlock>
+            </Button>
+            <Button x:Uid="btnJump2FG" Click="btnJump2FG_Click">
+                <TextBlock TextWrapping="Wrap">FG系列</TextBlock>
+            </Button>
+            <Button x:Uid="btnJump2SE" Click="btnJump2SE_Click">
+                <TextBlock TextWrapping="Wrap">SE十刃</TextBlock>
+            </Button>
         </WrapPanel>
-        <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="280" Margin="0,342,0,0" Name="grid" />
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="270" Margin="0,323,0,0" Name="grid" Height="103" />
+        <Label Content="Next user:" Height="28" HorizontalAlignment="Left" Margin="15,432,0,0" Name="label1" VerticalAlignment="Top" />
     </Grid>
 </Window>
