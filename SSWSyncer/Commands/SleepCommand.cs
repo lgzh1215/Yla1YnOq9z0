@@ -27,7 +27,7 @@ namespace SSWSyncer.Commands {
         }
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("Sleep: " + Second);
+            log.Debug(this.ToString());
             if (isSimulate) {
                 sim.Mouse.Sleep(Second * 1000);
             }

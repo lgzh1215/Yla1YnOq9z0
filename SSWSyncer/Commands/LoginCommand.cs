@@ -30,7 +30,7 @@ namespace SSWSyncer.Commands {
         }
 
         public override void Invoke (bool isSimulate) {
-            log.Debug("Login:" + UserInfo.Account + "/" + UserInfo.Password);
+            log.Debug(this.ToString());
             StateContainer.Login();
             if (isSimulate) {
                 sim.Mouse.MoveMouseTo(646 * xf, 580 * yf).Sleep(250).LeftButtonClick().Sleep(250);
@@ -43,7 +43,7 @@ namespace SSWSyncer.Commands {
         }
 
         public override string ToString () {
-            return "登入" + UserInfo;
+            return "登入:" + UserInfo;
         }
 
     }

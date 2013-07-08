@@ -32,7 +32,7 @@ namespace SSWSyncer.Commands {
         public override void Invoke (bool isSimulate) {
             // zero = 14px, 56px
             // M874IV= (17, 15)
-            log.Debug("Open planet menu: " + Point);
+            log.Debug(this.ToString());
             StateContainer.OpenPlanetMenu();
             if (isSimulate) {
                 Point target = new Point();

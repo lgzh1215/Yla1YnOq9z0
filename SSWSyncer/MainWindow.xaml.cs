@@ -22,13 +22,13 @@ namespace SSWSyncer {
     /// </summary>
     public partial class MainWindow : Window {
 
+        private static ILog log = LogManager.GetLogger(typeof(MainWindow));
+
         StateContainer script = new StateContainer();
 
-        Queue<UserInfo> scriptlet = new Queue<UserInfo>();
+        List<UserInfo> scriptlet = new List<UserInfo>();
 
         List<UserInfo> users = new List<UserInfo>();
-
-        UserInfo nextUser;
 
         ObservableCollection<Command> ListItems = new ObservableCollection<Command> { };
 
@@ -36,7 +36,7 @@ namespace SSWSyncer {
 
         IScheduler scheduler;
 
-        private static ILog log = LogManager.GetLogger(typeof(MainWindow));
+        int currSUIndex = 0;
 
         public MainWindow () {
             InitializeComponent();
@@ -48,27 +48,13 @@ namespace SSWSyncer {
             cmbInitState.SelectedIndex = 0;
 
             users = UserManager.getInstance().Users;
-            foreach (UserInfo user in UserManager.getInstance().Scriptlet) {
-                scriptlet.Enqueue(user);
-            }
-            nextUser = scriptlet.Dequeue();
-            displayNextUser();
+            scriptlet = UserManager.getInstance().Scriptlet;
+            displayCurrentUser();
         }
 
-        private void displayNextUser () {
-            if (nextUser != null) {
-                labNext.Content = "Next user:" + nextUser.Account;
-            }
-        }
-
+        #region 主視窗功能
         public delegate void SSWScriptInvoker ();
 
-        private void initScheduler () {
-            scheduler = schedulerFactory.GetScheduler();
-            scheduler.Start();
-        }
-
-        #region ScriptFunction
         public void LoadScript (SSWScript sswScript) {
             listBox1.ItemsSource = null;
             ListItems.Clear();
@@ -103,22 +89,78 @@ namespace SSWSyncer {
             script.Invoke(true);
         }
 
+        private void initScheduler () {
+            scheduler = schedulerFactory.GetScheduler();
+            scheduler.Start();
+        }
+
+        private UserInfo getCurrentUser () {
+            var xx = currSUIndex + 1;
+            if (xx > scriptlet.Count) {
+                currSUIndex = 0;
+            }
+            UserInfo userInfo = null;
+            try {
+                if (scriptlet.Count > 0)
+                    userInfo = scriptlet[currSUIndex];
+            } catch (Exception e) {
+                log.Error(e.Message);
+            }
+            return userInfo;
+        }
+
+        private void displayCurrentUser () {
+            UserInfo userInfo = getCurrentUser();
+            if (userInfo == null) {
+                labNext.Content = "沒有帳號!";
+            } else {
+                string info = userInfo.Name + ": " + userInfo.Account;
+                labNext.Content = info;
+            }
+        }
+
         private void btnNext_Click (object sender, RoutedEventArgs e) {
-            script.ChangeState("GalaxyState");
-            script.Enqueue(new SleepCommand(2));
-            script.Enqueue(new LogoutCommand());
-            script.Enqueue(new SleepCommand(8));
-            script.Enqueue(new LoginCommand(nextUser));
-            script.Invoke(true);
-            nextUser = scriptlet.Dequeue();
-            displayNextUser();
+            UserInfo userInfo = getCurrentUser();
+            if (userInfo != null) {
+                script.ChangeState("GalaxyState");
+                script.Enqueue(new SleepCommand(2));
+                script.Enqueue(new LogoutCommand());
+                script.Enqueue(new SleepCommand(8));
+                script.Enqueue(new LoginCommand(userInfo));
+                script.Invoke(true);
+                currSUIndex++;
+                displayCurrentUser();
+            }
         }
 
         private void btnCancelNext_Click (object sender, RoutedEventArgs e) {
-            nextUser = scriptlet.Dequeue();
-            displayNextUser();
+            currSUIndex++;
+            displayCurrentUser();
         }
 
+        private void btnJump2SSK_Click (object sender, RoutedEventArgs e) {
+            UserInfo info = UserManager.getInstance().SSKSeriesHead;
+            int index = scriptlet.IndexOf(info);
+            currSUIndex = index;
+            displayCurrentUser();
+        }
+
+        private void btnJump2FG_Click (object sender, RoutedEventArgs e) {
+            UserInfo info = UserManager.getInstance().FGSeriesHead;
+            int index = scriptlet.IndexOf(info);
+            currSUIndex = index;
+            displayCurrentUser();
+        }
+
+        private void btnJump2SE_Click (object sender, RoutedEventArgs e) {
+            UserInfo info = UserManager.getInstance().SESeriesHead;
+            int index = scriptlet.IndexOf(info);
+            currSUIndex = index;
+            displayCurrentUser();
+        }
+        #endregion
+
+        # region 主視窗 腳本清單功能
         private void btnVerify_Click (object sender, RoutedEventArgs e) {
             VerifyScript();
         }
@@ -237,7 +279,7 @@ namespace SSWSyncer {
         }
         #endregion
 
-        #region CommandDelegate
+        #region Command Delegate
         private void btnRecruit_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
             InsertOrAddItem(new OpenCommanderPanelCommand());
@@ -322,7 +364,7 @@ namespace SSWSyncer {
 
         #endregion
 
-        #region function
+        #region 動態屬性功能
         private RowDefinition CreateRowDefinition () {
             RowDefinition RowDefinition = new RowDefinition();
             RowDefinition.Height = GridLength.Auto;
@@ -520,8 +562,13 @@ namespace SSWSyncer {
         private void listBox1_PreviewMouseDown (object sender, System.Windows.Input.MouseButtonEventArgs e) {
             try {
                 var item = ItemsControl.ContainerFromElement(listBox1, e.OriginalSource as DependencyObject) as ListBoxItem;
-                CreateControls(item.Content.GetType(), item.Content);
+                if (!item.IsSelected) {
+                    CreateControls(item.Content.GetType(), item.Content);
+                } else {
+                    ClearCommandGrid();
+                }
             } catch (Exception) {
+                ClearCommandGrid();
                 listBox1.SelectedItem = null;
             }
         }
