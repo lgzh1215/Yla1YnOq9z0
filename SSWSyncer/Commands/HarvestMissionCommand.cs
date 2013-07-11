@@ -26,7 +26,7 @@ namespace SSWSyncer.Commands {
             Index = Convert.ToInt32(txtHarvest.Text);
         }
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             int x = 155;
             int y = 207 + (Index * 18) - 18;

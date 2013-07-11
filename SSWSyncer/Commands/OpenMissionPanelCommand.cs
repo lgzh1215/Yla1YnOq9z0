@@ -8,7 +8,7 @@ namespace SSWSyncer.Commands {
         public OpenMissionPanelCommand () {
         }
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             StateContainer.EnterMissionPanel();
             if (isSimulate) {

@@ -15,6 +15,7 @@ using Quartz.Impl;
 using SSWSyncer.Commands;
 using SSWSyncer.Core;
 using SSWSyncer.States;
+using System.ComponentModel;
 
 namespace SSWSyncer {
     /// <summary>
@@ -71,7 +72,7 @@ namespace SSWSyncer {
                 script.Enqueue(command);
             }
             try {
-                script.Invoke(false);
+                script.Invoke(false, false);
             } catch (NotSupportedCommandException ex) {
                 log.Error(ex.Message);
                 listBox1.SelectedItem = ex.Command;
@@ -79,14 +80,14 @@ namespace SSWSyncer {
             }
         }
 
-        public void InvokeScript () {
+        public void InvokeScript (bool async) {
             ClearCommandGrid();
             script.Clear();
             script.ChangeState(cmbInitState.SelectedItem.GetType().Name);
             foreach (Command command in ListItems) {
                 script.Enqueue(command);
             }
-            script.Invoke(true);
+            script.Invoke(true, async);
         }
 
         private void initScheduler () {
@@ -119,7 +120,7 @@ namespace SSWSyncer {
             }
         }
 
-        private void btnNext_Click (object sender, RoutedEventArgs e) {
+        private void nextUser (bool async) {
             UserInfo userInfo = getCurrentUser();
             if (userInfo != null) {
                 script.ChangeState("GalaxyState");
@@ -127,10 +128,23 @@ namespace SSWSyncer {
                 script.Enqueue(new LogoutCommand());
                 script.Enqueue(new SleepCommand(8));
                 script.Enqueue(new LoginCommand(userInfo));
-                script.Invoke(true);
-                currSUIndex++;
-                displayCurrentUser();
+                if (async) {
+                    script.Invoke(true, true);
+                    script.Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
+                        delegate(object o, RunWorkerCompletedEventArgs args) {
+                            currSUIndex++;
+                            displayCurrentUser();
+                        });
+                } else {
+                    script.Invoke(true, false);
+                    currSUIndex++;
+                    displayCurrentUser();
+                }
             }
+        }
+
+        private void btnNext_Click (object sender, RoutedEventArgs e) {
+            nextUser(true);
         }
 
         private void btnCancelNext_Click (object sender, RoutedEventArgs e) {
@@ -158,6 +172,15 @@ namespace SSWSyncer {
             currSUIndex = index;
             displayCurrentUser();
         }
+
+        private void btnRotate_Click (object sender, RoutedEventArgs e) {
+            for (int i = 0; i < 3; i++) {
+                nextUser(false);
+                InvokeScript(false);
+            }
+
+        }
+
         #endregion
 
         # region 主視窗 腳本清單功能
@@ -166,7 +189,7 @@ namespace SSWSyncer {
         }
 
         private void btnInvoke_Click (object sender, RoutedEventArgs e) {
-            InvokeScript();
+            InvokeScript(true);
         }
 
         private void btnClear_Click (object sender, RoutedEventArgs e) {

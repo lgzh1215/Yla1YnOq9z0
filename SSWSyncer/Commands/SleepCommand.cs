@@ -26,7 +26,7 @@ namespace SSWSyncer.Commands {
             Second = Convert.ToInt32(txtSecond.Text);
         }
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             if (isSimulate) {
                 sim.Mouse.Sleep(Second * 1000);

@@ -29,7 +29,7 @@ namespace SSWSyncer.Commands {
             Point = point;
         }
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             StateContainer.EnterPlanetary();
             if (isSimulate) {
@@ -37,7 +37,7 @@ namespace SSWSyncer.Commands {
                     Point.X > StateContainer.ExtentMax.X || Point.Y < StateContainer.ExtentMax.Y) {
                     GalaxyMovingCommand moving = new GalaxyMovingCommand(Point);
                     moving.StateContainer = StateContainer;
-                    moving.Invoke(isSimulate);
+                    moving.Invoke(isSimulate, async);
                 }
                 Point target = new Point();
                 target.X = Point.X - StateContainer.ExtentMin.X + 15;

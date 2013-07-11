@@ -36,7 +36,7 @@ namespace SSWSyncer.Core {
                 {
                     mainWindow.LoadScript(sswScript);
                     mainWindow.VerifyScript();
-                    mainWindow.InvokeScript();
+                    mainWindow.InvokeScript(true);
                 }, null);
 
             }

@@ -4,7 +4,7 @@ namespace SSWSyncer.Commands {
 
     public interface Command {
 
-        void Invoke (bool isSimulate);
+        void Invoke (bool isSimulate, bool async);
 
     }
 

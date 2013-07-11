@@ -5,7 +5,7 @@ namespace SSWSyncer.Commands {
     [Serializable]
     class CloseMissionPanelCommand : AbstractCommand {
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             StateContainer.EnterGalaxy();
             if (isSimulate) {

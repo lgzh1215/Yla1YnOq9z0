@@ -29,7 +29,7 @@ namespace SSWSyncer.Commands {
             UserInfo = selected;
         }
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             StateContainer.Login();
             if (isSimulate) {
