@@ -33,7 +33,7 @@ namespace SSWSyncer.Commands {
             throw new NotImplementedException();
         }
 
-        public virtual void Invoke (bool isSimulate) {
+        public virtual void Invoke (bool isSimulate, bool async) {
             throw new NotImplementedException();
         }
 

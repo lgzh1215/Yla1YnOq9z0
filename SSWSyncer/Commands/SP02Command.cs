@@ -26,7 +26,7 @@ namespace SSWSyncer.Commands {
             Stage = Convert.ToInt32(txtStage.Text);
         }
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             if (isSimulate) {
                 if (Stage == 1) {

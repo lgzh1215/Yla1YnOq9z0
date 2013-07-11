@@ -5,7 +5,7 @@ namespace SSWSyncer.Commands {
     [Serializable]
     class RecruitCommand : AbstractCommand {
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             if (isSimulate) {
                 sim.Mouse.MoveMouseTo(608 * xf, 490 * yf).Sleep(100).LeftButtonClick().Sleep(500);

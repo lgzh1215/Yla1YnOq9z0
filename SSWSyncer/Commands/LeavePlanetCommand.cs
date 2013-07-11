@@ -5,7 +5,7 @@ namespace SSWSyncer.Commands {
     [Serializable]
     class LeavePlanetCommand : AbstractCommand {
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             StateContainer.EnterPlanetary();
             if (isSimulate) {

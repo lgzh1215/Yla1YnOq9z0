@@ -94,8 +94,8 @@
             <Button x:Uid="btnCancelNext" Click="btnCancelNext_Click">
                 <TextBlock TextWrapping="Wrap">跳過下個帳號</TextBlock>
             </Button>
-            <Button>
-                <TextBlock TextWrapping="Wrap"></TextBlock>
+            <Button x:Uid="btnRotate" Click="btnRotate_Click">
+                <TextBlock TextWrapping="Wrap">輪流模式</TextBlock>
             </Button>
             <Button x:Uid="btnJump2SSK" Click="btnJump2SSK_Click">
                 <TextBlock TextWrapping="Wrap">西西卡系列</TextBlock>

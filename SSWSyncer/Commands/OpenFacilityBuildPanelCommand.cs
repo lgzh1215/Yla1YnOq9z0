@@ -52,7 +52,7 @@ namespace SSWSyncer.Commands {
             Type = 設施[selected];
         }
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
             StateContainer.EnterResourceBuildingList();
             if (isSimulate) {

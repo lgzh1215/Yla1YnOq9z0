@@ -45,6 +45,8 @@ namespace SSWSyncer.States {
             }
         }
 
+        public BackgroundWorker Worker { get; private set; }
+
         public StateContainer () {
             // 新狀態要來這邊註冊
             notLoggedinState = new NotLoggedinState(this);
@@ -87,31 +89,46 @@ namespace SSWSyncer.States {
             tasks.Enqueue(command);
         }
 
-        public void Invoke (bool isSimulate) {
+        public void Invoke (bool isSimulate, bool async) {
             if (OnInvoke) {
                 log.Info("前一個腳本還在執行中");
                 return;
             }
             if (isSimulate) {
-                BackgroundWorker bw = new BackgroundWorker();
-                bw.DoWork += new DoWorkEventHandler(
-                    delegate(object o, DoWorkEventArgs args) {
-                        BackgroundWorker b = o as BackgroundWorker;
-                        OnInvoke = true;
-                        try {
-                            while (tasks.Count > 0) {
-                                Command job = tasks.Dequeue();
-                                job.Invoke(isSimulate);
+                if (async) {
+                    BackgroundWorker bw = new BackgroundWorker();
+                    Worker = bw;
+                    bw.DoWork += new DoWorkEventHandler(
+                        delegate(object o, DoWorkEventArgs args) {
+                            OnInvoke = true;
+                            try {
+                                while (tasks.Count > 0) {
+                                    Command job = tasks.Dequeue();
+                                    job.Invoke(isSimulate, async);
+                                }
+                            } finally {
+                                OnInvoke = false;
                             }
-                        } catch (Exception) {
+                        });
+                    bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
+                        delegate(object o, RunWorkerCompletedEventArgs args) {
+                            OnInvoke = false;
+                            log.Debug("指令執行完畢");
+                        });
+                    bw.RunWorkerAsync();
+                } else {
+                    OnInvoke = true;
+                    try {
+                        while (tasks.Count > 0) {
+                            Command job = tasks.Dequeue();
+                            job.Invoke(isSimulate, async);
                         }
-                    });
-                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
-                    delegate(object o, RunWorkerCompletedEventArgs args) {
+                    } finally {
                         OnInvoke = false;
                         log.Debug("指令執行完畢");
-                    });
-                bw.RunWorkerAsync();
+                    }
+                    
+                }
             } else {
                 Command job = null;
                 int index = 0;
@@ -119,7 +136,7 @@ namespace SSWSyncer.States {
                     var len = tasks.Count + 0;
                     for (index = 0; index < len; index++) {
                         job = tasks.Dequeue();
-                        job.Invoke(isSimulate);
+                        job.Invoke(isSimulate, false);
                     }
                 } catch (NotSupportedException) {
                     NotSupportedCommandException e = new NotSupportedCommandException(index, job);

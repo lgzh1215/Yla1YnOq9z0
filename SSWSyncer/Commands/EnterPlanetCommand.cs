@@ -34,10 +34,10 @@ namespace SSWSyncer.Commands {
             FirstTime = (cb.IsChecked == true);
         }
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             OpenPlanetMenuCommand openPlanetMenuCommand = new OpenPlanetMenuCommand(Point);
             openPlanetMenuCommand.StateContainer = StateContainer;
-            openPlanetMenuCommand.Invoke(isSimulate);
+            openPlanetMenuCommand.Invoke(isSimulate, async);
             log.Debug(this.ToString());
             StateContainer.EnterPlanet();
             if (isSimulate) {

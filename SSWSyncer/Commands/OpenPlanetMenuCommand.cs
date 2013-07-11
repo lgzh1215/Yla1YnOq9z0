@@ -29,7 +29,7 @@ namespace SSWSyncer.Commands {
             Point = point;
         }
 
-        public override void Invoke (bool isSimulate) {
+        public override void Invoke (bool isSimulate, bool async) {
             // zero = 14px, 56px
             // M874IV= (17, 15)
             log.Debug(this.ToString());
