@@ -174,11 +174,10 @@ namespace SSWSyncer {
         }
 
         private void btnRotate_Click (object sender, RoutedEventArgs e) {
-            for (int i = 0; i < 130; i++) {
+            while (true) {
                 nextUser(false);
                 InvokeScript(false);
             }
-
         }
 
         #endregion
