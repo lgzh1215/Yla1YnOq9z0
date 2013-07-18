@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using Common.Logging;
 
 namespace SSWSyncer.Core {
 
     public class UserManager {
+
+        private static ILog log = LogManager.GetLogger(typeof(UserManager));
 
         private List<UserInfo> users = new List<UserInfo>();
 
@@ -18,12 +22,6 @@ namespace SSWSyncer.Core {
                 return users;
             }
         }
-
-        public UserInfo SSKSeriesHead { get; private set; }
-
-        public UserInfo FGSeriesHead { get; private set; }
-
-        public UserInfo SESeriesHead { get; private set; }
 
         public List<UserInfo> Scriptlet {
             get {
@@ -38,61 +36,48 @@ namespace SSWSyncer.Core {
             return instance;
         }
 
+        public int indexOf (string name) {
+            for (int i = 0; i < scriptlet.Count; i++) {
+                UserInfo info = scriptlet[i];
+                if (info.Name == name) {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+        public void reLoadUsers () {
+            users.Clear();
+            scriptlet.Clear();
+            loadUsers();
+        }
+
         private UserManager () {
-            users.Add(new UserInfo("chen.guan.hwa@gmail.com", "1qaz@WSX", "Seele"));
-            users.Add(new UserInfo("qazwsx@yahoo.com", "qazwsxedcrfv", "米腸"));
-            users.Add(new UserInfo("cw2cheng@yahoo.com", "latrobe", "威鳥"));
-            users.Add(new UserInfo("sanakan0202@yahoo.com.tw", "74107410", "可樂"));
-            users.Add(new UserInfo("sephiroth8571@hotmail.com", "955593597", "全家"));
-            users.Add(new UserInfo("weijack1524@hotmail.com", "jack1985", "FIA"));
-            users.Add(new UserInfo("76550001@qq.com", "123456", "SE十刃"));
-            users.Add(new UserInfo("s100@qq.com", "123123", "s100"));
-            users.Add(new UserInfo("gfgf1zc@126.com", "ssw342425", "FG1"));
-            users.Add(new UserInfo("cwc12345@gmail.com", "cwc12345", "月映"));
-            users.Add(new UserInfo("76450106@qq.com", "5462606", "小G"));
+            loadUsers();
+        }
 
-            string account;
-            string password;
-            string name;
-            UserInfo info;
-
-            // duo series
-            password = "123123";
-            for (var i = 100; i < 160; i++) {
-                account = "s" + i + "@qq.com";
-                name = "s" + i;
-                info = new UserInfo(account, password, name);
-                scriptlet.Add(info);
-                if (i == 100) {
-                    SSKSeriesHead = info;
+        private void loadUsers () {
+            try {
+                var reader = new StreamReader(File.OpenRead(@"users.csv"), System.Text.Encoding.Default);
+                reader.ReadLine();
+                while (!reader.EndOfStream) {
+                    try {
+                        var line = reader.ReadLine();
+                        var values = line.Split(',');
+                        UserInfo info;
+                        if (values[3] == "1") {
+                            info = new UserInfo(values[0], values[1], values[2], true);
+                            scriptlet.Add(info);
+                        } else {
+                            info = new UserInfo(values[0], values[1], values[2], false);
+                            users.Add(info);
+                        }
+                    } catch (Exception e) {
+                        log.Error(e.Message, e);
+                    }
                 }
-            }
-
-            // gfgf series
-            password = "ssw342425";
-            for (var i = 1; i <= 60; i++) {
-                account = "gfgf" + i + "zc@126.com";
-                name = "FG" + i;
-                if (i == 5 || i == 54 || i == 55) {
-                    continue;
-                }
-                info = new UserInfo(account, password, name);
-                scriptlet.Add(info);
-                if (i == 1) {
-                    FGSeriesHead = info;
-                }
-            }
-
-            // SE series
-            password = "123456";
-            for (var i = 1; i <= 10; i++) {
-                account = "765500" + string.Format("{0:00}", i) + "@qq.com";
-                name = "se" + i;
-                info = new UserInfo(account, password, name);
-                scriptlet.Add(info);
-                if (i == 1) {
-                    SESeriesHead = info;
-                }
+            } catch (Exception e) {
+                log.Error(e.Message, e);
             }
         }
 

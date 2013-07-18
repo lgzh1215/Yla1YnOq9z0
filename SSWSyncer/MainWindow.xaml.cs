@@ -42,7 +42,7 @@ namespace SSWSyncer {
         public MainWindow () {
             InitializeComponent();
             listBox1.ItemsSource = ListItems;
-            initScheduler();
+            //initScheduler();
             foreach (string key in script.StateMap.Keys) {
                 cmbInitState.Items.Add(script.StateMap[key]);
             }
@@ -143,6 +143,10 @@ namespace SSWSyncer {
             }
         }
 
+        private void btnReLoadUsers_Click (object sender, RoutedEventArgs e) {
+            UserManager.getInstance().reLoadUsers();
+        }
+
         private void btnNext_Click (object sender, RoutedEventArgs e) {
             nextUser(true);
         }
@@ -153,23 +157,17 @@ namespace SSWSyncer {
         }
 
         private void btnJump2SSK_Click (object sender, RoutedEventArgs e) {
-            UserInfo info = UserManager.getInstance().SSKSeriesHead;
-            int index = scriptlet.IndexOf(info);
-            currSUIndex = index;
+            currSUIndex = UserManager.getInstance().indexOf("s100");
             displayCurrentUser();
         }
 
         private void btnJump2FG_Click (object sender, RoutedEventArgs e) {
-            UserInfo info = UserManager.getInstance().FGSeriesHead;
-            int index = scriptlet.IndexOf(info);
-            currSUIndex = index;
+            currSUIndex = UserManager.getInstance().indexOf("s201");
             displayCurrentUser();
         }
 
         private void btnJump2SE_Click (object sender, RoutedEventArgs e) {
-            UserInfo info = UserManager.getInstance().SESeriesHead;
-            int index = scriptlet.IndexOf(info);
-            currSUIndex = index;
+            currSUIndex = UserManager.getInstance().indexOf("Aleth");
             displayCurrentUser();
         }
 
