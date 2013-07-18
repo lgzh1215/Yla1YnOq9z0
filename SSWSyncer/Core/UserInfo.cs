@@ -11,6 +11,8 @@ namespace SSWSyncer.Core {
 
         public string Name { get; set; }
 
+        public bool Rotate { get; set; }
+
         public UserInfo (string account, string password) {
             Account = account;
             Password = password;
@@ -20,6 +22,13 @@ namespace SSWSyncer.Core {
             Account = account;
             Password = password;
             Name = name;
+        }
+
+        public UserInfo (string name, string account, string password, bool rotate) {
+            Account = account;
+            Password = password;
+            Name = name;
+            Rotate = rotate;
         }
 
         public override string ToString () {

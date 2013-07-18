@@ -4,7 +4,7 @@
         Title="SSWSyncer" Height="600" Width="501" Top="0">
     <Grid>
         <ListBox HorizontalAlignment="Right" Margin="0,41,12,12" Name="listBox1" VerticalAlignment="Stretch" Width="187" PreviewMouseDown="listBox1_PreviewMouseDown" />
-        <Label Height="28" HorizontalAlignment="Right" Margin="0,432,209,0" Name="labNext" VerticalAlignment="Top" Width="180" />
+        <Label Height="28" HorizontalAlignment="Right" Margin="0,521,209,0" Name="labNext" VerticalAlignment="Top" Width="180" />
         <ComboBox HorizontalAlignment="Right" Margin="0,12,12,0" Name="cmbInitState" VerticalAlignment="Top" Width="187" />
         <WrapPanel Height="Auto" HorizontalAlignment="Left" Name="wrapPanel1" VerticalAlignment="Top" Width="270" ItemHeight="28" ItemWidth="90">
             <Button x:Uid="btnLogin" Click="btnLogin_Click">
@@ -70,11 +70,11 @@
             <Button x:Uid="btnInvoke" Click="btnInvoke_Click">
                 <TextBlock TextWrapping="Wrap">執行指令</TextBlock>
             </Button>
-            <Button x:Uid="btnDeleteCommand" Click="btnDeleteCommand_Click">
-                <TextBlock TextWrapping="Wrap">刪除指令</TextBlock>
-            </Button>
             <Button x:Uid="btnMoveUp" Click="btnMoveUp_Click">
                 <TextBlock TextWrapping="Wrap">上移一層</TextBlock>
+            </Button>
+            <Button x:Uid="btnDeleteCommand" Click="btnDeleteCommand_Click">
+                <TextBlock TextWrapping="Wrap">刪除指令</TextBlock>
             </Button>
             <Button x:Uid="btnNext" Click="btnNext_Click">
                 <TextBlock TextWrapping="Wrap">下個帳號</TextBlock>
@@ -88,8 +88,8 @@
             <Button x:Uid="btnLoad" Click="btnLoad_Click">
                 <TextBlock TextWrapping="Wrap">載入指令集</TextBlock>
             </Button>
-            <Button x:Uid="btnQuartz" Click="btnQuartz_Click">
-                <TextBlock TextWrapping="Wrap">Quartz</TextBlock>
+            <Button x:Uid="btnReLoadUsers" Click="btnReLoadUsers_Click">
+                <TextBlock TextWrapping="Wrap">載入使用者</TextBlock>
             </Button>
             <Button x:Uid="btnCancelNext" Click="btnCancelNext_Click">
                 <TextBlock TextWrapping="Wrap">跳過下個帳號</TextBlock>
@@ -107,7 +107,7 @@
                 <TextBlock TextWrapping="Wrap">SE十刃</TextBlock>
             </Button>
         </WrapPanel>
-        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="270" Margin="0,323,0,0" Name="grid" Height="103" />
-        <Label Content="Next user:" Height="28" HorizontalAlignment="Left" Margin="15,432,0,0" Name="label1" VerticalAlignment="Top" />
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="270" Margin="0,323,0,0" Name="grid" Height="192" />
+        <Label Content="Next user:" Height="28" HorizontalAlignment="Left" Margin="15,521,0,0" Name="label1" VerticalAlignment="Top" />
     </Grid>
 </Window>
