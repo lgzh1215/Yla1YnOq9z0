@@ -98,16 +98,19 @@
                 <TextBlock TextWrapping="Wrap">輪流模式</TextBlock>
             </Button>
             <Button x:Uid="btnJump2SSK" Click="btnJump2SSK_Click">
-                <TextBlock TextWrapping="Wrap">西西卡系列</TextBlock>
+                <TextBlock TextWrapping="Wrap">S100系列</TextBlock>
             </Button>
             <Button x:Uid="btnJump2FG" Click="btnJump2FG_Click">
-                <TextBlock TextWrapping="Wrap">FG系列</TextBlock>
+                <TextBlock TextWrapping="Wrap">S201系列</TextBlock>
             </Button>
             <Button x:Uid="btnJump2SE" Click="btnJump2SE_Click">
-                <TextBlock TextWrapping="Wrap">SE十刃</TextBlock>
+                <TextBlock TextWrapping="Wrap">SE小號</TextBlock>
+            </Button>
+            <Button x:Uid="btnJump2ST" Click="btnJump2ST_Click">
+                <TextBlock TextWrapping="Wrap">T100系列</TextBlock>
             </Button>
         </WrapPanel>
-        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="270" Margin="0,323,0,0" Name="grid" Height="192" />
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="270" Margin="0,377,0,0" Name="grid" Height="138" />
         <Label Content="Next user:" Height="28" HorizontalAlignment="Left" Margin="15,521,0,0" Name="label1" VerticalAlignment="Top" />
     </Grid>
 </Window>

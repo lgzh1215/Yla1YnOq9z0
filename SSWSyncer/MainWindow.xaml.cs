@@ -171,6 +171,11 @@ namespace SSWSyncer {
             displayCurrentUser();
         }
 
+        private void btnJump2ST_Click (object sender, RoutedEventArgs e) {
+            currSUIndex = UserManager.getInstance().indexOf("t100");
+            displayCurrentUser();
+        }
+
         private void btnRotate_Click (object sender, RoutedEventArgs e) {
             while (true) {
                 nextUser(false);
