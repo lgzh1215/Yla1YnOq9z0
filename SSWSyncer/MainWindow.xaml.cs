@@ -183,6 +183,11 @@ namespace SSWSyncer {
             }
         }
 
+        private void Window_Closing (object sender, CancelEventArgs e) {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
+        }
+
         #endregion
 
         # region 主視窗 腳本清單功能

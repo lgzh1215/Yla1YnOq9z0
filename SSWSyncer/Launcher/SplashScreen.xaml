@@ -1,0 +1,20 @@
+﻿<Window 
+    x:Class="SSWSyncer.Launcher.SplashScreen"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:SSWSyncer.Launcher"
+    Title="SplashScreen" Height="402" Width="504" WindowStartupLocation="CenterScreen" WindowStyle="None" BorderBrush="#00000000" BorderThickness="0" ShowInTaskbar="False" ResizeMode="NoResize" Foreground="#00000000">
+    <Grid>
+        <Label Margin="19,22,17,80" Name="label1" FontSize="48" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="WhiteSmoke" Background="{x:Null}" BorderBrush="{x:Null}" OpacityMask="{x:Null}" FontWeight="Normal" FontFamily="Charlemagne Std" FontStyle="Normal">
+            <Label.BitmapEffect>
+                <OuterGlowBitmapEffect GlowSize="15" />
+            </Label.BitmapEffect> SSWSyncer
+        </Label>
+        <Label Height="28" Margin="19,0,17,26" Name="label2" VerticalAlignment="Bottom"
+               Content="{Binding Source={x:Static local:MessageListener.Instance},Path=Message}" Foreground="Black" Background="White"></Label>
+        <ProgressBar Name='pbDownload' Height="20" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="Hidden" />
+    </Grid>
+    <Window.Background>
+        <ImageBrush ImageSource="/SSWSyncer;component/Images/wallpaperjpg.jpg" />
+    </Window.Background>
+</Window>

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="SSWSyncer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SSWSyncer" Height="600" Width="501" Top="0">
+        Title="SSWSyncer" Height="600" Width="501" Top="0" Closing="Window_Closing">
     <Grid>
         <ListBox HorizontalAlignment="Right" Margin="0,41,12,12" Name="listBox1" VerticalAlignment="Stretch" Width="187" PreviewMouseDown="listBox1_PreviewMouseDown" />
         <Label Height="28" HorizontalAlignment="Right" Margin="0,521,209,0" Name="labNext" VerticalAlignment="Top" Width="180" />

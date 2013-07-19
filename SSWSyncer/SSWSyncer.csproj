@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{25D8491B-6188-4C21-A0EC-CB7FA4EEEF2E}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SSWSyncer</RootNamespace>
     <AssemblyName>SSWSyncer</AssemblyName>
@@ -40,7 +40,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>iSync.ico</ApplicationIcon>
+    <ApplicationIcon>Images\iSync.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Common.Logging, Version=2.1.2.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
@@ -48,6 +48,9 @@
     </Reference>
     <Reference Include="Common.Logging.Log4Net">
       <HintPath>..\packages\Common.Logging.Log4Net.2.0.1\lib\net20\Common.Logging.Log4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -58,6 +61,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -106,7 +110,14 @@
     <Compile Include="Core\UserInfo.cs" />
     <Compile Include="Core\SSWScript.cs" />
     <Compile Include="Core\UserManager.cs" />
-    <Compile Include="Splasher.cs" />
+    <Compile Include="Launcher\DispatcherHelper.cs" />
+    <Compile Include="Launcher\MessageListener.cs" />
+    <Compile Include="Launcher\Splasher.cs" />
+    <Compile Include="Launcher\SplashScreen.xaml.cs">
+      <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Launcher\UpdateInfo.cs" />
+    <Compile Include="Launcher\Updater.cs" />
     <Compile Include="States\AbstractState.cs" />
     <Compile Include="States\CommanderState.cs" />
     <Compile Include="States\GalaxyState.cs" />
@@ -131,6 +142,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Launcher\SplashScreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -161,7 +176,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="iSync.ico" />
+    <Resource Include="Images\iSync.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\wallpaperjpg.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
