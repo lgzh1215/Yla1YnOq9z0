@@ -32,7 +32,7 @@ namespace SSWSyncer.Core {
         }
 
         public override string ToString () {
-            return Name + "\t" + Account + "\t" + Password + ")";
+            return Name + "\t" + Account + "\t" + Password;
         }
 
     }

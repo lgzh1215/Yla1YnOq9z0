@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
-using SSWSyncer.Commands;
 using Common.Logging;
+using SSWSyncer.Commands;
 
 namespace SSWSyncer.States {
 

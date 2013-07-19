@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -15,7 +16,6 @@ using Quartz.Impl;
 using SSWSyncer.Commands;
 using SSWSyncer.Core;
 using SSWSyncer.States;
-using System.ComponentModel;
 
 namespace SSWSyncer {
     /// <summary>
