@@ -45,6 +45,8 @@ namespace SSWSyncer.Commands {
                     #region s2
                     // M874II
                     sim.Mouse.MoveMouseTo(307 * xf, 443 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
+                    // 託管
+                    sim.Mouse.MoveMouseTo(350 * xf, 450 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // 造船
                     sim.Mouse.MoveMouseTo(258 * xf, 420 * yf).Sleep(100).LeftButtonClick().Sleep(500);
                     // Task
@@ -53,8 +55,14 @@ namespace SSWSyncer.Commands {
                     sim.Mouse.MoveMouseTo(534 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     // 關閉
                     sim.Mouse.MoveMouseTo(610 * xf, 635 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    // 託管
-                    sim.Mouse.MoveMouseTo(350 * xf, 450 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    // 設計戰艦
+                    sim.Mouse.MoveMouseTo(920 * xf, 660 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    // 第一次確定
+                    sim.Mouse.MoveMouseTo(608 * xf, 493 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    // 第四種船
+                    sim.Mouse.MoveMouseTo(320 * xf, 320 * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    // 發送設計
+                    sim.Mouse.MoveMouseTo(658 * xf, 250 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     #endregion
                 } else if (Stage == 3) {
                     #region s3
@@ -100,18 +108,18 @@ namespace SSWSyncer.Commands {
                     #endregion
                 } else if (Stage == 4) {
                     // 研究
-                    sim.Mouse.MoveMouseTo(850 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(1500);
+                    sim.Mouse.MoveMouseTo(850 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                     // 第一次確定
                     sim.Mouse.MoveMouseTo(608 * xf, 493 * yf).Sleep(100).LeftButtonClick().Sleep(600);
                     // 工業
                     sim.Mouse.MoveMouseTo(200 * xf, 243 * yf).Sleep(100).LeftButtonClick().Sleep(400);
-                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(1200);
+                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                     // 殖民
                     sim.Mouse.MoveMouseTo(200 * xf, 268 * yf).Sleep(100).LeftButtonClick().Sleep(400);
-                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(1200);
+                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                     // 娛樂科技
                     sim.Mouse.MoveMouseTo(200 * xf, 288 * yf).Sleep(100).LeftButtonClick().Sleep(400);
-                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(1200);
+                    sim.Mouse.MoveMouseTo(515 * xf, 460 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                     // close
                     sim.Mouse.MoveMouseTo(615 * xf, 635 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                 } else if (Stage == 5) {
