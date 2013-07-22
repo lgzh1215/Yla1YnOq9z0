@@ -18,12 +18,13 @@ namespace SSWSyncer.Launcher {
                 InitializeComponent();
                 this.Show();
                 MessageListener.Instance.ReceiveMessage("Getting update info...");
-                Updater updater = getUpdater();
-                if (!updater.UpdaterArgs.ContainsValue("phase2")
-                    && !updater.UpdateIsAvailableAndValid) {
-                    log.Debug("NoUpdate Start AVSyncer.");
-                    startSSWSyncer();
-                }
+                startSSWSyncer();
+                //Updater updater = getUpdater();
+                //if (!updater.UpdaterArgs.ContainsValue("phase2")
+                //    && !updater.UpdateIsAvailableAndValid) {
+                //    log.Debug("NoUpdate Start AVSyncer.");
+                //    startSSWSyncer();
+                //}
             } catch (Exception e) {
                 Console.Write(e.StackTrace);
                 startSSWSyncer();
