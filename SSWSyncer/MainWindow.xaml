@@ -103,11 +103,14 @@
             <Button x:Uid="btnJump2FG" Click="btnJump2FG_Click">
                 <TextBlock TextWrapping="Wrap">S201系列</TextBlock>
             </Button>
+            <Button x:Uid="btnJump2ST" Click="btnJump2ST_Click">
+                <TextBlock TextWrapping="Wrap">T100系列</TextBlock>
+            </Button>
             <Button x:Uid="btnJump2SE" Click="btnJump2SE_Click">
                 <TextBlock TextWrapping="Wrap">SE小號</TextBlock>
             </Button>
-            <Button x:Uid="btnJump2ST" Click="btnJump2ST_Click">
-                <TextBlock TextWrapping="Wrap">T100系列</TextBlock>
+            <Button x:Uid="btnAirborne" Click="btnAirborne_Click">
+                <TextBlock TextWrapping="Wrap">戰略空降</TextBlock>
             </Button>
         </WrapPanel>
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="270" Margin="0,377,0,0" Name="grid" Height="138" />

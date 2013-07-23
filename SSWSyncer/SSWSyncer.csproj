@@ -107,6 +107,7 @@
     <Compile Include="Commands\OpenPlanetMenuCommand.cs" />
     <Compile Include="Commands\RecruitCommand.cs" />
     <Compile Include="Commands\SleepCommand.cs" />
+    <Compile Include="Commands\AirborneCommand.cs" />
     <Compile Include="Core\UserInfo.cs" />
     <Compile Include="Core\SSWScript.cs" />
     <Compile Include="Core\UserManager.cs" />

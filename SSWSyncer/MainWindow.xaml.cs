@@ -392,6 +392,11 @@ namespace SSWSyncer {
             CreateControls(typeof(SleepCommand));
         }
 
+        private void btnAirborne_Click (object sender, RoutedEventArgs e) {
+            CreateControls(typeof(AirborneCommand));
+        }
+
+
         #endregion
 
         #region 動態屬性功能
