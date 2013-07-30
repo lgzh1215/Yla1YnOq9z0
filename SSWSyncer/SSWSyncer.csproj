@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{25D8491B-6188-4C21-A0EC-CB7FA4EEEF2E}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SSWSyncer</RootNamespace>
     <AssemblyName>SSWSyncer</AssemblyName>
@@ -61,6 +61,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -111,6 +112,7 @@
     <Compile Include="Core\UserInfo.cs" />
     <Compile Include="Core\SSWScript.cs" />
     <Compile Include="Core\UserManager.cs" />
+    <Compile Include="Core\Utils.cs" />
     <Compile Include="Launcher\DispatcherHelper.cs" />
     <Compile Include="Launcher\MessageListener.cs" />
     <Compile Include="Launcher\Splasher.cs" />
@@ -181,6 +183,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\wallpaperjpg.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\loginProof.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

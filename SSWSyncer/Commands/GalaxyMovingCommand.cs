@@ -105,6 +105,11 @@ namespace SSWSyncer.Commands {
                     sim.Mouse.LeftButtonUp();
                     log.Debug("step:" + i);
                 }
+                var mx = Point.X - StateContainer.ExtentMin.X + 15;
+                var my = Point.Y - StateContainer.ExtentMin.Y + 67;
+                log.Info(mx);
+                log.Info(my);
+                sim.Mouse.MoveMouseTo(mx * xf, my * yf).Sleep(300);
             }
         }
 

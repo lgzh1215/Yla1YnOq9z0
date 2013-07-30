@@ -32,7 +32,7 @@ namespace SSWSyncer.Commands {
             int y = 207 + (Index * 18) - 18;
             if (isSimulate) {
                 if (Index <= 12) {
-                    sim.Mouse.MoveMouseTo(x * xf, y * yf).Sleep(100).LeftButtonClick().Sleep(10000);
+                    sim.Mouse.MoveMouseTo(x * xf, y * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                     sim.Mouse.MoveMouseTo(570 * xf, 650 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                     sim.Mouse.MoveMouseTo(610 * xf, 492 * yf).Sleep(100).LeftButtonClick().Sleep(750);
                     sim.Mouse.MoveMouseTo(923 * xf, 767 * yf).Sleep(100).LeftButtonClick().Sleep(750);

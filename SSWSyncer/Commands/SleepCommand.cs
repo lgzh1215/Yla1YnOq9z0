@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Controls;
+using System.IO;
+using System.Windows.Media.Imaging;
+using SSWSyncer.Core;
 
 namespace SSWSyncer.Commands {
 
