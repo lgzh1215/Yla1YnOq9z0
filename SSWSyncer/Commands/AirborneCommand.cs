@@ -66,43 +66,18 @@ namespace SSWSyncer.Commands {
                 sim.Mouse.MoveMouseTo(306 * xf, 687 * yf).Sleep(100).LeftButtonClick().Sleep(2000);
                 // 創艦隊
                 sim.Mouse.MoveMouseTo(990 * xf, 654 * yf).Sleep(100).LeftButtonClick().Sleep(1500);
-
                 if (Formation == 1) {
                     // 第一種船
                     sim.Mouse.MoveMouseTo(200 * xf, (260 + (1 * 34) - 34) * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     clikcNCell(1);
-                    //// 第一格
-                    //sim.Mouse.MoveMouseTo(300 * xf, 520 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    //// 服役
-                    //sim.Mouse.MoveMouseTo(370 * xf, 470 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    //// 輸入數量
-                    //sim.Keyboard.TextEntry(Amount.ToString()).Sleep(100);
-                    //// [確定]
-                    //sim.Mouse.MoveMouseTo(525 * xf, 490 * yf).Sleep(100).LeftButtonClick().Sleep(300);
 
                     // 第二種船
                     sim.Mouse.MoveMouseTo(200 * xf, (260 + (2 * 34) - 34) * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     clikcNCell(2);
-                    //// 第二格
-                    //sim.Mouse.MoveMouseTo(385 * xf, 520 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    //// 服役
-                    //sim.Mouse.MoveMouseTo(370 * xf, 470 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    //// 輸入數量
-                    //sim.Keyboard.TextEntry(Amount.ToString()).Sleep(100);
-                    //// [確定]
-                    //sim.Mouse.MoveMouseTo(525 * xf, 490 * yf).Sleep(100).LeftButtonClick().Sleep(300);
 
                     // 第三種船
                     sim.Mouse.MoveMouseTo(200 * xf, (260 + (3 * 34) - 34) * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     clikcNCell(3);
-                    //// 第三格
-                    //sim.Mouse.MoveMouseTo(480 * xf, 520 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    //// 服役
-                    //sim.Mouse.MoveMouseTo(370 * xf, 470 * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    //// 輸入數量
-                    //sim.Keyboard.TextEntry(Amount.ToString()).Sleep(100);
-                    //// [確定]
-                    //sim.Mouse.MoveMouseTo(525 * xf, 490 * yf).Sleep(100).LeftButtonClick().Sleep(300);
                 } else if (Formation == 2) {
                     clikcNCell(1);
                     clikcNCell(2);

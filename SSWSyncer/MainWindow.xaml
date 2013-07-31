@@ -4,7 +4,7 @@
         Title="SSWSyncer" Height="658" Width="501" Closing="Window_Closing">
     <Grid>
         <ListBox HorizontalAlignment="Right" Margin="0,41,12,12" Name="listBox1" VerticalAlignment="Stretch" Width="187" PreviewMouseDown="listBox1_PreviewMouseDown" />
-        <Label Height="28" HorizontalAlignment="Right" Margin="0,579,209,0" Name="labNext" VerticalAlignment="Top" Width="180" />
+        <Label Height="28" HorizontalAlignment="Right" Margin="0,0,209,12" Name="labNext" VerticalAlignment="Bottom" Width="180" />
         <ComboBox HorizontalAlignment="Right" Margin="0,12,12,0" Name="cmbInitState" VerticalAlignment="Top" Width="187" />
         <WrapPanel Height="Auto" HorizontalAlignment="Left" Name="wrapPanel1" VerticalAlignment="Top" Width="270" ItemHeight="28" ItemWidth="90">
             <Button x:Uid="btnLogin" Click="btnLogin_Click">
@@ -114,6 +114,6 @@
             </Button>
         </WrapPanel>
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="270" Margin="0,342,0,0" Name="grid" Height="231" />
-        <Label Content="Next user:" Height="28" HorizontalAlignment="Left" Margin="15,579,0,0" Name="label1" VerticalAlignment="Top" />
+        <Label Content="Next user:" Height="28" HorizontalAlignment="Left" Margin="15,0,0,12" Name="label1" VerticalAlignment="Bottom" />
     </Grid>
 </Window>

@@ -51,6 +51,18 @@ namespace SSWSyncer {
             users = UserManager.getInstance().Users;
             scriptlet = UserManager.getInstance().Scriptlet;
             displayCurrentUser();
+            //testFunc();
+        }
+
+        private void testFunc () {
+            System.Drawing.Bitmap bmpScreenshot = new System.Drawing.Bitmap(1, 1, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            System.Drawing.Graphics gfxScreenshot = System.Drawing.Graphics.FromImage(bmpScreenshot);
+            gfxScreenshot.CopyFromScreen(550, 650, 0, 0,
+                        System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size,
+                        System.Drawing.CopyPixelOperation.SourceCopy);
+            System.Drawing.Color color = bmpScreenshot.GetPixel(0, 0);
+            byte Luminosity = (byte) (color.GetBrightness() * 255);
+            log.Info(Luminosity);
         }
 
         #region 主視窗功能
