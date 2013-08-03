@@ -109,6 +109,7 @@
     <Compile Include="Commands\RecruitCommand.cs" />
     <Compile Include="Commands\SleepCommand.cs" />
     <Compile Include="Commands\AirborneCommand.cs" />
+    <Compile Include="Commands\DismissCommand.cs" />
     <Compile Include="Core\UserInfo.cs" />
     <Compile Include="Core\SSWScript.cs" />
     <Compile Include="Core\UserManager.cs" />
@@ -186,6 +187,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\loginProof.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\planetaryProof.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

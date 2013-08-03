@@ -70,14 +70,13 @@ namespace SSWSyncer.Commands {
                     // 第一種船
                     sim.Mouse.MoveMouseTo(200 * xf, (260 + (1 * 34) - 34) * yf).Sleep(100).LeftButtonClick().Sleep(300);
                     clikcNCell(1);
+                    //// 第二種船
+                    //sim.Mouse.MoveMouseTo(200 * xf, (260 + (2 * 34) - 34) * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    //clikcNCell(2);
 
-                    // 第二種船
-                    sim.Mouse.MoveMouseTo(200 * xf, (260 + (2 * 34) - 34) * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    clikcNCell(2);
-
-                    // 第三種船
-                    sim.Mouse.MoveMouseTo(200 * xf, (260 + (3 * 34) - 34) * yf).Sleep(100).LeftButtonClick().Sleep(300);
-                    clikcNCell(3);
+                    //// 第三種船
+                    //sim.Mouse.MoveMouseTo(200 * xf, (260 + (3 * 34) - 34) * yf).Sleep(100).LeftButtonClick().Sleep(300);
+                    //clikcNCell(3);
                 } else if (Formation == 2) {
                     clikcNCell(1);
                     clikcNCell(2);

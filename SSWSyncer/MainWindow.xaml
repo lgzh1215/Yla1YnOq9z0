@@ -112,6 +112,9 @@
             <Button x:Uid="btnAirborne" Click="btnAirborne_Click">
                 <TextBlock TextWrapping="Wrap">戰略空降</TextBlock>
             </Button>
+            <Button x:Uid="btnDismiss" Click="btnDismiss_Click">
+                <TextBlock TextWrapping="Wrap">解雇指揮</TextBlock>
+            </Button>
         </WrapPanel>
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="270" Margin="0,342,0,0" Name="grid" Height="231" />
         <Label Content="Next user:" Height="28" HorizontalAlignment="Left" Margin="15,0,0,12" Name="label1" VerticalAlignment="Bottom" />

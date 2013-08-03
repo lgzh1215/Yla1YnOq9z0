@@ -55,14 +55,15 @@ namespace SSWSyncer {
         }
 
         private void testFunc () {
-            System.Drawing.Bitmap bmpScreenshot = new System.Drawing.Bitmap(1, 1, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            System.Drawing.Bitmap bmpScreenshot = new System.Drawing.Bitmap(145, 23, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             System.Drawing.Graphics gfxScreenshot = System.Drawing.Graphics.FromImage(bmpScreenshot);
-            gfxScreenshot.CopyFromScreen(550, 650, 0, 0,
+            gfxScreenshot.CopyFromScreen(32, 32, 0, 0,
                         System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size,
                         System.Drawing.CopyPixelOperation.SourceCopy);
-            System.Drawing.Color color = bmpScreenshot.GetPixel(0, 0);
-            byte Luminosity = (byte) (color.GetBrightness() * 255);
-            log.Info(Luminosity);
+            bmpScreenshot.Save("pa.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+            //System.Drawing.Color color = bmpScreenshot.GetPixel(0, 0);
+            //byte Luminosity = (byte) (color.GetBrightness() * 255);
+            //log.Info(Luminosity);
         }
 
         #region 主視窗功能
@@ -362,6 +363,11 @@ namespace SSWSyncer {
         private void btnLeavePlanet_Click (object sender, RoutedEventArgs e) {
             ClearCommandGrid();
             InsertOrAddItem(new LeavePlanetCommand());
+        }
+
+        private void btnDismiss_Click (object sender, RoutedEventArgs e) {
+            ClearCommandGrid();
+            InsertOrAddItem(new DismissCommand());
         }
 
         private void btnFleet_Click (object sender, RoutedEventArgs e) {
