@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spyder", "Spyder\Spyder.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSWSyncer", "SSWSyncer\SSWSyncer.csproj", "{25D8491B-6188-4C21-A0EC-CB7FA4EEEF2E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanColleTool", "KanColleTool\KanColleTool.csproj", "{6E1A5134-C460-4D6A-AB10-529D697C1AE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,16 @@ Global
 		{25D8491B-6188-4C21-A0EC-CB7FA4EEEF2E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{25D8491B-6188-4C21-A0EC-CB7FA4EEEF2E}.Release|x86.ActiveCfg = Release|x86
 		{25D8491B-6188-4C21-A0EC-CB7FA4EEEF2E}.Release|x86.Build.0 = Release|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Debug|x86.ActiveCfg = Debug|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Debug|x86.Build.0 = Debug|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Release|Any CPU.ActiveCfg = Release|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Release|Mixed Platforms.Build.0 = Release|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Release|x86.ActiveCfg = Release|x86
+		{6E1A5134-C460-4D6A-AB10-529D697C1AE8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

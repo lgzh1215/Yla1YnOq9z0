@@ -86,12 +86,12 @@ namespace SSWSyncer.Commands {
         }
 
         private void doLogin () {
-            sim.Mouse.MoveMouseTo(646 * xf, 580 * yf).Sleep(250).LeftButtonClick().Sleep(250);
+            sim.Mouse.MoveMouseTo(590 * xf, 580 * yf).Sleep(250).LeftButtonClick().Sleep(250);
             sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_A).Sleep(500);
             sim.Keyboard.TextEntry(UserInfo.Account).Sleep(500);
             sim.Mouse.MoveMouseTo(480 * xf, 610 * yf).Sleep(250).LeftButtonClick().Sleep(500);
             sim.Keyboard.TextEntry(UserInfo.Password).Sleep(500);
-            sim.Mouse.MoveMouseTo(608 * xf, 644 * yf).Sleep(250).LeftButtonClick();
+            sim.Mouse.MoveMouseTo(600 * xf, 644 * yf).Sleep(250).LeftButtonClick();
         }
 
     }
