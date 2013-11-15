@@ -1,8 +1,10 @@
 ﻿<Window x:Class="KanColleTool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
+        Title="MainWindow" Height="350" Width="525" Closing="Window_Closing">
     <Grid>
-        
+        <Label Content="Token:" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="labToken" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <TextBox Height="28" HorizontalAlignment="Left" Margin="66,12,0,0" Name="textToken" VerticalAlignment="Top" Width="300" IsEnabled="True" IsReadOnly="True" VerticalContentAlignment="Center" />
+        <Button Content="自動遠征!!" Height="107" HorizontalAlignment="Left" Margin="142,127,0,0" Name="button1" VerticalAlignment="Top" Width="250" FontSize="18" FontWeight="Bold" />
     </Grid>
 </Window>
