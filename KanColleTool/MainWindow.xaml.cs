@@ -8,6 +8,10 @@ using System.Windows;
 using System.Windows.Documents;
 using Fiddler;
 using System.Windows.Threading;
+using System.Web.Script.Serialization;
+using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace KanColleTool {
     /// <summary>
@@ -36,8 +40,8 @@ namespace KanColleTool {
 
             Fiddler.FiddlerApplication.BeforeRequest += delegate(Fiddler.Session oS) {
                 if (r.IsMatch(oS.fullUrl)) {
-                    Console.WriteLine("Before request for:\t" + oS.fullUrl);
-                    Console.WriteLine("Before request body:\t" + oS.GetRequestBodyAsString());
+                    //Console.WriteLine("Before request for:\t" + oS.fullUrl);
+                    //Console.WriteLine("Before request body:\t" + oS.GetRequestBodyAsString());
                     NameValueCollection form = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString());
                     string token = form["api_token"];
                     Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
@@ -54,10 +58,26 @@ namespace KanColleTool {
             };
 
             Fiddler.FiddlerApplication.AfterSessionComplete += delegate(Fiddler.Session oS) {
-                if (r.IsMatch(oS.fullUrl)) {
-                    Console.WriteLine("Finished session:\t" + oS.fullUrl);
-                    Console.Write(String.Format("{0} {1}\n{2} {3}\n\n", oS.id, oS.oRequest.headers.HTTPMethod, oS.responseCode, oS.oResponse.MIMEType));
+                if (!r.IsMatch(oS.fullUrl)) {
+                    return;
                 }
+                Match m = Regex.Match(oS.fullUrl, pattern);
+                Console.WriteLine("Finished session:\t" + oS.fullUrl);
+                switch (m.Groups[1].ToString()) {
+                    case "deck_port":
+                        try {
+                            string svdata = oS.GetResponseBodyAsString();
+                            string json = svdata.Substring(7);
+                            dynamic data = JObject.Parse(json);
+                            Console.Write("");
+                        } catch (Exception exception) {
+                            Console.Write(exception.Message);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                Console.Write(String.Format("{0} {1}\n{2} {3}\n\n", oS.id, oS.oRequest.headers.HTTPMethod, oS.responseCode, oS.oResponse.MIMEType));
             };
 
             //Console.CancelKeyPress += new ConsoleCancelEventHandler(Console_CancelKeyPress);
