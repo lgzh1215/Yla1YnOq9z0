@@ -27,6 +27,7 @@ namespace KanColleTool {
         public delegate void KanColleInvoker ();
 
         private void InitializeFiddler () {
+            dynamic deckPort;
             Thread UIThread = Thread.CurrentThread;
             MainWindow mainWindow = this;
             string pattern = @".*\/kcsapi\/.*\/(.*)";
@@ -40,8 +41,6 @@ namespace KanColleTool {
 
             Fiddler.FiddlerApplication.BeforeRequest += delegate(Fiddler.Session oS) {
                 if (r.IsMatch(oS.fullUrl)) {
-                    //Console.WriteLine("Before request for:\t" + oS.fullUrl);
-                    //Console.WriteLine("Before request body:\t" + oS.GetRequestBodyAsString());
                     NameValueCollection form = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString());
                     string token = form["api_token"];
                     Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
@@ -49,11 +48,7 @@ namespace KanColleTool {
                             mainWindow.textToken.Text = token;
                         }
                     }, null);
-
                     oS.bBufferResponse = false;
-                    //Monitor.Enter(oAllSessions);
-                    //oAllSessions.Add(oS);
-                    //Monitor.Exit(oAllSessions);
                 }
             };
 
@@ -68,8 +63,15 @@ namespace KanColleTool {
                         try {
                             string svdata = oS.GetResponseBodyAsString();
                             string json = svdata.Substring(7);
-                            dynamic data = JObject.Parse(json);
-                            Console.Write("");
+                            deckPort = JObject.Parse(json);
+
+                            long unixDate = deckPort.api_data[1].api_mission[2];
+                            DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                            DateTime date = start.AddMilliseconds(unixDate).ToLocalTime();
+                            Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
+                                //mainWindow.label1.Content = deckPort.api_data[0].api_name;
+                                mainWindow.label1.Content = date.ToString("HH:mm:ss");
+                            }, null);
                         } catch (Exception exception) {
                             Console.Write(exception.Message);
                         }
