@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Windows;
-using System.Windows.Documents;
-using Fiddler;
 using System.Windows.Threading;
-using System.Web.Script.Serialization;
-using System.Net;
-using Newtonsoft.Json;
+using Fiddler;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace KanColleTool {
     /// <summary>
@@ -19,22 +16,32 @@ namespace KanColleTool {
     /// </summary>
     public partial class MainWindow : Window {
 
+        dynamic ship;
+        dynamic deckPort;
+
         public MainWindow () {
             InitializeComponent();
+            ship = initShipData();
             InitializeFiddler();
+        }
+
+        private object initShipData () {
+            Assembly assembly = typeof(MainWindow).Assembly;
+            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.ship.json"))
+            using (StreamReader reader = new StreamReader(stream)) {
+                string json = reader.ReadToEnd();
+                return JObject.Parse(json);
+            }
         }
 
         public delegate void KanColleInvoker ();
 
         private void InitializeFiddler () {
-            dynamic deckPort;
+
             Thread UIThread = Thread.CurrentThread;
             MainWindow mainWindow = this;
             string pattern = @".*\/kcsapi\/.*\/(.*)";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-            //List<Fiddler.Session> oAllSessions = new List<Fiddler.Session>();
-            #region AttachEventListeners
 
             Fiddler.FiddlerApplication.OnNotification += delegate(object sender, NotificationEventArgs oNEA) { Console.WriteLine("** NotifyUser: " + oNEA.NotifyString); };
             Fiddler.FiddlerApplication.Log.OnLogString += delegate(object sender, LogEventArgs oLEA) { Console.WriteLine("** LogString: " + oLEA.LogString); };
@@ -83,7 +90,6 @@ namespace KanColleTool {
             };
 
             //Console.CancelKeyPress += new ConsoleCancelEventHandler(Console_CancelKeyPress);
-            #endregion AttachEventListeners
 
             string sSAZInfo = "NoSAZ";
             Console.WriteLine(String.Format("Starting {0} ({1})...", Fiddler.FiddlerApplication.GetVersionString(), sSAZInfo));
