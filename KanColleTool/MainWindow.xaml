@@ -3,8 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525" Closing="Window_Closing">
     <Grid>
-        <Label Content="Token:" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="labToken" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <TextBox Height="28" HorizontalAlignment="Left" Margin="66,12,0,0" Name="textToken" VerticalAlignment="Top" Width="300" IsEnabled="True" IsReadOnly="True" VerticalContentAlignment="Center" />
-        <Label Content="Label" Height="28" HorizontalAlignment="Left" Margin="20,79,0,0" Name="label1" VerticalAlignment="Top" Width="106" />
+        <Label Name="labToken" Content="Token:" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <TextBox Name="textToken" Height="28" HorizontalAlignment="Left" Margin="76,12,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="300" IsEnabled="True" IsReadOnly="True" />
+
+        <Label Content="第二艦隊" Name="labFl1Name" Height="28" HorizontalAlignment="Left" Margin="12,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Content="長距離練習航海" Name="labFl1Mission" Height="28" HorizontalAlignment="Left" Margin="76,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Content="" Name="labFl1MissionETA" Height="28" HorizontalAlignment="Left" Margin="192,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Content="" Name="labFl1MissionCD" Height="28" HorizontalAlignment="Left" Margin="310,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Button Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="416,46,0,0" Name="button1" VerticalAlignment="Top" Width="75" IsEnabled="False" />
     </Grid>
 </Window>

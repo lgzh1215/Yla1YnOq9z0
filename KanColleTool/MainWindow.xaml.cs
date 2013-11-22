@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Windows;
 using System.Windows.Threading;
 using Fiddler;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Reflection;
+using System.Diagnostics;
 
 namespace KanColleTool {
     /// <summary>
@@ -16,30 +20,92 @@ namespace KanColleTool {
     /// </summary>
     public partial class MainWindow : Window {
 
-        dynamic ship;
-        dynamic deckPort;
+        JObject ship;
+        JObject slotitem;
+        JObject deckport;
+        Timer timer;
+        Thread UIThread;
+        public delegate void KanColleInvoker ();
 
         public MainWindow () {
+            UIThread = Thread.CurrentThread;
             InitializeComponent();
-            ship = initShipData();
+            InitializeMasterData();
+            testMasterData();
             InitializeFiddler();
+            InitializeTimer();
         }
 
-        private object initShipData () {
+        void InitializeMasterData () {
             Assembly assembly = typeof(MainWindow).Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.ship.json"))
             using (StreamReader reader = new StreamReader(stream)) {
                 string json = reader.ReadToEnd();
-                return JObject.Parse(json);
+                ship = JObject.Parse(json);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.slotitem.json"))
+            using (StreamReader reader = new StreamReader(stream)) {
+                string json = reader.ReadToEnd();
+                slotitem = JObject.Parse(json);
             }
         }
 
-        public delegate void KanColleInvoker ();
+        void testMasterData () {
+            try {
+                var qm = from ss in ship["api_data"] where ss["api_stype"].ToString() == "4" select ss;
+                foreach (var qs in qm) {
+                    Debug.Print(qs["api_name"].ToString());
+                }
+            } catch (Exception e) {
+                Debug.Print(e.ToString());
+            }
+        }
 
-        private void InitializeFiddler () {
+        void InitializeTimer () {
+            TimerCallback tcb = this.update;
+            timer = new Timer(tcb, null, 0, 1000);
+        }
 
-            Thread UIThread = Thread.CurrentThread;
-            MainWindow mainWindow = this;
+        public void update (Object context) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
+                try {
+                    if (this.labFl1MissionETA.Content.ToString() != "") {
+                        TimeSpan span = countSpan(deckport["api_data"][1]["api_mission"][2].ToString());
+                        this.labFl1MissionCD.Content = span.ToString(@"hh\:mm\:ss");
+                    } else {
+                        this.labFl1MissionCD.Content = "";
+                    }
+                } catch (Exception e) {
+                    Debug.Print(e.ToString());
+                }
+            }, null);
+        }
+
+        TimeSpan countSpan (string value) {
+            DateTime eta = parseUTC(value);
+            TimeSpan span = eta - DateTime.Now;
+            return span;
+        }
+
+        string valueOfUTC (string value) {
+            string result = "";
+            if (value != "" && value != "0") {
+                DateTime date = parseUTC(value);
+                result = date.ToString("HH:mm:ss");
+            }
+            return result;
+        }
+
+        DateTime parseUTC (string value) {
+            long utc = long.Parse(value);
+            DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime date = start.AddMilliseconds(utc).ToLocalTime();
+            return date;
+        }
+
+        void InitializeFiddler () {
+            //Thread UIThread = Thread.CurrentThread;
+            //MainWindow mainWindow = this;
             string pattern = @".*\/kcsapi\/.*\/(.*)";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -51,8 +117,8 @@ namespace KanColleTool {
                     NameValueCollection form = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString());
                     string token = form["api_token"];
                     Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
-                        if (token != null && !mainWindow.textToken.Text.Equals(token)) {
-                            mainWindow.textToken.Text = token;
+                        if (token != null && !this.textToken.Text.Equals(token)) {
+                            this.textToken.Text = token;
                         }
                     }, null);
                     oS.bBufferResponse = false;
@@ -70,14 +136,9 @@ namespace KanColleTool {
                         try {
                             string svdata = oS.GetResponseBodyAsString();
                             string json = svdata.Substring(7);
-                            deckPort = JObject.Parse(json);
-
-                            long unixDate = deckPort.api_data[1].api_mission[2];
-                            DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-                            DateTime date = start.AddMilliseconds(unixDate).ToLocalTime();
+                            deckport = JObject.Parse(json);
                             Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
-                                //mainWindow.label1.Content = deckPort.api_data[0].api_name;
-                                mainWindow.label1.Content = date.ToString("HH:mm:ss");
+                                this.labFl1MissionETA.Content = valueOfUTC(deckport["api_data"][1]["api_mission"][2].ToString());
                             }, null);
                         } catch (Exception exception) {
                             Console.Write(exception.Message);
