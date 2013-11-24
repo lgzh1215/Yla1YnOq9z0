@@ -13,6 +13,7 @@ using Fiddler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Net;
 
 namespace KanColleTool {
     /// <summary>
@@ -25,6 +26,7 @@ namespace KanColleTool {
         JObject deckport;
         Timer timer;
         Thread UIThread;
+        RequestBuilder kcrb;
         public delegate void KanColleInvoker ();
 
         public MainWindow () {
@@ -109,8 +111,8 @@ namespace KanColleTool {
             string pattern = @".*\/kcsapi\/.*\/(.*)";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-            Fiddler.FiddlerApplication.OnNotification += delegate(object sender, NotificationEventArgs oNEA) { Console.WriteLine("** NotifyUser: " + oNEA.NotifyString); };
-            Fiddler.FiddlerApplication.Log.OnLogString += delegate(object sender, LogEventArgs oLEA) { Console.WriteLine("** LogString: " + oLEA.LogString); };
+            Fiddler.FiddlerApplication.OnNotification += delegate(object sender, NotificationEventArgs oNEA) { Debug.Print("** NotifyUser: " + oNEA.NotifyString); };
+            Fiddler.FiddlerApplication.Log.OnLogString += delegate(object sender, LogEventArgs oLEA) { Debug.Print("** LogString: " + oLEA.LogString); };
 
             Fiddler.FiddlerApplication.BeforeRequest += delegate(Fiddler.Session oS) {
                 if (r.IsMatch(oS.fullUrl)) {
@@ -119,6 +121,7 @@ namespace KanColleTool {
                     Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
                         if (token != null && !this.textToken.Text.Equals(token)) {
                             this.textToken.Text = token;
+                            kcrb = new RequestBuilder(oS);
                         }
                     }, null);
                     oS.bBufferResponse = false;
@@ -130,7 +133,7 @@ namespace KanColleTool {
                     return;
                 }
                 Match m = Regex.Match(oS.fullUrl, pattern);
-                Console.WriteLine("Finished session:\t" + oS.fullUrl);
+                Debug.Print("Finished session:\t" + oS.fullUrl);
                 switch (m.Groups[1].ToString()) {
                     case "deck_port":
                         try {
@@ -141,19 +144,22 @@ namespace KanColleTool {
                                 this.labFl1MissionETA.Content = valueOfUTC(deckport["api_data"][1]["api_mission"][2].ToString());
                             }, null);
                         } catch (Exception exception) {
-                            Console.Write(exception.Message);
+                            Debug.Print(exception.Message);
                         }
+                        break;
+                    case "ndock":
+                        Debug.Print("ndock!!!");
                         break;
                     default:
                         break;
                 }
-                Console.Write(String.Format("{0} {1}\n{2} {3}\n\n", oS.id, oS.oRequest.headers.HTTPMethod, oS.responseCode, oS.oResponse.MIMEType));
+                Debug.Print(String.Format("{0} {1}\n{2} {3}\n\n", oS.id, oS.oRequest.headers.HTTPMethod, oS.responseCode, oS.oResponse.MIMEType));
             };
 
             //Console.CancelKeyPress += new ConsoleCancelEventHandler(Console_CancelKeyPress);
 
             string sSAZInfo = "NoSAZ";
-            Console.WriteLine(String.Format("Starting {0} ({1})...", Fiddler.FiddlerApplication.GetVersionString(), sSAZInfo));
+            Debug.Print(String.Format("Starting {0} ({1})...", Fiddler.FiddlerApplication.GetVersionString(), sSAZInfo));
             Fiddler.CONFIG.IgnoreServerCertErrors = false;
             FiddlerApplication.Prefs.SetBoolPref("fiddler.network.streaming.abortifclientaborts", true);
 
@@ -170,11 +176,26 @@ namespace KanColleTool {
         }
 
         private void Window_Closing (object sender, System.ComponentModel.CancelEventArgs e) {
-            Console.WriteLine("Shutting down...");
+            Debug.Print("Shutting down...");
             Fiddler.FiddlerApplication.Shutdown();
             Thread.Sleep(500);
             base.OnClosed(e);
             Application.Current.Shutdown();
+        }
+
+        private void button1_Click (object sender, RoutedEventArgs e) {
+            if (kcrb == null) {
+                return;
+            }
+            try {
+                string path = "api_get_member/ndock";
+                string body = "api%5Fverno=1&api%5Ftoken=" + this.textToken.Text;
+                //kcrb.RequestTemplate(path, body);
+                kcrb.GotoHomeport();
+            } catch (Exception ex) {
+                Debug.Print(ex.Message);
+                throw ex;
+            }
         }
 
     }

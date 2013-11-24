@@ -10,6 +10,6 @@
         <Label Content="長距離練習航海" Name="labFl1Mission" Height="28" HorizontalAlignment="Left" Margin="76,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <Label Content="" Name="labFl1MissionETA" Height="28" HorizontalAlignment="Left" Margin="192,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <Label Content="" Name="labFl1MissionCD" Height="28" HorizontalAlignment="Left" Margin="310,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="416,46,0,0" Name="button1" VerticalAlignment="Top" Width="75" IsEnabled="False" />
+        <Button Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="416,46,0,0" Name="button1" VerticalAlignment="Top" Width="75" Click="button1_Click" />
     </Grid>
 </Window>
