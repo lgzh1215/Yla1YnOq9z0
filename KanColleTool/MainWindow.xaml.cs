@@ -27,15 +27,18 @@ namespace KanColleTool {
         Timer timer;
         Thread UIThread;
         RequestBuilder kcrb;
+        Session oS;
         public delegate void KanColleInvoker ();
+        EventHandler<StateChangeEventArgs> xxx;
 
         public MainWindow () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             InitializeMasterData();
             testMasterData();
-            //InitializeFiddler();
+            InitializeFiddler();
             InitializeTimer();
+            xxx = new EventHandler<StateChangeEventArgs>(onStateChanged);
         }
 
         void InitializeMasterData () {
@@ -116,46 +119,47 @@ namespace KanColleTool {
                 if (!r.IsMatch(oS.fullUrl)) {
                     return;
                 }
-                Debug.Print(String.Format("{0:hh:mm:ss.fff}\tStart session:\t{1}", DateTime.Now, oS.fullUrl));
+                Debug.Print(String.Format("{0:hh:mm:ss.fff}\tOp session:\t{1}", DateTime.Now, oS.fullUrl));
                 NameValueCollection form = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString());
                 string token = form["api_token"];
                 Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
                     if (token != null && !this.textToken.Text.Equals(token)) {
                         this.textToken.Text = token;
                         kcrb = new RequestBuilder(oS);
+                        this.oS = oS;
                     }
                 }, null);
                 oS.bBufferResponse = false;
             };
 
-            Fiddler.FiddlerApplication.AfterSessionComplete += delegate(Fiddler.Session oS) {
-                if (!r.IsMatch(oS.fullUrl)) {
-                    return;
-                }
-                Match m = Regex.Match(oS.fullUrl, pattern);
-                // TODO
-                Debug.Print(String.Format("{0:hh:mm:ss.fff}\tFinished session:\t{1}", DateTime.Now, oS.fullUrl));
-                switch (m.Groups[1].ToString()) {
-                    case "deck_port":
-                        try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            deckport = JObject.Parse(json);
-                            Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
-                                this.labFl2MissionETA.Content = valueOfUTC(deckport["api_data"][1]["api_mission"][2].ToString());
-                            }, null);
-                        } catch (Exception exception) {
-                            Debug.Print(exception.Message);
-                        }
-                        break;
-                    case "ndock":
-                        Debug.Print("ndock!!!");
-                        break;
-                    default:
-                        break;
-                }
-                // Debug.Print(String.Format("{0} {1}\n{2} {3}\n\n", oS.id, oS.oRequest.headers.HTTPMethod, oS.responseCode, oS.oResponse.MIMEType));
-            };
+            //Fiddler.FiddlerApplication.AfterSessionComplete += delegate(Fiddler.Session oS) {
+            //    if (!r.IsMatch(oS.fullUrl)) {
+            //        return;
+            //    }
+            //    Match m = Regex.Match(oS.fullUrl, pattern);
+            //    // TODO
+            //    Debug.Print(String.Format("{0:hh:mm:ss.fff}\tEd session:\t{1}", DateTime.Now, oS.fullUrl));
+            //    switch (m.Groups[1].ToString()) {
+            //        case "deck_port":
+            //            try {
+            //                string svdata = oS.GetResponseBodyAsString();
+            //                string json = svdata.Substring(7);
+            //                deckport = JObject.Parse(json);
+            //                Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
+            //                    this.labFl2MissionETA.Content = valueOfUTC(deckport["api_data"][1]["api_mission"][2].ToString());
+            //                }, null);
+            //            } catch (Exception exception) {
+            //                Debug.Print(exception.Message);
+            //            }
+            //            break;
+            //        case "ndock":
+            //            Debug.Print("-----------ndock!!!");
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //    // Debug.Print(String.Format("{0} {1}\n{2} {3}\n\n", oS.id, oS.oRequest.headers.HTTPMethod, oS.responseCode, oS.oResponse.MIMEType));
+            //};
 
             //Console.CancelKeyPress += new ConsoleCancelEventHandler(Console_CancelKeyPress);
 
@@ -184,15 +188,31 @@ namespace KanColleTool {
             Application.Current.Shutdown();
         }
 
+        private void onStateChanged (object sender, StateChangeEventArgs e) {
+            Session sess = (Session) sender;
+            Debug.Print("state changed: " + sess.fullUrl + "::" + e.oldState + " -> " + e.newState);
+        }
+
         private void btnFl2Result_Click (object sender, RoutedEventArgs e) {
-            kcrb = new RequestBuilder("125.6.189.39", "fcb59d3d2e984bc66c9e93ba1c1db3c64fbcc6f6");
             if (kcrb == null) {
                 return;
             }
             try {
                 //kcrb.MissionReturn(2);
-                kcrb.DoDeckPort();
-                kcrb.DoNDock();
+                HTTPRequestHeaders header = (HTTPRequestHeaders) this.oS.oRequest.headers.Clone();
+                NameValueCollection form = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString());
+                string token = form["api_token"];
+                string body = "api%5Fverno=1&api%5Ftoken=" + token;
+                header.RequestPath = "/kcsapi/api_get_member/deck_port";
+                byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(body);
+                Session sess = FiddlerApplication.oProxy.SendRequestAndWait(header, postBytes, null, xxx);
+
+                HTTPRequestHeaders header2 = (HTTPRequestHeaders) this.oS.oRequest.headers.Clone();
+                header2.RequestPath = "/kcsapi/api_get_member/ndock";
+                byte[] postBytes2 = System.Text.Encoding.UTF8.GetBytes(body);
+                Session sess2 = FiddlerApplication.oProxy.SendRequest(header2, postBytes2, null, xxx);
+                //kcrb.DoDeckPort();
+                //kcrb.DoNDock();
             } catch (Exception ex) {
                 Debug.Print(ex.Message);
             }
