@@ -34,7 +34,7 @@ namespace KanColleTool {
             InitializeComponent();
             InitializeMasterData();
             testMasterData();
-            InitializeFiddler();
+            //InitializeFiddler();
             InitializeTimer();
         }
 
@@ -71,11 +71,11 @@ namespace KanColleTool {
         public void update (Object context) {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
                 try {
-                    if (this.labFl1MissionETA.Content.ToString() != "") {
+                    if (this.labFl2MissionETA.Content.ToString() != "") {
                         TimeSpan span = countSpan(deckport["api_data"][1]["api_mission"][2].ToString());
-                        this.labFl1MissionCD.Content = span.ToString(@"hh\:mm\:ss");
+                        this.labFl2MissionCD.Content = span.ToString(@"hh\:mm\:ss");
                     } else {
-                        this.labFl1MissionCD.Content = "";
+                        this.labFl2MissionCD.Content = "";
                     }
                 } catch (Exception e) {
                     Debug.Print(e.ToString());
@@ -106,8 +106,6 @@ namespace KanColleTool {
         }
 
         void InitializeFiddler () {
-            //Thread UIThread = Thread.CurrentThread;
-            //MainWindow mainWindow = this;
             string pattern = @".*\/kcsapi\/.*\/(.*)";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -115,17 +113,19 @@ namespace KanColleTool {
             Fiddler.FiddlerApplication.Log.OnLogString += delegate(object sender, LogEventArgs oLEA) { Debug.Print("** LogString: " + oLEA.LogString); };
 
             Fiddler.FiddlerApplication.BeforeRequest += delegate(Fiddler.Session oS) {
-                if (r.IsMatch(oS.fullUrl)) {
-                    NameValueCollection form = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString());
-                    string token = form["api_token"];
-                    Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
-                        if (token != null && !this.textToken.Text.Equals(token)) {
-                            this.textToken.Text = token;
-                            kcrb = new RequestBuilder(oS);
-                        }
-                    }, null);
-                    oS.bBufferResponse = false;
+                if (!r.IsMatch(oS.fullUrl)) {
+                    return;
                 }
+                Debug.Print(String.Format("{0:hh:mm:ss.fff}\tStart session:\t{1}", DateTime.Now, oS.fullUrl));
+                NameValueCollection form = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString());
+                string token = form["api_token"];
+                Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
+                    if (token != null && !this.textToken.Text.Equals(token)) {
+                        this.textToken.Text = token;
+                        kcrb = new RequestBuilder(oS);
+                    }
+                }, null);
+                oS.bBufferResponse = false;
             };
 
             Fiddler.FiddlerApplication.AfterSessionComplete += delegate(Fiddler.Session oS) {
@@ -133,7 +133,8 @@ namespace KanColleTool {
                     return;
                 }
                 Match m = Regex.Match(oS.fullUrl, pattern);
-                Debug.Print("Finished session:\t" + oS.fullUrl);
+                // TODO
+                Debug.Print(String.Format("{0:hh:mm:ss.fff}\tFinished session:\t{1}", DateTime.Now, oS.fullUrl));
                 switch (m.Groups[1].ToString()) {
                     case "deck_port":
                         try {
@@ -141,7 +142,7 @@ namespace KanColleTool {
                             string json = svdata.Substring(7);
                             deckport = JObject.Parse(json);
                             Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
-                                this.labFl1MissionETA.Content = valueOfUTC(deckport["api_data"][1]["api_mission"][2].ToString());
+                                this.labFl2MissionETA.Content = valueOfUTC(deckport["api_data"][1]["api_mission"][2].ToString());
                             }, null);
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
@@ -153,7 +154,7 @@ namespace KanColleTool {
                     default:
                         break;
                 }
-                Debug.Print(String.Format("{0} {1}\n{2} {3}\n\n", oS.id, oS.oRequest.headers.HTTPMethod, oS.responseCode, oS.oResponse.MIMEType));
+                // Debug.Print(String.Format("{0} {1}\n{2} {3}\n\n", oS.id, oS.oRequest.headers.HTTPMethod, oS.responseCode, oS.oResponse.MIMEType));
             };
 
             //Console.CancelKeyPress += new ConsoleCancelEventHandler(Console_CancelKeyPress);
@@ -183,18 +184,17 @@ namespace KanColleTool {
             Application.Current.Shutdown();
         }
 
-        private void button1_Click (object sender, RoutedEventArgs e) {
+        private void btnFl2Result_Click (object sender, RoutedEventArgs e) {
+            kcrb = new RequestBuilder("125.6.189.39", "fcb59d3d2e984bc66c9e93ba1c1db3c64fbcc6f6");
             if (kcrb == null) {
                 return;
             }
             try {
-                string path = "api_get_member/ndock";
-                string body = "api%5Fverno=1&api%5Ftoken=" + this.textToken.Text;
-                //kcrb.RequestTemplate(path, body);
-                kcrb.GotoHomeport();
+                //kcrb.MissionReturn(2);
+                kcrb.DoDeckPort();
+                kcrb.DoNDock();
             } catch (Exception ex) {
                 Debug.Print(ex.Message);
-                throw ex;
             }
         }
 

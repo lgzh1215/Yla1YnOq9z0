@@ -11,6 +11,7 @@ namespace KanColleTool {
         private Fiddler.Session oS;
         public string ServerIP { get; set; }
         public string Token { get; set; }
+        //public DateTime LastLoginCheck { get; set; }
 
         public RequestBuilder (Fiddler.Session oS) {
             ServerIP = oS.host;
@@ -19,7 +20,12 @@ namespace KanColleTool {
             this.oS = oS;
         }
 
-        public void GotoHomeport () {
+        public RequestBuilder (string host, string token) {
+            ServerIP = host;
+            Token = token;
+        }
+
+        public void MissionReturn (int deckId) {
             DoActionlog();
             DoLoginCheck();
             DoMaterial();
@@ -27,42 +33,70 @@ namespace KanColleTool {
             DoNDock();
             DoShip2();
             DoBasic();
+            DoResult(deckId);
+            DoDeckPort();
+            DoBasic();
+            DoShip2();
+            DoMaterial();
+            // DoUseItem
+        }
+
+        public void DoUseitem () {
+            string body = "api%5Fverno=1&api%5Ftoken=" + Token;
+            Thread.Sleep(300);
+            RequestTemplate("api_get_member/useitem", body);
+        }
+
+        public void DoResult (int deckId) {
+            string body = "api%5Fdeck%5Fid=" + deckId + "&api%5Fverno=1&api%5Ftoken=" + Token;
+            Thread.Sleep(1000);
+            RequestTemplate("api_req_mission/result", body);
         }
 
         public void DoActionlog () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            RequestTemplate("api_get_member/actionlog", body);
             Thread.Sleep(100);
+            RequestTemplate("api_get_member/actionlog", body);
         }
 
         public void DoLoginCheck () {
+            #region xxx
+            //if (LastLoginCheck == null) {
+            //    LastLoginCheck = DateTime.Now;
+            //} else {
+            //    TimeSpan ts = DateTime.Now - LastLoginCheck;
+            //    if (ts.TotalSeconds < 60.0) {
+            //        return;
+            //    }
+            //}
+            #endregion
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            RequestTemplate("api_auth_member/logincheck", body);
             Thread.Sleep(100);
+            RequestTemplate("api_auth_member/logincheck", body);
         }
 
         public void DoMaterial () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            RequestTemplate("api_get_member/material", body);
             Thread.Sleep(100);
+            RequestTemplate("api_get_member/material", body);
         }
 
         public void DoDeckPort () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            RequestTemplate("api_get_member/deck_port", body);
             Thread.Sleep(100);
+            RequestTemplate("api_get_member/deck_port", body);
         }
 
         public void DoNDock () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            RequestTemplate("api_get_member/ndock", body);
             Thread.Sleep(100);
+            RequestTemplate("api_get_member/ndock", body);
         }
 
         public void DoShip2 () {
             string body = "api%5Fsort%5Forder=2&api%5Fsort%5Fkey=2&api%5Fverno=1&api%5Ftoken=" + Token;
+            Thread.Sleep(500);
             RequestTemplate("api_get_member/ship2", body);
-            Thread.Sleep(300);
         }
 
         public void DoBasic () {
@@ -96,6 +130,8 @@ namespace KanColleTool {
                 Stream stream = request.GetRequestStream();
                 stream.Write(postBytes, 0, postBytes.Length);
                 stream.Close();
+
+                //HttpWebResponse response = (HttpWebResponse) request.GetResponse();
             } catch (Exception e) {
                 throw new Exception("KanColleTool post data error!", e);
             }
