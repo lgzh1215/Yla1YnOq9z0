@@ -1,28 +1,27 @@
 ﻿using System;
-using System.Collections.Specialized;
-using System.IO;
-using System.Net;
-using System.Web;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
+using System.Web;
+using Fiddler;
 
 namespace KanColleTool {
+
     class RequestBuilder {
 
-        private Fiddler.Session oS;
-        public string ServerIP { get; set; }
-        public string Token { get; set; }
-        //public DateTime LastLoginCheck { get; set; }
+        public string Token { get; private set; }
+        
+        public bool OnInvoke { get; private set; }
+
+        private Session oS;
+
+        private Queue<KCRequest> tasks;
 
         public RequestBuilder (Fiddler.Session oS) {
-            ServerIP = oS.host;
-            NameValueCollection form = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString());
-            Token = form["api_token"];
+            Token = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString())["api_token"];
             this.oS = oS;
-        }
-
-        public RequestBuilder (string host, string token) {
-            ServerIP = host;
-            Token = token;
+            this.tasks = new Queue<KCRequest>();
         }
 
         public void MissionReturn (int deckId) {
@@ -32,110 +31,135 @@ namespace KanColleTool {
             DoDeckPort();
             DoNDock();
             DoShip2();
-            DoBasic();
             DoResult(deckId);
+            DoBasic();
             DoDeckPort();
             DoBasic();
             DoShip2();
             DoMaterial();
-            // DoUseItem
+            DoUseItem();
+            Invoke();
         }
 
-        public void DoUseitem () {
+        public void EnterNDock () {
+            DoNDock();
+            DoShip2();
+            DoUseItem();
+            Invoke();
+        }
+
+        public void FleetCharge (int fleet, ICollection<string> ship) {
+            if (!(ship.Count > 0)) {
+                return;
+            }
+            DoCharge(3, ship);
+            DoShip2();
+            Invoke();
+        }
+
+        private void Invoke () {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += new DoWorkEventHandler(
+                delegate(object o, DoWorkEventArgs args) {
+                    lock (tasks) {
+                        OnInvoke = true;
+                        try {
+                            while (tasks.Count > 0) {
+                                KCRequest req = tasks.Dequeue();
+                                HTTPRequestHeaders header = (HTTPRequestHeaders) oS.oRequest.headers.Clone();
+                                header.RequestPath = "/kcsapi/" + req.Path;
+                                byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(req.Body);
+                                Session sess = new Session(header, postBytes);
+                                sess.utilSetRequestBody(req.Body);
+                                FiddlerApplication.oProxy.SendRequestAndWait(sess.oRequest.headers, sess.requestBodyBytes, null, null);
+                                Thread.Sleep(req.Sleep);
+                            }
+                        } catch (Exception ex) {
+                            Debug.Print(ex.Message);
+                        }
+                    }
+                });
+            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
+                delegate(object o, RunWorkerCompletedEventArgs args) {
+                    OnInvoke = false;
+                    Debug.Print("RunWorkerCompleted");
+                });
+            bw.RunWorkerAsync();
+        }
+
+        #region 各種post
+
+        public void DoCharge (int kind, ICollection<string> ship) {
+            string body = "api%5Fkind=" + kind + "&api%5Fid%5Fitems=" + String.Join("%2C", ship) + "&api%5Fverno=1&api%5Ftoken=" + Token;
+            KCRequest req = new KCRequest("api_req_hokyu/charge", body, 100);
+            tasks.Enqueue(req);
+        }
+
+        public void DoUseItem () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            Thread.Sleep(300);
-            RequestTemplate("api_get_member/useitem", body);
+            KCRequest req = new KCRequest("api_get_member/useitem", body, 100);
+            tasks.Enqueue(req);
         }
 
         public void DoResult (int deckId) {
             string body = "api%5Fdeck%5Fid=" + deckId + "&api%5Fverno=1&api%5Ftoken=" + Token;
-            Thread.Sleep(1000);
-            RequestTemplate("api_req_mission/result", body);
+            KCRequest req = new KCRequest("api_req_mission/result", body, 1000);
+            tasks.Enqueue(req);
         }
 
         public void DoActionlog () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            Thread.Sleep(100);
-            RequestTemplate("api_get_member/actionlog", body);
+            KCRequest req = new KCRequest("api_get_member/actionlog", body, 100);
+            tasks.Enqueue(req);
         }
 
         public void DoLoginCheck () {
-            #region xxx
-            //if (LastLoginCheck == null) {
-            //    LastLoginCheck = DateTime.Now;
-            //} else {
-            //    TimeSpan ts = DateTime.Now - LastLoginCheck;
-            //    if (ts.TotalSeconds < 60.0) {
-            //        return;
-            //    }
-            //}
-            #endregion
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            Thread.Sleep(100);
-            RequestTemplate("api_auth_member/logincheck", body);
+            KCRequest req = new KCRequest("api_auth_member/logincheck", body, 100);
+            tasks.Enqueue(req);
         }
 
         public void DoMaterial () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            Thread.Sleep(100);
-            RequestTemplate("api_get_member/material", body);
+            KCRequest req = new KCRequest("api_get_member/material", body, 100);
+            tasks.Enqueue(req);
         }
 
         public void DoDeckPort () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            Thread.Sleep(100);
-            RequestTemplate("api_get_member/deck_port", body);
+            KCRequest req = new KCRequest("api_get_member/deck_port", body, 100);
+            tasks.Enqueue(req);
         }
 
         public void DoNDock () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            Thread.Sleep(100);
-            RequestTemplate("api_get_member/ndock", body);
+            KCRequest req = new KCRequest("api_get_member/ndock", body, 100);
+            tasks.Enqueue(req);
         }
 
         public void DoShip2 () {
             string body = "api%5Fsort%5Forder=2&api%5Fsort%5Fkey=2&api%5Fverno=1&api%5Ftoken=" + Token;
-            Thread.Sleep(500);
-            RequestTemplate("api_get_member/ship2", body);
+            KCRequest req = new KCRequest("api_get_member/ship2", body, 500);
+            tasks.Enqueue(req);
         }
 
         public void DoBasic () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
-            RequestTemplate("api_get_member/basic", body);
-            Thread.Sleep(100);
+            KCRequest req = new KCRequest("api_get_member/basic", body, 100);
+            tasks.Enqueue(req);
         }
+        #endregion
 
-        public void RequestTemplate (string path, string body) {
-            string referer = "http://" + ServerIP + "/kcs/port.swf?version=1.5.1";
-            try {
-                //Create request to URL.
-                string requestUriString = "http://" + ServerIP + "/kcsapi/" + path;
-                HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUriString);
+    }
 
-                //Set request headers.
-                request.UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0";
-                request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
-                request.Headers.Set(HttpRequestHeader.AcceptLanguage, "zh-tw,zh;q=0.8,en-us;q=0.5,en;q=0.3");
-                request.Headers.Set(HttpRequestHeader.AcceptEncoding, "gzip, deflate");
-                request.KeepAlive = true;
-                request.Referer = referer;
-                request.ContentType = "application/x-www-form-urlencoded";
-
-                request.Method = "POST";
-                request.ServicePoint.Expect100Continue = false;
-
-                //Set request body.
-                byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(body);
-                request.ContentLength = postBytes.Length;
-                Stream stream = request.GetRequestStream();
-                stream.Write(postBytes, 0, postBytes.Length);
-                stream.Close();
-
-                //HttpWebResponse response = (HttpWebResponse) request.GetResponse();
-            } catch (Exception e) {
-                throw new Exception("KanColleTool post data error!", e);
-            }
+    class KCRequest {
+        public KCRequest (string path, string body, int sleep) {
+            Path = path;
+            Body = body;
+            Sleep = sleep;
         }
-
+        public string Path { get; set; }
+        public string Body { get; set; }
+        public int Sleep { get; set; }
     }
 }
