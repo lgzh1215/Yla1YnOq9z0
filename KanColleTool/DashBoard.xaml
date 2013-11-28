@@ -1,0 +1,35 @@
+﻿<Page x:Class="KanColleTool.DashBoard"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+	Title="DashBoard">
+
+    <Grid>
+        <Label Name="labFl1Name" Content="" Height="28" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl1Mission" Content="" Height="28" HorizontalAlignment="Left" Margin="64,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl1MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="180,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl1MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="298,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Button Name="btnFl1Kira" Content="1-1 kira-kira" Height="28" HorizontalAlignment="Left" Margin="404,0,0,0" VerticalAlignment="Top" Width="75" Click="btnFl1Kira_Click" />
+
+        <Label Name="labFl2Name" Content="" Height="28" HorizontalAlignment="Left" Margin="0,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl2Mission" Content="" Height="28" HorizontalAlignment="Left" Margin="64,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl2MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="180,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl2MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="298,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Button Name="btnFl2Result" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="404,34,0,0" VerticalAlignment="Top" Width="75" Click="btnFl2Result_Click" />
+
+        <Label Name="labFl3Name" Content="" Height="28" HorizontalAlignment="Left" Margin="0,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl3Mission" Content="" Height="28" HorizontalAlignment="Left" Margin="64,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl3MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="180,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl3MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="298,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Button Name="btnFl3Result" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="404,68,0,0" VerticalAlignment="Top" Width="75" Click="btnFl3Result_Click" />
+
+        <Label Name="labFl4Name" Content="" Height="28" HorizontalAlignment="Left" Margin="0,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl4Mission" Content="" Height="28" HorizontalAlignment="Left" Margin="64,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl4MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="180,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl4MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="298,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Button Name="btnFl4Result" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="404,102,0,0" VerticalAlignment="Top" Width="75" Click="btnFl4Result_Click" />
+
+    </Grid>
+</Page>

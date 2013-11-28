@@ -8,23 +8,24 @@ using Fiddler;
 
 namespace KanColleTool {
 
-    class RequestBuilder {
+    static public class RequestBuilder {
 
-        public string Token { get; private set; }
-        
-        public bool OnInvoke { get; private set; }
+        static public string Token { get; private set; }
 
-        private Session oS;
+        static public bool OnInvoke { get; private set; }
 
-        private Queue<KCRequest> tasks;
+        static private Session oS;
 
-        public RequestBuilder (Fiddler.Session oS) {
-            Token = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString())["api_token"];
-            this.oS = oS;
-            this.tasks = new Queue<KCRequest>();
+        static private Queue<KCRequest> tasks;
+
+        static public void Initialize (Session sess) {
+            Token = HttpUtility.ParseQueryString(sess.GetRequestBodyAsString())["api_token"];
+            OnInvoke = false;
+            oS = sess;
+            tasks = new Queue<KCRequest>();
         }
 
-        public void MissionReturn (int deckId) {
+        static public void MissionReturn (int deckId) {
             DoActionlog();
             DoLoginCheck();
             DoMaterial();
@@ -41,14 +42,14 @@ namespace KanColleTool {
             Invoke();
         }
 
-        public void EnterNDock () {
+        static public void EnterNDock () {
             DoNDock();
             DoShip2();
             DoUseItem();
             Invoke();
         }
 
-        public void FleetCharge (int fleet, ICollection<string> ship) {
+        static public void FleetCharge (int fleet, ICollection<string> ship) {
             if (!(ship.Count > 0)) {
                 return;
             }
@@ -57,7 +58,7 @@ namespace KanColleTool {
             Invoke();
         }
 
-        private void Invoke () {
+        static private void Invoke () {
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += new DoWorkEventHandler(
                 delegate(object o, DoWorkEventArgs args) {
@@ -89,61 +90,61 @@ namespace KanColleTool {
 
         #region 各種post
 
-        public void DoCharge (int kind, ICollection<string> ship) {
+        static public void DoCharge (int kind, ICollection<string> ship) {
             string body = "api%5Fkind=" + kind + "&api%5Fid%5Fitems=" + String.Join("%2C", ship) + "&api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_req_hokyu/charge", body, 100);
             tasks.Enqueue(req);
         }
 
-        public void DoUseItem () {
+        static public void DoUseItem () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_get_member/useitem", body, 100);
             tasks.Enqueue(req);
         }
 
-        public void DoResult (int deckId) {
+        static public void DoResult (int deckId) {
             string body = "api%5Fdeck%5Fid=" + deckId + "&api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_req_mission/result", body, 1000);
             tasks.Enqueue(req);
         }
 
-        public void DoActionlog () {
+        static public void DoActionlog () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_get_member/actionlog", body, 100);
             tasks.Enqueue(req);
         }
 
-        public void DoLoginCheck () {
+        static public void DoLoginCheck () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_auth_member/logincheck", body, 100);
             tasks.Enqueue(req);
         }
 
-        public void DoMaterial () {
+        static public void DoMaterial () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_get_member/material", body, 100);
             tasks.Enqueue(req);
         }
 
-        public void DoDeckPort () {
+        static public void DoDeckPort () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_get_member/deck_port", body, 100);
             tasks.Enqueue(req);
         }
 
-        public void DoNDock () {
+        static public void DoNDock () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_get_member/ndock", body, 100);
             tasks.Enqueue(req);
         }
 
-        public void DoShip2 () {
+        static public void DoShip2 () {
             string body = "api%5Fsort%5Forder=2&api%5Fsort%5Fkey=2&api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_get_member/ship2", body, 500);
             tasks.Enqueue(req);
         }
 
-        public void DoBasic () {
+        static public void DoBasic () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_get_member/basic", body, 100);
             tasks.Enqueue(req);
