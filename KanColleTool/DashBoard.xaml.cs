@@ -33,30 +33,24 @@ namespace KanColleTool {
         public void update (Object context) {
             Dispatcher.FromThread(UIThread).Invoke((DashBoard.Invoker) delegate {
                 try {
-                    JToken jdeck = null;
-                    if (KCODt.Ship2 != null) {
-                        jdeck = KCODt.Ship2["api_data_deck"];
-                    } else if (KCODt.DeckPort != null) {
-                        jdeck = KCODt.DeckPort["api_data"];
-                    }
-                    if (jdeck == null) {
+                    if (KCODt.DeckData == null) {
                         return;
                     }
-                    labFl1Name.Content = jdeck[0]["api_name"].ToString();
+                    labFl1Name.Content = KCODt.DeckData[0]["api_name"].ToString();
                     // 2
-                    labFl2Name.Content = jdeck[1]["api_name"].ToString();
-                    labFl2MissionETA.Content = Utils.valueOfUTC(jdeck[1]["api_mission"][2].ToString());
-                    TimeSpan span2 = Utils.countSpan(jdeck[1]["api_mission"][2].ToString());
+                    labFl2Name.Content = KCODt.DeckData[1]["api_name"].ToString();
+                    labFl2MissionETA.Content = Utils.valueOfUTC(KCODt.DeckData[1]["api_mission"][2].ToString());
+                    TimeSpan span2 = Utils.countSpan(KCODt.DeckData[1]["api_mission"][2].ToString());
                     labFl2MissionCD.Content = span2.ToString(@"hh\:mm\:ss");
                     // 3
-                    labFl3Name.Content = jdeck[2]["api_name"].ToString();
-                    labFl3MissionETA.Content = Utils.valueOfUTC(jdeck[2]["api_mission"][2].ToString());
-                    TimeSpan span3 = Utils.countSpan(jdeck[2]["api_mission"][2].ToString());
+                    labFl3Name.Content = KCODt.DeckData[2]["api_name"].ToString();
+                    labFl3MissionETA.Content = Utils.valueOfUTC(KCODt.DeckData[2]["api_mission"][2].ToString());
+                    TimeSpan span3 = Utils.countSpan(KCODt.DeckData[2]["api_mission"][2].ToString());
                     labFl3MissionCD.Content = span3.ToString(@"hh\:mm\:ss");
                     // 4
-                    labFl4Name.Content = jdeck[3]["api_name"].ToString();
-                    labFl4MissionETA.Content = Utils.valueOfUTC(jdeck[3]["api_mission"][2].ToString());
-                    TimeSpan span4 = Utils.countSpan(jdeck[3]["api_mission"][2].ToString());
+                    labFl4Name.Content = KCODt.DeckData[3]["api_name"].ToString();
+                    labFl4MissionETA.Content = Utils.valueOfUTC(KCODt.DeckData[3]["api_mission"][2].ToString());
+                    TimeSpan span4 = Utils.countSpan(KCODt.DeckData[3]["api_mission"][2].ToString());
                     labFl4MissionCD.Content = span4.ToString(@"hh\:mm\:ss");
                     if (!RequestBuilder.OnInvoke) {
                         //button1.IsEnabled = true;
@@ -106,7 +100,7 @@ namespace KanColleTool {
         //}
 
         private ICollection<string> listChargeShips (int fleet) {
-            List<JToken> shipIds = KCODt.Ship2["api_data_deck"][fleet]["api_ship"].ToList();
+            List<JToken> shipIds = KCODt.DeckData[fleet]["api_ship"].ToList();
             List<string> tgtShipIds = new List<string>();
             HashSet<string> chargeIds = new HashSet<string>();
             try {
@@ -115,18 +109,18 @@ namespace KanColleTool {
                         tgtShipIds.Add(shipId.ToString());
                     }
                 }
-                var qs = from sh in KCODt.Ship["api_data"]
-                         from s2 in KCODt.Ship2["api_data"]
+                var qs = from spec in KCODt.ShipSpec
+                         from s2 in KCODt.ShipData
                          where
                              tgtShipIds.Contains(s2["api_id"].ToString()) &&
-                             sh["api_id"].ToString() == s2["api_ship_id"].ToString()
-                         select sh;
+                             spec["api_id"].ToString() == s2["api_ship_id"].ToString()
+                         select spec;
                 foreach (var sid in tgtShipIds) {
-                    if (!KCODt.Ship2Map.ContainsKey(sid)) {
+                    if (!KCODt.ShipDataMap.ContainsKey(sid)) {
                         continue;
                     }
-                    JToken myShip = KCODt.Ship2Map[sid];
-                    JToken defShip = KCODt.ShipMap[myShip["api_ship_id"].ToString()];
+                    JToken myShip = KCODt.ShipDataMap[sid];
+                    JToken defShip = KCODt.ShipSpecMap[myShip["api_ship_id"].ToString()];
                     string msg = defShip["api_name"].ToString();
                     msg += "\t\tF: " + myShip["api_fuel"].ToString() + "/" + defShip["api_fuel_max"].ToString();
                     if (myShip["api_fuel"].ToString() != defShip["api_fuel_max"].ToString()) {

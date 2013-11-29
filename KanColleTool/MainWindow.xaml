@@ -1,39 +1,12 @@
 ﻿<Window x:Class="KanColleTool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525" Closing="Window_Closing">
+        Title="MainWindow" Height="350" Width="575" Closing="Window_Closing">
 
     <Grid>
-        <!--
-        <Label Name="labToken" Content="Token:" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <TextBox Name="textToken" Height="28" HorizontalAlignment="Left" Margin="76,12,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="300" IsEnabled="True" IsReadOnly="True" />
-
-        <Label Name="labFl1Name" Content="" Height="28" HorizontalAlignment="Left" Margin="12,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl1Mission" Content="" Height="28" HorizontalAlignment="Left" Margin="76,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl1MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="192,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl1MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="310,46,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl1Kira" Content="1-1 kira-kira" Height="28" HorizontalAlignment="Left" Margin="416,46,0,0" VerticalAlignment="Top" Width="75" Click="btnFl1Kira_Click" />
-        
-        <Label Name="labFl2Name" Content="" Height="28" HorizontalAlignment="Left" Margin="12,80,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl2Mission" Content="" Height="28" HorizontalAlignment="Left" Margin="76,80,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl2MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="192,80,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl2MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="310,80,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl2Result" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="416,80,0,0" VerticalAlignment="Top" Width="75" Click="btnFl2Result_Click" />
-
-        <Label Name="labFl3Name" Content="" Height="28" HorizontalAlignment="Left" Margin="12,114,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl3Mission" Content="" Height="28" HorizontalAlignment="Left" Margin="76,114,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl3MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="192,114,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl3MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="310,114,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl3Result" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="416,114,0,0" VerticalAlignment="Top" Width="75" Click="btnFl3Result_Click" />
-
-        <Label Name="labFl4Name" Content="" Height="28" HorizontalAlignment="Left" Margin="12,148,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl4Mission" Content="" Height="28" HorizontalAlignment="Left" Margin="76,148,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl4MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="192,148,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl4MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="310,148,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl4Result" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="416,148,0,0" VerticalAlignment="Top" Width="75" Click="btnFl4Result_Click" />
-        -->
-        <DockPanel Height="275" Margin="0,36,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"
-                   Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}">
+        <DockPanel Margin="0,36,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"
+                   Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"
+                   Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" >
             <Frame Name="mainFrame" NavigationUIVisibility="Hidden" />
         </DockPanel>
         <Button Content="DashBoard" x:Uid="DashBoard" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click" />

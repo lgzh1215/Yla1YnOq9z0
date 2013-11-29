@@ -22,12 +22,13 @@ namespace KanColleTool {
 
     static public class KCODt {
 
-        static public JObject Ship { get; private set; }
-        static public JObject Ship2 { get; private set; }
-        static public JObject SlotItem { get; private set; }
-        static public JObject DeckPort { get; private set; }
-        static public Dictionary<string, JToken> ShipMap { get; private set; }
-        static public Dictionary<string, JToken> Ship2Map { get; private set; }
+        static public JToken ShipSpec { get; private set; }
+        static public JToken ShipData { get; private set; }
+        static public JToken SlotItem { get; private set; }
+        static public JToken DeckData { get; private set; }
+        static public JToken ShipType { get; private set; }
+        static public Dictionary<string, JToken> ShipSpecMap { get; private set; }
+        static public Dictionary<string, JToken> ShipDataMap { get; private set; }
 
         static public void InitializeObserver () {
             InitializeMasterData();
@@ -36,27 +37,32 @@ namespace KanColleTool {
         }
 
         static void InitializeMasterData () {
-            ShipMap = new Dictionary<string, JToken>();
-            Ship2Map = new Dictionary<string, JToken>();
+            ShipSpecMap = new Dictionary<string, JToken>();
+            ShipDataMap = new Dictionary<string, JToken>();
             Assembly assembly = typeof(MainWindow).Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.ship.json"))
             using (StreamReader reader = new StreamReader(stream)) {
                 string json = reader.ReadToEnd();
-                Ship = JObject.Parse(json);
-                foreach (JToken sh in Ship["api_data"]) {
-                    ShipMap.Add(sh["api_id"].ToString(), sh);
+                ShipSpec = JToken.Parse(json)["api_data"];
+                foreach (JToken sh in ShipSpec) {
+                    ShipSpecMap.Add(sh["api_id"].ToString(), sh);
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.slotitem.json"))
             using (StreamReader reader = new StreamReader(stream)) {
                 string json = reader.ReadToEnd();
-                SlotItem = JObject.Parse(json);
+                SlotItem = JToken.Parse(json)["api_data"];
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.shiptype.json"))
+            using (StreamReader reader = new StreamReader(stream)) {
+                string json = reader.ReadToEnd();
+                ShipType = JToken.Parse(json)["api_data"];
             }
         }
 
         static void testMasterData () {
             try {
-                var qm = from ss in Ship["api_data"] where ss["api_stype"].ToString() == "4" select ss;
+                var qm = from ss in ShipSpec where ss["api_stype"].ToString() == "8" select ss;
                 foreach (var qs in qm) {
                     Debug.Print(qs["api_name"].ToString());
                 }
@@ -84,13 +90,6 @@ namespace KanColleTool {
                 } else if (token != null && !RequestBuilder.Token.Equals(token)) {
                     RequestBuilder.Initialize(oS);
                 }
-                //requestBuilder = new RequestBuilder(oS);
-                //Dispatcher.FromThread(UIThread).Invoke((MainWindow.KanColleInvoker) delegate {
-                //    if (token != null && !this.textToken.Text.Equals(token)) {
-                //        this.textToken.Text = token;
-                //        requestBuilder = new RequestBuilder(oS);
-                //    }
-                //}, null);
                 oS.bBufferResponse = false;
             };
 
@@ -101,15 +100,37 @@ namespace KanColleTool {
                 Match m = Regex.Match(oS.fullUrl, pattern);
                 Debug.Print(String.Format("{0:hh:mm:ss.fff}\tEd session:\t{1}", DateTime.Now, oS.fullUrl));
                 switch (m.Groups[1].ToString()) {
+                    case "ship":
+                        try {
+                            string svdata = oS.GetResponseBodyAsString();
+                            string json = svdata.Substring(7);
+                            ShipSpec = JToken.Parse(json)["api_data"];
+                            updateSpecMap();
+                        } catch (Exception exception) {
+                            Debug.Print(exception.Message);
+                        }
+                        break;
                     case "ship2":
                         try {
                             string svdata = oS.GetResponseBodyAsString();
                             string json = svdata.Substring(7);
-                            Ship2 = JObject.Parse(json);
-                            Ship2Map.Clear();
-                            foreach (JToken sh in Ship2["api_data"]) {
-                                Ship2Map.Add(sh["api_id"].ToString(), sh);
-                            }
+                            JToken temp = JToken.Parse(json);
+                            ShipData = temp["api_data"];
+                            updateShipMap();
+                            updateDeckInfo(temp["api_data_deck"]);
+                        } catch (Exception exception) {
+                            Debug.Print(exception.Message);
+                        }
+                        break;
+                    case "ship3":
+                        try {
+                            string svdata = oS.GetResponseBodyAsString();
+                            string json = svdata.Substring(7);
+                            JToken temp = JToken.Parse(json);
+                            ShipData = temp["api_data"]["api_ship_data"];
+                            SlotItem = temp["api_data"]["api_slot_data"];
+                            updateShipMap();
+                            updateDeckInfo(temp["api_data"]["api_deck_data"]);
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
                         }
@@ -118,7 +139,7 @@ namespace KanColleTool {
                         try {
                             string svdata = oS.GetResponseBodyAsString();
                             string json = svdata.Substring(7);
-                            DeckPort = JObject.Parse(json);
+                            updateDeckInfo(JToken.Parse(json)["api_data"]);
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
                         }
@@ -139,6 +160,33 @@ namespace KanColleTool {
             FiddlerApplication.Log.LogFormat("Created endpoint listening on port {0}", iPort);
             FiddlerApplication.Log.LogFormat("Starting with settings: [{0}]", oFCSF);
             FiddlerApplication.Log.LogFormat("Gateway: {0}", CONFIG.UpstreamGateway.ToString());
+        }
+
+        private static void updateSpecMap () {
+            ShipSpecMap.Clear();
+            foreach (JToken sh in ShipSpec) {
+                ShipSpecMap.Add(sh["api_id"].ToString(), sh);
+            }
+        }
+
+        static private void updateShipMap () {
+            ShipDataMap.Clear();
+            foreach (JToken sh in ShipData) {
+                ShipDataMap.Add(sh["api_id"].ToString(), sh);
+            }
+        }
+
+        private static void updateDeckInfo (JToken data) {
+            DeckData = data;
+            for (int i = 0; i < DeckData.Count(); i++) {
+                for (int j = 0; j < DeckData[i]["api_ship"].Count(); j++) {
+                    string key = DeckData[i]["api_ship"][j].ToString();
+                    if (ShipDataMap.ContainsKey(key)) {
+                        JObject jo = ShipDataMap[key] as JObject;
+                        jo.Add("fleet_info", (i + 1) + "-" + (j + 1));
+                    }
+                }
+            }
         }
     }
 }

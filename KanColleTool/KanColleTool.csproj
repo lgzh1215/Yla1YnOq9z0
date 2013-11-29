@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="KCODt.cs" />
     <Compile Include="RequestBuilder.cs" />
+    <Compile Include="ShipDetail.cs" />
     <Compile Include="ShipListPage.xaml.cs">
       <DependentUpon>ShipListPage.xaml</DependentUpon>
     </Compile>
@@ -127,6 +128,7 @@
     <AppDesigner Include="Properties\" />
     <EmbeddedResource Include="ship.json" />
     <EmbeddedResource Include="slotitem.json" />
+    <EmbeddedResource Include="shiptype.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
