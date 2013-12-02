@@ -23,6 +23,15 @@ namespace KanColleTool {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             InitializeTimer();
+            KCODt.Instance.Ship3IncomeEvent += new KCODt.EventHandler(Instance_Ship3IncomeEvent);
+        }
+
+        ~DashBoard() {
+            KCODt.Instance.Ship3IncomeEvent -= new KCODt.EventHandler(Instance_Ship3IncomeEvent);
+        }
+
+        void Instance_Ship3IncomeEvent (object sender, EventArgs e) {
+            Debug.Print("!!!!! SHIP3 INCOME !!!!!!");
         }
 
         void InitializeTimer () {
@@ -33,24 +42,24 @@ namespace KanColleTool {
         public void update (Object context) {
             Dispatcher.FromThread(UIThread).Invoke((DashBoard.Invoker) delegate {
                 try {
-                    if (KCODt.DeckData == null) {
+                    if (KCODt.Instance.DeckData == null) {
                         return;
                     }
-                    labFl1Name.Content = KCODt.DeckData[0]["api_name"].ToString();
+                    labFl1Name.Content = KCODt.Instance.DeckData[0]["api_name"].ToString();
                     // 2
-                    labFl2Name.Content = KCODt.DeckData[1]["api_name"].ToString();
-                    labFl2MissionETA.Content = Utils.valueOfUTC(KCODt.DeckData[1]["api_mission"][2].ToString());
-                    TimeSpan span2 = Utils.countSpan(KCODt.DeckData[1]["api_mission"][2].ToString());
+                    labFl2Name.Content = KCODt.Instance.DeckData[1]["api_name"].ToString();
+                    labFl2MissionETA.Content = Utils.valueOfUTC(KCODt.Instance.DeckData[1]["api_mission"][2].ToString());
+                    TimeSpan span2 = Utils.countSpan(KCODt.Instance.DeckData[1]["api_mission"][2].ToString());
                     labFl2MissionCD.Content = span2.ToString(@"hh\:mm\:ss");
                     // 3
-                    labFl3Name.Content = KCODt.DeckData[2]["api_name"].ToString();
-                    labFl3MissionETA.Content = Utils.valueOfUTC(KCODt.DeckData[2]["api_mission"][2].ToString());
-                    TimeSpan span3 = Utils.countSpan(KCODt.DeckData[2]["api_mission"][2].ToString());
+                    labFl3Name.Content = KCODt.Instance.DeckData[2]["api_name"].ToString();
+                    labFl3MissionETA.Content = Utils.valueOfUTC(KCODt.Instance.DeckData[2]["api_mission"][2].ToString());
+                    TimeSpan span3 = Utils.countSpan(KCODt.Instance.DeckData[2]["api_mission"][2].ToString());
                     labFl3MissionCD.Content = span3.ToString(@"hh\:mm\:ss");
                     // 4
-                    labFl4Name.Content = KCODt.DeckData[3]["api_name"].ToString();
-                    labFl4MissionETA.Content = Utils.valueOfUTC(KCODt.DeckData[3]["api_mission"][2].ToString());
-                    TimeSpan span4 = Utils.countSpan(KCODt.DeckData[3]["api_mission"][2].ToString());
+                    labFl4Name.Content = KCODt.Instance.DeckData[3]["api_name"].ToString();
+                    labFl4MissionETA.Content = Utils.valueOfUTC(KCODt.Instance.DeckData[3]["api_mission"][2].ToString());
+                    TimeSpan span4 = Utils.countSpan(KCODt.Instance.DeckData[3]["api_mission"][2].ToString());
                     labFl4MissionCD.Content = span4.ToString(@"hh\:mm\:ss");
                     if (!RequestBuilder.OnInvoke) {
                         //button1.IsEnabled = true;
@@ -66,7 +75,7 @@ namespace KanColleTool {
 
         private void btnFl2Result_Click (object sender, RoutedEventArgs e) {
             try {
-                RequestBuilder.MissionReturn(2);
+                RequestBuilder.Instance.MissionReturn(2);
             } catch (Exception ex) {
                 Debug.Print(ex.Message);
             }
@@ -74,7 +83,7 @@ namespace KanColleTool {
 
         private void btnFl3Result_Click (object sender, RoutedEventArgs e) {
             try {
-                RequestBuilder.MissionReturn(3);
+                RequestBuilder.Instance.MissionReturn(3);
             } catch (Exception ex) {
                 Debug.Print(ex.Message);
             }
@@ -82,7 +91,7 @@ namespace KanColleTool {
 
         private void btnFl4Result_Click (object sender, RoutedEventArgs e) {
             try {
-                RequestBuilder.MissionReturn(4);
+                RequestBuilder.Instance.MissionReturn(4);
             } catch (Exception ex) {
                 Debug.Print(ex.Message);
             }
@@ -100,7 +109,7 @@ namespace KanColleTool {
         //}
 
         private ICollection<string> listChargeShips (int fleet) {
-            List<JToken> shipIds = KCODt.DeckData[fleet]["api_ship"].ToList();
+            List<JToken> shipIds = KCODt.Instance.DeckData[fleet]["api_ship"].ToList();
             List<string> tgtShipIds = new List<string>();
             HashSet<string> chargeIds = new HashSet<string>();
             try {
@@ -109,18 +118,18 @@ namespace KanColleTool {
                         tgtShipIds.Add(shipId.ToString());
                     }
                 }
-                var qs = from spec in KCODt.ShipSpec
-                         from s2 in KCODt.ShipData
+                var qs = from spec in KCODt.Instance.ShipSpec
+                         from s2 in KCODt.Instance.ShipData
                          where
                              tgtShipIds.Contains(s2["api_id"].ToString()) &&
                              spec["api_id"].ToString() == s2["api_ship_id"].ToString()
                          select spec;
                 foreach (var sid in tgtShipIds) {
-                    if (!KCODt.ShipDataMap.ContainsKey(sid)) {
+                    if (!KCODt.Instance.ShipDataMap.ContainsKey(sid)) {
                         continue;
                     }
-                    JToken myShip = KCODt.ShipDataMap[sid];
-                    JToken defShip = KCODt.ShipSpecMap[myShip["api_ship_id"].ToString()];
+                    JToken myShip = KCODt.Instance.ShipDataMap[sid];
+                    JToken defShip = KCODt.Instance.ShipSpecMap[myShip["api_ship_id"].ToString()];
                     string msg = defShip["api_name"].ToString();
                     msg += "\t\tF: " + myShip["api_fuel"].ToString() + "/" + defShip["api_fuel_max"].ToString();
                     if (myShip["api_fuel"].ToString() != defShip["api_fuel_max"].ToString()) {

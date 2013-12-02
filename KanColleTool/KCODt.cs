@@ -20,23 +20,40 @@ using System.Collections.Generic;
 
 namespace KanColleTool {
 
-    static public class KCODt {
+    public class KCODt {
 
-        static public JToken ShipSpec { get; private set; }
-        static public JToken ShipData { get; private set; }
-        static public JToken SlotItem { get; private set; }
-        static public JToken DeckData { get; private set; }
-        static public JToken ShipType { get; private set; }
-        static public Dictionary<string, JToken> ShipSpecMap { get; private set; }
-        static public Dictionary<string, JToken> ShipDataMap { get; private set; }
+        private static KCODt instance = null;
 
-        static public void InitializeObserver () {
+        public JToken ShipSpec { get; private set; }
+        public JToken ShipData { get; private set; }
+        public JToken SlotItem { get; private set; }
+        public JToken DeckData { get; private set; }
+        public JToken ShipType { get; private set; }
+        public Dictionary<string, JToken> ShipSpecMap { get; private set; }
+        public Dictionary<string, JToken> ShipDataMap { get; private set; }
+
+        public delegate void EventHandler (object sender, EventArgs e);
+
+        public event EventHandler Ship3IncomeEvent;
+
+        static public KCODt Instance {
+            get {
+                if (instance == null) {
+                    instance = new KCODt();
+                }
+                return instance;
+            }
+            set {
+            }
+        }
+
+        private KCODt () {
             InitializeMasterData();
             testMasterData();
             InitializeFiddler();
         }
 
-        static void InitializeMasterData () {
+        private void InitializeMasterData () {
             ShipSpecMap = new Dictionary<string, JToken>();
             ShipDataMap = new Dictionary<string, JToken>();
             Assembly assembly = typeof(MainWindow).Assembly;
@@ -60,7 +77,7 @@ namespace KanColleTool {
             }
         }
 
-        static void testMasterData () {
+        private void testMasterData () {
             try {
                 var qm = from ss in ShipSpec where ss["api_stype"].ToString() == "8" select ss;
                 foreach (var qs in qm) {
@@ -71,7 +88,14 @@ namespace KanColleTool {
             }
         }
 
-        static void InitializeFiddler () {
+        protected virtual void OnRaiseCustomEvent (EventArgs e) {
+            EventHandler handler = Ship3IncomeEvent;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        private void InitializeFiddler () {
             string pattern = @".*\/kcsapi\/.*\/(.*)";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -131,6 +155,7 @@ namespace KanColleTool {
                             SlotItem = temp["api_data"]["api_slot_data"];
                             updateShipMap();
                             updateDeckInfo(temp["api_data"]["api_deck_data"]);
+                            OnRaiseCustomEvent(EventArgs.Empty);
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
                         }
@@ -162,21 +187,21 @@ namespace KanColleTool {
             FiddlerApplication.Log.LogFormat("Gateway: {0}", CONFIG.UpstreamGateway.ToString());
         }
 
-        private static void updateSpecMap () {
+        private void updateSpecMap () {
             ShipSpecMap.Clear();
             foreach (JToken sh in ShipSpec) {
                 ShipSpecMap.Add(sh["api_id"].ToString(), sh);
             }
         }
 
-        static private void updateShipMap () {
+        private void updateShipMap () {
             ShipDataMap.Clear();
             foreach (JToken sh in ShipData) {
                 ShipDataMap.Add(sh["api_id"].ToString(), sh);
             }
         }
 
-        private static void updateDeckInfo (JToken data) {
+        private void updateDeckInfo (JToken data) {
             DeckData = data;
             for (int i = 0; i < DeckData.Count(); i++) {
                 for (int j = 0; j < DeckData[i]["api_ship"].Count(); j++) {
@@ -188,5 +213,6 @@ namespace KanColleTool {
                 }
             }
         }
+
     }
 }

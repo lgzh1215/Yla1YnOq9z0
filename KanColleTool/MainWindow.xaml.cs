@@ -30,7 +30,6 @@ namespace KanColleTool {
         ShipListPage shipListPage;
 
         public MainWindow () {
-            KCODt.InitializeObserver();
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             dashBoard = new DashBoard();

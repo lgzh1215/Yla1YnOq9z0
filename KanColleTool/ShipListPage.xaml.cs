@@ -27,10 +27,10 @@ namespace KanColleTool {
         private void Page_Loaded (object sender, RoutedEventArgs e) {
             try {
                 ShipGrid.ItemsSource = null;
-                if (KCODt.ShipData != null && KCODt.ShipSpec != null) {
-                    var qm = from spec in KCODt.ShipSpec
-                             from ship in KCODt.ShipData
-                             from stype in KCODt.ShipType
+                if (KCODt.Instance.ShipData != null && KCODt.Instance.ShipSpec != null) {
+                    var qm = from spec in KCODt.Instance.ShipSpec
+                             from ship in KCODt.Instance.ShipData
+                             from stype in KCODt.Instance.ShipType
                              where spec["api_id"].ToString() == ship["api_ship_id"].ToString()
                              && spec["api_stype"].ToString() == stype["api_id"].ToString()
                              select JToken.FromObject(new ShipDetail(spec, ship, stype));
