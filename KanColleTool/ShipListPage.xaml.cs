@@ -19,21 +19,16 @@ namespace KanColleTool {
         public ShipListPage () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
-            KCODt.Instance.ShipDataChangedEvent += new KCODt.EventHandler(Instance_ShipDataChangedEvent);
-            //KCODt.Instance.ShipDataChangedEvent += new KCODt.EventHandler(KCODt_ShipDataChanged);
-        }
-
-        void Instance_ShipDataChangedEvent (object sender, DataChangedEventArgs e) {
-            reflash();
+            KCODt.Instance.ShipDataChangedEvent += new KCODt.EventHandler(KCODt_ShipDataChanged);
         }
 
         ~ShipListPage () {
-            KCODt.Instance.ShipDataChangedEvent -= new KCODt.EventHandler(Instance_ShipDataChangedEvent);
+            KCODt.Instance.ShipDataChangedEvent -= new KCODt.EventHandler(KCODt_ShipDataChanged);
         }
 
-        //private void KCODt_ShipDataChanged (object sender, DataChangedEventArgs e) {
-        //    reflash();
-        //}
+        void KCODt_ShipDataChanged (object sender, DataChangedEventArgs e) {
+            reflash();
+        }
 
         private void Page_Loaded (object sender, RoutedEventArgs e) {
             reflash();

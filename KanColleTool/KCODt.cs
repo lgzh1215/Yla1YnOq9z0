@@ -1,22 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Web;
-using System.Windows;
-using System.Windows.Threading;
 using Fiddler;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Net;
-using System.ComponentModel;
-using System.Windows.Controls;
-using System.Collections.Generic;
 
 namespace KanColleTool {
 
@@ -35,15 +27,15 @@ namespace KanColleTool {
 
         public delegate void EventHandler (object sender, DataChangedEventArgs e);
 
-        //public delegate void SlotItemChangedEventHandler (object sender, DataChangedEventArgs e);
+        public delegate void SlotItemChangedEventHandler (object sender, DataChangedEventArgs e);
 
-        //public delegate void DeckDataChangedEventHandler (object sender, DataChangedEventArgs e);
+        public delegate void DeckDataChangedEventHandler (object sender, DataChangedEventArgs e);
 
         public event EventHandler ShipDataChangedEvent;
 
-        //public event SlotItemChangedEventHandler SlotItemChangedEvent;
+        public event SlotItemChangedEventHandler SlotItemChangedEvent;
 
-        //public event DeckDataChangedEventHandler DeckDataChangedEvent;
+        public event DeckDataChangedEventHandler DeckDataChangedEvent;
 
         static public KCODt Instance {
             get {
@@ -70,36 +62,36 @@ namespace KanColleTool {
             }
         }
 
-        //protected virtual void OnSlotItemChangedEvent (DataChangedEventArgs e) {
-        //    lock (SlotItemMap) {
-        //        SlotItem = e.Data;
-        //        SlotItemMap.Clear();
-        //        foreach (JToken sl in SlotItem) {
-        //            ShipDataMap.Add(sl["api_id"].ToString(), sl);
-        //        }
-        //        SlotItemChangedEventHandler handler = SlotItemChangedEvent;
-        //        if (handler != null) {
-        //            handler(this, e);
-        //        }
-        //    }
-        //}
+        protected virtual void OnSlotItemChangedEvent (DataChangedEventArgs e) {
+            lock (SlotItemMap) {
+                SlotItem = e.Data;
+                SlotItemMap.Clear();
+                foreach (JToken sl in SlotItem) {
+                    SlotItemMap.Add(sl["api_id"].ToString(), sl);
+                }
+                SlotItemChangedEventHandler handler = SlotItemChangedEvent;
+                if (handler != null) {
+                    handler(this, e);
+                }
+            }
+        }
 
-        //protected virtual void OnDeckDataChangedEvent (DataChangedEventArgs e) {
-        //    DeckData = e.Data;
-        //    for (int i = 0; i < DeckData.Count(); i++) {
-        //        for (int j = 0; j < DeckData[i]["api_ship"].Count(); j++) {
-        //            string key = DeckData[i]["api_ship"][j].ToString();
-        //            if (ShipDataMap.ContainsKey(key)) {
-        //                JObject jo = ShipDataMap[key] as JObject;
-        //                jo.Add("fleet_info", (i + 1) + "-" + (j + 1));
-        //            }
-        //        }
-        //    }
-        //    DeckDataChangedEventHandler handler = DeckDataChangedEvent;
-        //    if (handler != null) {
-        //        handler(this, e);
-        //    }
-        //}
+        protected virtual void OnDeckDataChangedEvent (DataChangedEventArgs e) {
+            DeckData = e.Data;
+            for (int i = 0; i < DeckData.Count(); i++) {
+                for (int j = 0; j < DeckData[i]["api_ship"].Count(); j++) {
+                    string key = DeckData[i]["api_ship"][j].ToString();
+                    if (ShipDataMap.ContainsKey(key)) {
+                        JObject jo = ShipDataMap[key] as JObject;
+                        jo.Add("fleet_info", (i + 1) + "-" + (j + 1));
+                    }
+                }
+            }
+            DeckDataChangedEventHandler handler = DeckDataChangedEvent;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
 
         private KCODt () {
             InitializeMasterData();
@@ -125,7 +117,7 @@ namespace KanColleTool {
                 string json = reader.ReadToEnd();
                 SlotItem = JToken.Parse(json)["api_data"];
                 foreach (JToken sl in SlotItem) {
-                    ShipSpecMap.Add(sl["api_id"].ToString(), sl);
+                    SlotItemMap.Add(sl["api_id"].ToString(), sl);
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.shiptype.json"))
@@ -191,7 +183,7 @@ namespace KanColleTool {
                             string json = svdata.Substring(7);
                             JToken temp = JToken.Parse(json);
                             OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
-                            //OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data_deck"]));
+                            OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data_deck"]));
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
                         }
@@ -202,7 +194,7 @@ namespace KanColleTool {
                             string json = svdata.Substring(7);
                             JToken temp = JToken.Parse(json);
                             OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_ship_data"]));
-                            //OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_deck_data"]));
+                            OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_deck_data"]));
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
                         }
@@ -212,7 +204,7 @@ namespace KanColleTool {
                             string svdata = oS.GetResponseBodyAsString();
                             string json = svdata.Substring(7);
                             JToken temp = JToken.Parse(json);
-                            //OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                            OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
                         }
@@ -222,7 +214,7 @@ namespace KanColleTool {
                             string svdata = oS.GetResponseBodyAsString();
                             string json = svdata.Substring(7);
                             JToken temp = JToken.Parse(json);
-                            //OnSlotItemChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                            OnSlotItemChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
                         }

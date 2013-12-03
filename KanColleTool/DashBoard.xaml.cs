@@ -23,11 +23,11 @@ namespace KanColleTool {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             InitializeTimer();
-            //KCODt.Instance.DeckDataChangedEvent += new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
+            KCODt.Instance.DeckDataChangedEvent += new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
         }
 
         ~DashBoard() {
-            //KCODt.Instance.DeckDataChangedEvent -= new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
+            KCODt.Instance.DeckDataChangedEvent -= new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
         }
 
         void InitializeTimer () {
@@ -66,9 +66,9 @@ namespace KanColleTool {
             }, null);
         }
 
-        //private void KCODt_DeckDataChanged (object sender, DataChangedEventArgs e) {
-        //    Debug.Print("!!!!! DashBoard: SHIP3 INCOME !!!!!!");
-        //}
+        private void KCODt_DeckDataChanged (object sender, DataChangedEventArgs e) {
+            Debug.Print("!!!!! DashBoard: SHIP3 INCOME !!!!!!");
+        }
 
         private void btnFl1Kira_Click (object sender, RoutedEventArgs e) {
         }
