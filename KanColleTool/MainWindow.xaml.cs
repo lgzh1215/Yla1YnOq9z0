@@ -27,7 +27,10 @@ namespace KanColleTool {
         Thread UIThread;
 
         DashBoard dashBoard;
+
         ShipListPage shipListPage;
+
+        public delegate void Invoker ();
 
         public MainWindow () {
             UIThread = Thread.CurrentThread;

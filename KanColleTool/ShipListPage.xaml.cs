@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Diagnostics;
+using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace KanColleTool {
@@ -20,27 +14,50 @@ namespace KanColleTool {
     /// </summary>
     public partial class ShipListPage : Page {
 
+        Thread UIThread;
+
         public ShipListPage () {
+            UIThread = Thread.CurrentThread;
             InitializeComponent();
+            KCODt.Instance.ShipDataChangedEvent += new KCODt.EventHandler(Instance_ShipDataChangedEvent);
+            //KCODt.Instance.ShipDataChangedEvent += new KCODt.EventHandler(KCODt_ShipDataChanged);
         }
 
-        private void Page_Loaded (object sender, RoutedEventArgs e) {
-            try {
-                ShipGrid.ItemsSource = null;
-                if (KCODt.Instance.ShipData != null && KCODt.Instance.ShipSpec != null) {
-                    var qm = from spec in KCODt.Instance.ShipSpec
-                             from ship in KCODt.Instance.ShipData
-                             from stype in KCODt.Instance.ShipType
-                             where spec["api_id"].ToString() == ship["api_ship_id"].ToString()
-                             && spec["api_stype"].ToString() == stype["api_id"].ToString()
-                             select JToken.FromObject(new ShipDetail(spec, ship, stype));
-                    ShipGrid.ItemsSource = qm;
-                }
-            } catch (Exception ex) {
-                Debug.Print(ex.Message);
-            }
+        void Instance_ShipDataChangedEvent (object sender, DataChangedEventArgs e) {
+            reflash();
         }
-        
+
+        ~ShipListPage () {
+            KCODt.Instance.ShipDataChangedEvent -= new KCODt.EventHandler(Instance_ShipDataChangedEvent);
+        }
+
+        //private void KCODt_ShipDataChanged (object sender, DataChangedEventArgs e) {
+        //    reflash();
+        //}
+
+        private void Page_Loaded (object sender, RoutedEventArgs e) {
+            reflash();
+        }
+
+        private void reflash () {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                try {
+                    ShipGrid.ItemsSource = null;
+                    if (KCODt.Instance.ShipData != null && KCODt.Instance.ShipSpec != null) {
+                        var qm = from spec in KCODt.Instance.ShipSpec
+                                 from ship in KCODt.Instance.ShipData
+                                 from stype in KCODt.Instance.ShipType
+                                 where spec["api_id"].ToString() == ship["api_ship_id"].ToString()
+                                 && spec["api_stype"].ToString() == stype["api_id"].ToString()
+                                 select JToken.FromObject(new ShipDetail(spec, ship, stype));
+                        ShipGrid.ItemsSource = qm;
+                    }
+                } catch (Exception ex) {
+                    Debug.Print(ex.Message);
+                }
+            }, null);
+        }
+
     }
 
 }

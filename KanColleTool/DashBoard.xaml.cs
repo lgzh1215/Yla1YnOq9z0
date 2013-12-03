@@ -17,21 +17,17 @@ namespace KanColleTool {
         Thread UIThread;
         Timer UITimer;
 
-        public delegate void Invoker ();
+        //public delegate void Invoker ();
 
         public DashBoard () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             InitializeTimer();
-            KCODt.Instance.Ship3IncomeEvent += new KCODt.EventHandler(Instance_Ship3IncomeEvent);
+            //KCODt.Instance.DeckDataChangedEvent += new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
         }
 
         ~DashBoard() {
-            KCODt.Instance.Ship3IncomeEvent -= new KCODt.EventHandler(Instance_Ship3IncomeEvent);
-        }
-
-        void Instance_Ship3IncomeEvent (object sender, EventArgs e) {
-            Debug.Print("!!!!! SHIP3 INCOME !!!!!!");
+            //KCODt.Instance.DeckDataChangedEvent -= new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
         }
 
         void InitializeTimer () {
@@ -40,7 +36,7 @@ namespace KanColleTool {
         }
 
         public void update (Object context) {
-            Dispatcher.FromThread(UIThread).Invoke((DashBoard.Invoker) delegate {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 try {
                     if (KCODt.Instance.DeckData == null) {
                         return;
@@ -69,6 +65,10 @@ namespace KanColleTool {
                 }
             }, null);
         }
+
+        //private void KCODt_DeckDataChanged (object sender, DataChangedEventArgs e) {
+        //    Debug.Print("!!!!! DashBoard: SHIP3 INCOME !!!!!!");
+        //}
 
         private void btnFl1Kira_Click (object sender, RoutedEventArgs e) {
         }
