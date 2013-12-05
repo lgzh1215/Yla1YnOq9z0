@@ -18,24 +18,34 @@ namespace KanColleTool {
 
         public JToken ShipSpec { get; private set; }
         public JToken ShipData { get; private set; }
-        public JToken SlotItem { get; private set; }
+        public JToken ItemSpec { get; private set; }
+        public JToken ItemData { get; private set; }
         public JToken DeckData { get; private set; }
         public JToken ShipType { get; private set; }
         public Dictionary<string, JToken> ShipSpecMap { get; private set; }
-        public Dictionary<string, JToken> SlotItemMap { get; private set; }
         public Dictionary<string, JToken> ShipDataMap { get; private set; }
+        public Dictionary<string, JToken> ItemDataMap { get; private set; }
+        public Dictionary<string, JToken> ItemSpecMap { get; private set; }
 
-        public delegate void EventHandler (object sender, DataChangedEventArgs e);
+        public delegate void ShipSpecChangedEventHandler (object sender, DataChangedEventArgs e);
 
-        public delegate void SlotItemChangedEventHandler (object sender, DataChangedEventArgs e);
+        public delegate void ShipDataChangedEventHandler (object sender, DataChangedEventArgs e);
+
+        public delegate void ItemSpecChangedEventHandler (object sender, DataChangedEventArgs e);
+
+        public delegate void ItemDataChangedEventHandler (object sender, DataChangedEventArgs e);
 
         public delegate void DeckDataChangedEventHandler (object sender, DataChangedEventArgs e);
 
-        public event EventHandler ShipDataChangedEvent;
+        public event ShipSpecChangedEventHandler ShipSpecChanged;
 
-        public event SlotItemChangedEventHandler SlotItemChangedEvent;
+        public event ShipDataChangedEventHandler ShipDataChanged;
 
-        public event DeckDataChangedEventHandler DeckDataChangedEvent;
+        public event ItemSpecChangedEventHandler ItemSpecChanged;
+
+        public event ItemDataChangedEventHandler ItemDataChanged;
+
+        public event DeckDataChangedEventHandler DeckDataChanged;
 
         static public KCODt Instance {
             get {
@@ -44,32 +54,61 @@ namespace KanColleTool {
                 }
                 return instance;
             }
-            set {
+            private set {
+                instance = value;
             }
         }
 
-        protected virtual void OnShipDataChangedEvent (DataChangedEventArgs e) {
-            lock (ShipDataMap) {
-                ShipData = e.Data;
-                ShipDataMap.Clear();
-                foreach (JToken sh in ShipData) {
-                    ShipDataMap.Add(sh["api_id"].ToString(), sh);
+        protected virtual void OnShipSpecChangedEvent (DataChangedEventArgs e) {
+            lock (ShipSpecMap) {
+                ShipSpec = e.Data;
+                ShipSpecMap.Clear();
+                foreach (JToken sh in ShipSpec) {
+                    ShipSpecMap.Add(sh["api_id"].ToString(), sh);
                 }
-                EventHandler handler = ShipDataChangedEvent;
+                ShipSpecChangedEventHandler handler = ShipSpecChanged;
                 if (handler != null) {
                     handler(this, e);
                 }
             }
         }
 
-        protected virtual void OnSlotItemChangedEvent (DataChangedEventArgs e) {
-            lock (SlotItemMap) {
-                SlotItem = e.Data;
-                SlotItemMap.Clear();
-                foreach (JToken sl in SlotItem) {
-                    SlotItemMap.Add(sl["api_id"].ToString(), sl);
+        public virtual void OnShipDataChangedEvent (DataChangedEventArgs e) {
+            lock (ShipDataMap) {
+                ShipData = e.Data;
+                ShipDataMap.Clear();
+                foreach (JToken sh in ShipData) {
+                    ShipDataMap.Add(sh["api_id"].ToString(), sh);
                 }
-                SlotItemChangedEventHandler handler = SlotItemChangedEvent;
+                ShipDataChangedEventHandler handler = ShipDataChanged;
+                if (handler != null) {
+                    handler(this, e);
+                }
+            }
+        }
+
+        public virtual void OnItemSpecChangedEvent (DataChangedEventArgs e) {
+            lock (ItemSpecMap) {
+                ItemSpec = e.Data;
+                ItemSpecMap.Clear();
+                foreach (JToken it in ItemSpec) {
+                    ItemSpecMap.Add(it["api_id"].ToString(), it);
+                }
+                ItemSpecChangedEventHandler handler = ItemSpecChanged;
+                if (handler != null) {
+                    handler(this, e);
+                }
+            }
+        }
+
+        public virtual void OnItemDataChangedEvent (DataChangedEventArgs e) {
+            lock (ItemDataMap) {
+                ItemData = e.Data;
+                ItemDataMap.Clear();
+                foreach (JToken it in ItemData) {
+                    ItemDataMap.Add(it["api_id"].ToString(), it);
+                }
+                ItemDataChangedEventHandler handler = ItemDataChanged;
                 if (handler != null) {
                     handler(this, e);
                 }
@@ -87,7 +126,7 @@ namespace KanColleTool {
                     }
                 }
             }
-            DeckDataChangedEventHandler handler = DeckDataChangedEvent;
+            DeckDataChangedEventHandler handler = DeckDataChanged;
             if (handler != null) {
                 handler(this, e);
             }
@@ -102,25 +141,22 @@ namespace KanColleTool {
         private void InitializeMasterData () {
             ShipSpecMap = new Dictionary<string, JToken>();
             ShipDataMap = new Dictionary<string, JToken>();
-            SlotItemMap = new Dictionary<string, JToken>();
+            ItemSpecMap = new Dictionary<string, JToken>();
+            ItemDataMap = new Dictionary<string, JToken>();
             Assembly assembly = typeof(MainWindow).Assembly;
-            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.ship.json"))
+            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.ship.json"))
             using (StreamReader reader = new StreamReader(stream)) {
                 string json = reader.ReadToEnd();
-                ShipSpec = JToken.Parse(json)["api_data"];
-                foreach (JToken sh in ShipSpec) {
-                    ShipSpecMap.Add(sh["api_id"].ToString(), sh);
-                }
+                JToken temp = JToken.Parse(json);
+                OnShipSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
             }
-            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.slotitem.json"))
+            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.slotitem.json"))
             using (StreamReader reader = new StreamReader(stream)) {
                 string json = reader.ReadToEnd();
-                SlotItem = JToken.Parse(json)["api_data"];
-                foreach (JToken sl in SlotItem) {
-                    SlotItemMap.Add(sl["api_id"].ToString(), sl);
-                }
+                JToken temp = JToken.Parse(json);
+                OnItemSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
             }
-            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.shiptype.json"))
+            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.shiptype.json"))
             using (StreamReader reader = new StreamReader(stream)) {
                 string json = reader.ReadToEnd();
                 ShipType = JToken.Parse(json)["api_data"];
@@ -139,7 +175,7 @@ namespace KanColleTool {
         }
 
         private void InitializeFiddler () {
-            string pattern = @".*\/kcsapi\/.*\/(.*)";
+            string pattern = @".*\/kcsapi\/(.*)\/(.*)";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             Fiddler.FiddlerApplication.OnNotification += delegate(object sender, NotificationEventArgs oNEA) { Debug.Print("** NotifyUser: " + oNEA.NotifyString); };
@@ -166,13 +202,21 @@ namespace KanColleTool {
                 }
                 Match m = Regex.Match(oS.fullUrl, pattern);
                 Debug.Print(String.Format("{0:hh:mm:ss.fff}\tEd session:\t{1}", DateTime.Now, oS.fullUrl));
-                switch (m.Groups[1].ToString()) {
+                switch (m.Groups[2].ToString()) {
                     case "ship":
+                        Debug.Print(m.Groups[1].ToString());
                         try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            ShipSpec = JToken.Parse(json)["api_data"];
-                            updateSpecMap();
+                            if (m.Groups[1].ToString() == "api_get_master") {
+                                string svdata = oS.GetResponseBodyAsString();
+                                string json = svdata.Substring(7);
+                                JToken temp = JToken.Parse(json);
+                                OnShipSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                            } else {
+                                string svdata = oS.GetResponseBodyAsString();
+                                string json = svdata.Substring(7);
+                                JToken temp = JToken.Parse(json);
+                                OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                            }
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
                         }
@@ -206,15 +250,23 @@ namespace KanColleTool {
                             JToken temp = JToken.Parse(json);
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
-                            Debug.Print(exception.Message);
+                            Debug.Print("deck_port parse error: " + exception.Message);
                         }
                         break;
                     case "slotitem":
+                        Debug.Print(m.Groups[1].ToString());
                         try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            JToken temp = JToken.Parse(json);
-                            OnSlotItemChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                            if (m.Groups[1].ToString() == "api_get_master") {
+                                string svdata = oS.GetResponseBodyAsString();
+                                string json = svdata.Substring(7);
+                                JToken temp = JToken.Parse(json);
+                                OnItemSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                            } else {
+                                string svdata = oS.GetResponseBodyAsString();
+                                string json = svdata.Substring(7);
+                                JToken temp = JToken.Parse(json);
+                                OnItemDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                            }
                         } catch (Exception exception) {
                             Debug.Print(exception.Message);
                         }
@@ -235,13 +287,6 @@ namespace KanColleTool {
             FiddlerApplication.Log.LogFormat("Created endpoint listening on port {0}", iPort);
             FiddlerApplication.Log.LogFormat("Starting with settings: [{0}]", oFCSF);
             FiddlerApplication.Log.LogFormat("Gateway: {0}", CONFIG.UpstreamGateway.ToString());
-        }
-
-        private void updateSpecMap () {
-            ShipSpecMap.Clear();
-            foreach (JToken sh in ShipSpec) {
-                ShipSpecMap.Add(sh["api_id"].ToString(), sh);
-            }
         }
 
     }

@@ -15,20 +15,19 @@ namespace KanColleTool {
     public partial class DashBoard : Page {
 
         Thread UIThread;
-        Timer UITimer;
 
-        //public delegate void Invoker ();
+        Timer UITimer;
 
         public DashBoard () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             InitializeTimer();
-            KCODt.Instance.DeckDataChangedEvent += new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
+            //KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
         }
 
-        ~DashBoard() {
-            KCODt.Instance.DeckDataChangedEvent -= new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
-        }
+        //~DashBoard() {
+        //    KCODt.Instance.DeckDataChanged -= new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
+        //}
 
         void InitializeTimer () {
             TimerCallback tcb = this.update;
@@ -66,9 +65,9 @@ namespace KanColleTool {
             }, null);
         }
 
-        private void KCODt_DeckDataChanged (object sender, DataChangedEventArgs e) {
-            Debug.Print("!!!!! DashBoard: SHIP3 INCOME !!!!!!");
-        }
+        //private void KCODt_DeckDataChanged (object sender, DataChangedEventArgs e) {
+        //    Debug.Print("!!!!! DashBoard: SHIP3 INCOME !!!!!!");
+        //}
 
         private void btnFl1Kira_Click (object sender, RoutedEventArgs e) {
         }
@@ -108,46 +107,46 @@ namespace KanColleTool {
         //    }
         //}
 
-        private ICollection<string> listChargeShips (int fleet) {
-            List<JToken> shipIds = KCODt.Instance.DeckData[fleet]["api_ship"].ToList();
-            List<string> tgtShipIds = new List<string>();
-            HashSet<string> chargeIds = new HashSet<string>();
-            try {
-                foreach (var shipId in shipIds) {
-                    if (shipId.ToString() != "-1") {
-                        tgtShipIds.Add(shipId.ToString());
-                    }
-                }
-                var qs = from spec in KCODt.Instance.ShipSpec
-                         from s2 in KCODt.Instance.ShipData
-                         where
-                             tgtShipIds.Contains(s2["api_id"].ToString()) &&
-                             spec["api_id"].ToString() == s2["api_ship_id"].ToString()
-                         select spec;
-                foreach (var sid in tgtShipIds) {
-                    if (!KCODt.Instance.ShipDataMap.ContainsKey(sid)) {
-                        continue;
-                    }
-                    JToken myShip = KCODt.Instance.ShipDataMap[sid];
-                    JToken defShip = KCODt.Instance.ShipSpecMap[myShip["api_ship_id"].ToString()];
-                    string msg = defShip["api_name"].ToString();
-                    msg += "\t\tF: " + myShip["api_fuel"].ToString() + "/" + defShip["api_fuel_max"].ToString();
-                    if (myShip["api_fuel"].ToString() != defShip["api_fuel_max"].ToString()) {
-                        chargeIds.Add(sid);
-                        msg += "*";
-                    }
-                    msg += "\tB: " + myShip["api_bull"].ToString() + "/" + defShip["api_bull_max"].ToString();
-                    if (myShip["api_bull"].ToString() != defShip["api_bull_max"].ToString()) {
-                        chargeIds.Add(sid);
-                        msg += "x";
-                    }
-                    Debug.Print(msg);
-                }
-            } catch (Exception ex) {
-                Debug.Print(ex.Message);
-            }
-            return chargeIds;
-        }
+        //private ICollection<string> listChargeShips (int fleet) {
+        //    List<JToken> shipIds = KCODt.Instance.DeckData[fleet]["api_ship"].ToList();
+        //    List<string> tgtShipIds = new List<string>();
+        //    HashSet<string> chargeIds = new HashSet<string>();
+        //    try {
+        //        foreach (var shipId in shipIds) {
+        //            if (shipId.ToString() != "-1") {
+        //                tgtShipIds.Add(shipId.ToString());
+        //            }
+        //        }
+        //        var qs = from spec in KCODt.Instance.ShipSpec
+        //                 from s2 in KCODt.Instance.ShipData
+        //                 where
+        //                     tgtShipIds.Contains(s2["api_id"].ToString()) &&
+        //                     spec["api_id"].ToString() == s2["api_ship_id"].ToString()
+        //                 select spec;
+        //        foreach (var sid in tgtShipIds) {
+        //            if (!KCODt.Instance.ShipDataMap.ContainsKey(sid)) {
+        //                continue;
+        //            }
+        //            JToken myShip = KCODt.Instance.ShipDataMap[sid];
+        //            JToken defShip = KCODt.Instance.ShipSpecMap[myShip["api_ship_id"].ToString()];
+        //            string msg = defShip["api_name"].ToString();
+        //            msg += "\t\tF: " + myShip["api_fuel"].ToString() + "/" + defShip["api_fuel_max"].ToString();
+        //            if (myShip["api_fuel"].ToString() != defShip["api_fuel_max"].ToString()) {
+        //                chargeIds.Add(sid);
+        //                msg += "*";
+        //            }
+        //            msg += "\tB: " + myShip["api_bull"].ToString() + "/" + defShip["api_bull_max"].ToString();
+        //            if (myShip["api_bull"].ToString() != defShip["api_bull_max"].ToString()) {
+        //                chargeIds.Add(sid);
+        //                msg += "x";
+        //            }
+        //            Debug.Print(msg);
+        //        }
+        //    } catch (Exception ex) {
+        //        Debug.Print(ex.Message);
+        //    }
+        //    return chargeIds;
+        //}
 
     }
 }

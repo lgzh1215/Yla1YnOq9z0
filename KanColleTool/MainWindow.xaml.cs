@@ -30,13 +30,17 @@ namespace KanColleTool {
 
         ShipListPage shipListPage;
 
+        ItemListPage itemListPage;
+
         public delegate void Invoker ();
 
         public MainWindow () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
+
             dashBoard = new DashBoard();
             shipListPage = new ShipListPage();
+            itemListPage = new ItemListPage();
             mainFrame.NavigationService.Navigate(dashBoard);
         }
 
@@ -57,8 +61,32 @@ namespace KanColleTool {
                 case "ShipListPage":
                     mainFrame.NavigationService.Navigate(shipListPage);
                     break;
+                case "ItemListPage":
+                    mainFrame.NavigationService.Navigate(itemListPage);
+                    break;
                 default:
                     break;
+            }
+        }
+
+        private void button1_Click (object sender, RoutedEventArgs e) {
+            Assembly assembly = typeof(MainWindow).Assembly;
+            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.ship2.json"))
+            using (StreamReader reader = new StreamReader(stream)) {
+                string json = reader.ReadToEnd();
+                JToken temp = JToken.Parse(json);
+                KCODt.Instance.OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+            }
+            
+        }
+
+        private void button2_Click (object sender, RoutedEventArgs e) {
+            Assembly assembly = typeof(MainWindow).Assembly;
+            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.slotitem2.json"))
+            using (StreamReader reader = new StreamReader(stream)) {
+                string json = reader.ReadToEnd();
+                JToken temp = JToken.Parse(json);
+                KCODt.Instance.OnItemDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
             }
         }
 

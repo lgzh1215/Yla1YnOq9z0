@@ -73,6 +73,10 @@
     <Compile Include="DashBoard.xaml.cs">
       <DependentUpon>DashBoard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ItemDetail.cs" />
+    <Compile Include="ItemListPage.xaml.cs">
+      <DependentUpon>ItemListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="KCODt.cs" />
     <Compile Include="RequestBuilder.cs" />
     <Compile Include="ShipDetail.cs" />
@@ -81,6 +85,10 @@
     </Compile>
     <Compile Include="Utils.cs" />
     <Page Include="DashBoard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ItemListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -120,15 +128,17 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <EmbeddedResource Include="JSON\ship2.json" />
+    <EmbeddedResource Include="JSON\slotitem2.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <EmbeddedResource Include="ship.json" />
-    <EmbeddedResource Include="slotitem.json" />
-    <EmbeddedResource Include="shiptype.json" />
+    <EmbeddedResource Include="JSON\ship.json" />
+    <EmbeddedResource Include="JSON\slotitem.json" />
+    <EmbeddedResource Include="JSON\shiptype.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

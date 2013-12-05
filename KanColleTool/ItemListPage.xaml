@@ -1,0 +1,29 @@
+﻿<Page x:Class="KanColleTool.ItemListPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+	Title="ItemListPage">
+
+    <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
+              SelectionMode="Extended" HorizontalAlignment="Stretch" Name="ItemGrid" 
+              VerticalAlignment="Stretch" AlternatingRowBackground="LemonChiffon">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="ID" Binding="{Binding Path=Item.api_id.Value}" />
+            <DataGridTextColumn Header="レア" Binding="{Binding Path=Spec.api_rare.Value}" />
+            <DataGridTextColumn Header="裝備名" Binding="{Binding Path=Spec.api_name.Value}" />
+            <DataGridTextColumn Header="火力" Binding="{Binding Path=Spec.api_houg.Value}" />
+            <DataGridTextColumn Header="雷装" Binding="{Binding Path=Spec.api_raig.Value}" />
+            <DataGridTextColumn Header="爆装" Binding="{Binding Path=Spec.api_baku.Value}" />
+            <DataGridTextColumn Header="対空" Binding="{Binding Path=Spec.api_tyku.Value}" />
+            <DataGridTextColumn Header="対潜" Binding="{Binding Path=Spec.api_tais.Value}" />
+            <DataGridTextColumn Header="索敵" Binding="{Binding Path=Spec.api_saku.Value}" />
+            <DataGridTextColumn Header="命中" Binding="{Binding Path=Spec.api_houm.Value}" />
+            <DataGridTextColumn Header="回避" Binding="{Binding Path=Spec.api_houk.Value}" />
+            <DataGridTextColumn Header="射程" Binding="{Binding Path=LengString.Value}" SortMemberPath="Spec.api_leng.Value" />
+            <DataGridTextColumn Header="分類" Binding="{Binding Path=Spec.api_sortno.Value}" />
+            <DataGridTextColumn Header="雷命(仮)" Binding="{Binding Path=Spec.api_raim.Value}" />
+        </DataGrid.Columns>
+    </DataGrid>
+</Page>

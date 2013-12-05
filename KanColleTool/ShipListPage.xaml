@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
-	Title="ShipListPage" Loaded="Page_Loaded">
+	Title="ShipListPage">
 
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
               SelectionMode="Extended" HorizontalAlignment="Stretch" Name="ShipGrid" 
@@ -42,12 +42,6 @@
                     </MultiBinding>
                 </DataGridTextColumn.Binding>
             </DataGridTextColumn>
-            <!--
-            <DataGridTextColumn Header="殘油" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_fuel}" Width="96" />
-            <DataGridTextColumn Header="燃料" Binding="{Binding StringFormat={}{0:G}, Path=Spec.api_fuel_max}" Width="96" />
-            <DataGridTextColumn Header="殘彈" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_bull}" Width="96" />
-            <DataGridTextColumn Header="彈藥" Binding="{Binding StringFormat={}{0:G}, Path=Spec.api_bull_max}" Width="96" />
-            -->
         </DataGrid.Columns>
     </DataGrid>
 </Page>
