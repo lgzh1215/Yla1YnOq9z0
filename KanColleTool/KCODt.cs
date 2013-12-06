@@ -122,7 +122,9 @@ namespace KanColleTool {
                     string key = DeckData[i]["api_ship"][j].ToString();
                     if (ShipDataMap.ContainsKey(key)) {
                         JObject jo = ShipDataMap[key] as JObject;
-                        jo.Add("fleet_info", (i + 1) + "-" + (j + 1));
+                        if (jo["fleet_info"] == null) {
+                            jo.Add("fleet_info", (i + 1) + "-" + (j + 1));
+                        }
                     }
                 }
             }
@@ -204,7 +206,6 @@ namespace KanColleTool {
                 Debug.Print(String.Format("{0:hh:mm:ss.fff}\tEd session:\t{1}", DateTime.Now, oS.fullUrl));
                 switch (m.Groups[2].ToString()) {
                     case "ship":
-                        Debug.Print(m.Groups[1].ToString());
                         try {
                             if (m.Groups[1].ToString() == "api_get_master") {
                                 string svdata = oS.GetResponseBodyAsString();
@@ -254,7 +255,6 @@ namespace KanColleTool {
                         }
                         break;
                     case "slotitem":
-                        Debug.Print(m.Groups[1].ToString());
                         try {
                             if (m.Groups[1].ToString() == "api_get_master") {
                                 string svdata = oS.GetResponseBodyAsString();

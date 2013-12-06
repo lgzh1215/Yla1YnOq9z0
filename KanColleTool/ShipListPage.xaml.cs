@@ -7,6 +7,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
+using System.Windows.Documents;
+using System.Windows.Data;
+using System.Windows.Navigation;
 
 namespace KanColleTool {
     /// <summary>
@@ -20,6 +23,7 @@ namespace KanColleTool {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             KCODt.Instance.ShipDataChanged += new KCODt.ShipDataChangedEventHandler(KCODt_ShipDataChanged);
+            KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
         }
 
         ~ShipListPage () {
@@ -49,6 +53,58 @@ namespace KanColleTool {
             }, null);
         }
 
+        private void ShipGrid_Click (object sender, RoutedEventArgs e) {
+            try {
+                Type t = e.OriginalSource.GetType();
+                if (t.Name == "Hyperlink") {
+                    var destination = ((Hyperlink) e.OriginalSource).NavigateUri;
+                    int id = Int32.Parse(destination.ToString());
+                    EquipmentPage.Instance.ShipId = id;
+                    NavigationService.Navigate(EquipmentPage.Instance);
+                }
+            } catch (Exception ex) {
+                Debug.Print(ex.Message);
+            }
+        }
+
+    }
+
+    class JTokenShipConverter : IValueConverter {
+        public object Convert (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            try {
+                if (value != null) {
+                    JToken sd = value as JToken;
+                    return sd["Spec"]["api_name"].ToString();
+                }
+                string empty = "";
+                return empty;
+            } catch (Exception) {
+                return "";
+            }
+        }
+
+        public object ConvertBack (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            return null;
+        }
+    }
+
+    class JTokenShipConverter2 : IValueConverter {
+        public object Convert (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            try {
+                if (value != null) {
+                    JToken sd = value as JToken;
+                    return sd["Ship"]["api_id"].ToString();
+                }
+                string empty = "";
+                return empty;
+            } catch (Exception) {
+                return "";
+            }
+        }
+
+        public object ConvertBack (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            return null;
+        }
     }
 
 }

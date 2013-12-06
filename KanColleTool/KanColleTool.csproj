@@ -73,6 +73,9 @@
     <Compile Include="DashBoard.xaml.cs">
       <DependentUpon>DashBoard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EquipmentPage.xaml.cs">
+      <DependentUpon>EquipmentPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ItemDetail.cs" />
     <Compile Include="ItemListPage.xaml.cs">
       <DependentUpon>ItemListPage.xaml</DependentUpon>
@@ -85,6 +88,10 @@
     </Compile>
     <Compile Include="Utils.cs" />
     <Page Include="DashBoard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EquipmentPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
