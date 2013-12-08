@@ -219,7 +219,7 @@ namespace KanColleTool {
                                 OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                             }
                         } catch (Exception exception) {
-                            Debug.Print(exception.Message);
+                            Debug.Print(exception.ToString());
                         }
                         break;
                     case "ship2":
@@ -230,7 +230,7 @@ namespace KanColleTool {
                             OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data_deck"]));
                         } catch (Exception exception) {
-                            Debug.Print(exception.Message);
+                            Debug.Print(exception.ToString());
                         }
                         break;
                     case "ship3":
@@ -241,7 +241,7 @@ namespace KanColleTool {
                             OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_ship_data"]));
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_deck_data"]));
                         } catch (Exception exception) {
-                            Debug.Print(exception.Message);
+                            Debug.Print(exception.ToString());
                         }
                         break;
                     case "deck_port":
@@ -251,7 +251,7 @@ namespace KanColleTool {
                             JToken temp = JToken.Parse(json);
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
-                            Debug.Print("deck_port parse error: " + exception.Message);
+                            Debug.Print("deck_port parse error: " + exception.ToString());
                         }
                         break;
                     case "slotitem":
@@ -268,7 +268,7 @@ namespace KanColleTool {
                                 OnItemDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                             }
                         } catch (Exception exception) {
-                            Debug.Print(exception.Message);
+                            Debug.Print(exception.ToString());
                         }
                         break;
                     default:

@@ -35,12 +35,10 @@ namespace KanColleTool {
                                  from item in KCODt.Instance.ItemData
                                  where spec["api_id"].ToString() == item["api_slotitem_id"].ToString()
                                  select JToken.FromObject(new ItemDetail(spec, item));
-                        //var qm = from spec in KCODt.Instance.ItemSpec
-                        //         select JToken.FromObject(new ItemDetail(spec, null));
                         ItemGrid.ItemsSource = qm;
                     }
                 } catch (Exception ex) {
-                    Debug.Print(ex.Message);
+                    Debug.Print(ex.ToString());
                 }
             }, null);
         }

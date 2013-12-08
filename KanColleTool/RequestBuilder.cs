@@ -99,7 +99,7 @@ namespace KanColleTool {
                                 Thread.Sleep(req.Sleep);
                             }
                         } catch (Exception ex) {
-                            Debug.Print(ex.Message);
+                            Debug.Print(ex.ToString());
                         }
                     }
                 });

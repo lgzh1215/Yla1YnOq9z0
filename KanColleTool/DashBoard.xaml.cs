@@ -76,7 +76,7 @@ namespace KanColleTool {
             try {
                 RequestBuilder.Instance.MissionReturn(2);
             } catch (Exception ex) {
-                Debug.Print(ex.Message);
+                Debug.Print(ex.ToString());
             }
         }
 
@@ -84,7 +84,7 @@ namespace KanColleTool {
             try {
                 RequestBuilder.Instance.MissionReturn(3);
             } catch (Exception ex) {
-                Debug.Print(ex.Message);
+                Debug.Print(ex.ToString());
             }
         }
 
@@ -92,7 +92,7 @@ namespace KanColleTool {
             try {
                 RequestBuilder.Instance.MissionReturn(4);
             } catch (Exception ex) {
-                Debug.Print(ex.Message);
+                Debug.Print(ex.ToString());
             }
         }
 

@@ -28,6 +28,7 @@ namespace KanColleTool {
 
         ~ShipListPage () {
             KCODt.Instance.ShipDataChanged -= new KCODt.ShipDataChangedEventHandler(KCODt_ShipDataChanged);
+            KCODt.Instance.DeckDataChanged -= new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
         }
 
         void KCODt_ShipDataChanged (object sender, DataChangedEventArgs e) {
@@ -48,7 +49,7 @@ namespace KanColleTool {
                         ShipGrid.ItemsSource = qm;
                     }
                 } catch (Exception ex) {
-                    Debug.Print(ex.Message);
+                    Debug.Print(ex.ToString());
                 }
             }, null);
         }
@@ -63,7 +64,7 @@ namespace KanColleTool {
                     NavigationService.Navigate(EquipmentPage.Instance);
                 }
             } catch (Exception ex) {
-                Debug.Print(ex.Message);
+                Debug.Print(ex.ToString());
             }
         }
 

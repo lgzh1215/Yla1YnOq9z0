@@ -46,10 +46,12 @@ namespace KanColleTool {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             KCODt.Instance.ItemDataChanged += new KCODt.ItemDataChangedEventHandler(KCODt_ItemDataChanged);
+            KCODt.Instance.ShipDataChanged += new KCODt.ShipDataChangedEventHandler(KCODt_ItemDataChanged);
         }
 
         ~EquipmentPage () {
             KCODt.Instance.ItemDataChanged -= new KCODt.ItemDataChangedEventHandler(KCODt_ItemDataChanged);
+            KCODt.Instance.ShipDataChanged -= new KCODt.ShipDataChangedEventHandler(KCODt_ItemDataChanged);
         }
 
         void KCODt_ItemDataChanged (object sender, DataChangedEventArgs e) {
@@ -66,16 +68,13 @@ namespace KanColleTool {
                     JToken spec = KCODt.Instance.ShipSpecMap[ship["api_ship_id"].ToString()];
                     labShipName.Content = String.Format("({0}) {1}", ship["api_id"].ToString(), spec["api_name"].ToString());
 
-                    //string eqid = ship["api_slot"][0].ToString();
-                    //JToken eq = KCODt.Instance.ItemDataMap[eqid];
-                    //labEq1.Content = eq["api_name"].ToString();
                     foo(0, labEq1);
                     foo(1, labEq2);
                     foo(2, labEq3);
                     foo(3, labEq4);
                     foo(4, labEq5);
                 } catch (Exception ex) {
-                    Debug.Print(ex.Message);
+                    Debug.Print(ex.ToString());
                 }
             }, null);
         }
