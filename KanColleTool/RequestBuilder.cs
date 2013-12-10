@@ -48,7 +48,7 @@ namespace KanColleTool {
             tasks = new Queue<KCRequest>();
         }
 
-        public void MissionReturn (int deckId) {
+        private void MissionReturn (int deckId) {
             DoActionlog();
             DoLoginCheck();
             DoMaterial();

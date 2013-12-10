@@ -81,6 +81,7 @@
       <DependentUpon>ItemListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="KCODt.cs" />
+    <Compile Include="MissionDetail.cs" />
     <Compile Include="RequestBuilder.cs" />
     <Compile Include="ShipDetail.cs" />
     <Compile Include="ShipListPage.xaml.cs">
