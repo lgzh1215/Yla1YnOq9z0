@@ -26,7 +26,6 @@ namespace KanColleTool {
             }
             set {
                 this.shipId = value;
-                //reflash();
             }
         }
 

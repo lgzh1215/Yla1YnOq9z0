@@ -51,18 +51,7 @@ namespace KanColleTool {
 
         void InitializeMission () {
             List<MissionDetail> missions = new List<MissionDetail>();
-            missions.Add(new MissionDetail(0, "0:出擊"));
-            missions.Add(new MissionDetail(1, "1:練習航海"));
-            missions.Add(new MissionDetail(2, "2:長距離練習航海"));
-            missions.Add(new MissionDetail(3, "3:警備任務"));
-            missions.Add(new MissionDetail(4, "4:対潜警戒任務"));
-            missions.Add(new MissionDetail(5, "5:海上護衛任務"));
-            missions.Add(new MissionDetail(6, "6:防空射撃演習"));
-            missions.Add(new MissionDetail(7, "7:観艦式予行"));
-            missions.Add(new MissionDetail(8, "8:観艦式"));
-            missions.Add(new MissionDetail(9, "9:タンカー護衛任務"));
-            missions.Add(new MissionDetail(10, "10:強行偵察任務"));
-            foreach (var mission in missions) {
+            foreach (var mission in MissionDetail.All) {
                 cbxFl1Mission.Items.Add(mission);
                 cbxFl2Mission.Items.Add(mission);
                 cbxFl3Mission.Items.Add(mission);
@@ -111,6 +100,10 @@ namespace KanColleTool {
                     RequestBuilder.Instance.FleetCharge(pId, chargeIds);
                 }
                 // post mission start if possable
+                MissionDetail md = (MissionDetail) Panel[pId].Mission.SelectedItem;
+                if (md != null && md.Id != 0) {
+                    RequestBuilder.Instance.StartMission(pId + 1, md.Id);
+                }
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
             }

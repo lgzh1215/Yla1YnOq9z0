@@ -6,29 +6,29 @@
       mc:Ignorable="d" 
 	Title="DashBoard">
 
-    <Grid Width="570">
+    <Grid>
         <Label Name="labFl1Name" Content="" Height="28" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <ComboBox Name="cbxFl1Mission" Height="28" HorizontalAlignment="Left" Margin="64,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="183" />
-        <Label Name="labFl1MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="253,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl1MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="371,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl1Result" Uid="0" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="483,0,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
+        <Label Name="labFl1MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="424,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl1MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="334,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Button Name="btnFl1Result" Uid="0" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="253,0,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
 
         <Label Name="labFl2Name" Content="" Height="28" HorizontalAlignment="Left" Margin="0,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <ComboBox Name="cbxFl2Mission" Height="28" HorizontalAlignment="Left" Margin="64,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="183" />
-        <Label Name="labFl2MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="253,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl2MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="371,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl2Result" Uid="1" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="483,34,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
+        <Label Name="labFl2MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="424,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl2MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="334,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Button Name="btnFl2Result" Uid="1" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="253,34,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
 
         <Label Name="labFl3Name" Content="" Height="28" HorizontalAlignment="Left" Margin="0,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <ComboBox Name="cbxFl3Mission" Height="28" HorizontalAlignment="Left" Margin="64,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="183" />
-        <Label Name="labFl3MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="253,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl3MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="371,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl3Result" Uid="2" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="483,68,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
+        <Label Name="labFl3MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="424,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl3MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="334,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Button Name="btnFl3Result" Uid="2" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="253,68,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
 
         <Label Name="labFl4Name" Content="" Height="28" HorizontalAlignment="Left" Margin="0,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <ComboBox Name="cbxFl4Mission" Height="28" HorizontalAlignment="Left" Margin="64,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="183" />
-        <Label Name="labFl4MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="253,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl4MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="371,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl4Result" Uid="3" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="483,102,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
+        <Label Name="labFl4MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="424,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Name="labFl4MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="334,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Button Name="btnFl4Result" Uid="3" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="253,102,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
     </Grid>
 </Page>

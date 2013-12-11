@@ -19,11 +19,21 @@ namespace KanColleTool {
 
         Thread UIThread;
 
+        List<MenuItem> Panel = new List<MenuItem>();
+
         public ShipListPage () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             KCODt.Instance.ShipDataChanged += new KCODt.ShipDataChangedEventHandler(KCODt_ShipDataChanged);
             KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
+            Panel.Add(eq0);
+            Panel.Add(eq1);
+            Panel.Add(eq2);
+            Panel.Add(eq3);
+            Panel.Add(eq4);
+            var xx = new MenuItem();
+            xx.Header = "xxxx";
+            eq5.Items.Add(xx);
         }
 
         ~ShipListPage () {
@@ -54,20 +64,27 @@ namespace KanColleTool {
             }, null);
         }
 
-        private void ShipGrid_Click (object sender, RoutedEventArgs e) {
+        private void ShipGrid_ContextMenuOpening (object sender, ContextMenuEventArgs e) {
             try {
-                Type t = e.OriginalSource.GetType();
-                if (t.Name == "Hyperlink") {
-                    var destination = ((Hyperlink) e.OriginalSource).NavigateUri;
-                    int id = Int32.Parse(destination.ToString());
-                    EquipmentPage.Instance.ShipId = id;
-                    NavigationService.Navigate(EquipmentPage.Instance);
+                DataGrid dataGrid = sender as DataGrid;
+                JToken shipDetail = dataGrid.CurrentItem as JToken;
+                int shipId = Int32.Parse(shipDetail["Ship"]["api_id"].ToString());
+                for (int i = 0; i < 5; i++) {
+                    string onslot = shipDetail["Ship"]["api_onslot"][i].ToString();
+                    string eqid = shipDetail["Ship"]["api_slot"][i].ToString();
+                    string eqName = "無";
+                    if (eqid != "-1") {
+                        eqName = KCODt.Instance.ItemDataMap[eqid]["api_name"].ToString();
+                    } else {
+                        eqid = "";
+                    }
+                    Panel[i].Icon = String.Format("({0})", onslot);
+                    Panel[i].Header = String.Format("{0} \t {1}", eqid, eqName);
                 }
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
             }
         }
-
     }
 
     class JTokenShipConverter : IValueConverter {
