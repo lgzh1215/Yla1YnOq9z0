@@ -8,8 +8,6 @@
 	Title="ShipListPage">
 
     <Page.Resources>
-        <local:JTokenShipConverter x:Key="JTokenShipConverter"/>
-        <local:JTokenShipConverter2 x:Key="JTokenShipConverter2"/>
     </Page.Resources>
 
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
@@ -23,7 +21,8 @@
                 <MenuItem Name="eq2" />
                 <MenuItem Name="eq3" />
                 <MenuItem Name="eq4" />
-                <MenuItem Name="eq5" />
+                <MenuItem Name="eq5" Header="xaml">
+                </MenuItem>
             </ContextMenu>
         </DataGrid.ContextMenu>
         <DataGrid.Columns>
@@ -31,11 +30,6 @@
             <DataGridTextColumn Header="ID" Binding="{Binding Path=Ship.api_id}" />
             <DataGridTextColumn Header="艦種" Binding="{Binding StringFormat={}{0:G}, Path=SType.api_name}" Width="90" />
             <DataGridTextColumn Header="艦船名" Binding="{Binding StringFormat={}{0:G}, Path=Spec.api_name}" Width="90" />
-            <!--
-            <DataGridHyperlinkColumn Header="艦船名" 
-                                     Binding="{Binding Converter={StaticResource JTokenShipConverter2}}" IsReadOnly="True"
-                                     ContentBinding="{Binding Converter={StaticResource JTokenShipConverter}}"  />
-            -->
             <DataGridTextColumn Header="LV" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_lv}" Width="30" />
             <DataGridTextColumn Header="疲" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_cond}" Width="30" />
             <DataGridTextColumn Header="耐久" Width="96" SortMemberPath="HPRatio">
