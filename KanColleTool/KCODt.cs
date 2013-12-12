@@ -254,6 +254,16 @@ namespace KanColleTool {
                             Debug.Print("deck_port parse error: " + exception.ToString());
                         }
                         break;
+                    case "deck":
+                        try {
+                            string svdata = oS.GetResponseBodyAsString();
+                            string json = svdata.Substring(7);
+                            JToken temp = JToken.Parse(json);
+                            OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                        } catch (Exception exception) {
+                            Debug.Print("deck parse error: " + exception.ToString());
+                        }
+                        break;
                     case "slotitem":
                         try {
                             if (m.Groups[1].ToString() == "api_get_master") {

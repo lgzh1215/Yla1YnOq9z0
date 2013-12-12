@@ -43,7 +43,6 @@ namespace KanColleTool {
             Panel.Add(eq2);
             Panel.Add(eq3);
             Panel.Add(eq4);
-            Panel.Add(eq5);
             SubMenu.Add(ItemSubMenu0);
             SubMenu.Add(ItemSubMenu1);
             SubMenu.Add(ItemSubMenu2);
@@ -63,11 +62,11 @@ namespace KanColleTool {
 
         void KCODt_ItemDataChanged (object sender, DataChangedEventArgs e) {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
-                try {
-                    queryItems();
-                } catch (Exception ex) {
-                    Debug.Print(ex.ToString());
-                }
+                //try {
+                //    queryItems();
+                //} catch (Exception ex) {
+                //    Debug.Print(ex.ToString());
+                //}
             }, null);
         }
 
@@ -91,6 +90,23 @@ namespace KanColleTool {
             }, null);
         }
 
+        private void MenuItem_Click (object sender, RoutedEventArgs e) {
+            try {
+                MenuItem muPos = sender as MenuItem;
+                MenuItem muFle = muPos.Parent as MenuItem;
+                MenuItem muExe = muFle.Parent as MenuItem;
+                ContextMenu contextMenu = muExe.Parent as ContextMenu;
+                DataGrid dataGrid = contextMenu.PlacementTarget as DataGrid;
+                JToken detail = dataGrid.CurrentItem as JToken;
+                int shipId = Int16.Parse(detail["Ship"]["api_id"].ToString());
+                int shipIdx = Int16.Parse(muPos.Uid);
+                int fleet = Int16.Parse(muFle.Uid);
+                RequestBuilder.Instance.HenseiChange(shipId, shipIdx, fleet);
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
+
         private void ShipGrid_ContextMenuOpening (object sender, ContextMenuEventArgs e) {
             try {
                 DataGrid dataGrid = sender as DataGrid;
@@ -107,13 +123,14 @@ namespace KanColleTool {
                     } else {
                         // put sub menu here
                         Panel[i].Header = String.Format("{0}", eqName);
-                        Panel[i].ItemsSource = null;
-                        Panel[i].ItemsSource = SubMenu[i];
+                        //Panel[i].ItemsSource = null;
+                        //Panel[i].ItemsSource = SubMenu[i];
                     }
                 }
-                Panel[5].Header = "code behide header";
-                Panel[5].ItemsSource = null;
-                Panel[5].ItemsSource = ItemSubMenu0;
+                miFl1.Header = KCODt.Instance.DeckData[0]["api_name"].ToString();
+                miFl2.Header = KCODt.Instance.DeckData[1]["api_name"].ToString();
+                miFl3.Header = KCODt.Instance.DeckData[2]["api_name"].ToString();
+                miFl4.Header = KCODt.Instance.DeckData[3]["api_name"].ToString();
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
             }
@@ -142,44 +159,6 @@ namespace KanColleTool {
                 ItemSubMenu4.Add(mi);
             }
         }
+
     }
-
-    //class JTokenShipConverter : IValueConverter {
-    //    public object Convert (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-    //        try {
-    //            if (value != null) {
-    //                JToken sd = value as JToken;
-    //                return sd["Spec"]["api_name"].ToString();
-    //            }
-    //            string empty = "";
-    //            return empty;
-    //        } catch (Exception) {
-    //            return "";
-    //        }
-    //    }
-
-    //    public object ConvertBack (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-    //        return null;
-    //    }
-    //}
-
-    //class JTokenShipConverter2 : IValueConverter {
-    //    public object Convert (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-    //        try {
-    //            if (value != null) {
-    //                JToken sd = value as JToken;
-    //                return sd["Ship"]["api_id"].ToString();
-    //            }
-    //            string empty = "";
-    //            return empty;
-    //        } catch (Exception) {
-    //            return "";
-    //        }
-    //    }
-
-    //    public object ConvertBack (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-    //        return null;
-    //    }
-    //}
-
 }

@@ -87,6 +87,12 @@ namespace KanColleTool {
             Invoke();
         }
 
+        public void HenseiChange (int shipId, int shipIdx, int fleet) {
+            DoChange(shipId, shipIdx, fleet);
+            DoDeck();
+            Invoke();
+        }
+
         private void Invoke () {
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += new DoWorkEventHandler(
@@ -161,6 +167,12 @@ namespace KanColleTool {
             tasks.Enqueue(req);
         }
 
+        private void DoDeck () {
+            string body = "api%5Fverno=1&api%5Ftoken=" + Token;
+            KCRequest req = new KCRequest("api_get_member/deck", body, 100);
+            tasks.Enqueue(req);
+        }
+
         private void DoNDock () {
             string body = "api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_get_member/ndock", body, 100);
@@ -182,6 +194,12 @@ namespace KanColleTool {
         private void DoStartMission (int deckId, int missionId) {
             string body = "api%5Fdeck%5Fid=" + deckId + "&api%5Fmission%5Fid=" + missionId + "&api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_req_mission/start", body, 100);
+            tasks.Enqueue(req);
+        }
+
+        private void DoChange (int shipId, int shipIdx, int fleet) {
+            string body = "api%5Fship%5Fid=" + shipId + "&api%5Fship%5Fidx=" + shipIdx + "&api%5Fid=" + fleet + "&api%5Fverno=1&api%5Ftoken=" + Token;
+            KCRequest req = new KCRequest("api_req_hensei/change", body, 100);
             tasks.Enqueue(req);
         }
         #endregion
