@@ -8,6 +8,10 @@
 	Title="ShipListPage">
 
     <Page.Resources>
+        <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        </Style>
     </Page.Resources>
 
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
@@ -16,43 +20,44 @@
               IsReadOnly="True" ContextMenuOpening="ShipGrid_ContextMenuOpening">
         <DataGrid.ContextMenu>
             <ContextMenu Name="cm">
-                <MenuItem Name="eq0" />
-                <MenuItem Name="eq1" />
-                <MenuItem Name="eq2" />
-                <MenuItem Name="eq3" />
-                <MenuItem Name="eq4" />
+                <MenuItem Name="eq0" Uid="0" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" Click="eq0_Click"/>
+                <MenuItem Name="eq1" Uid="1" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" />
+                <MenuItem Name="eq2" Uid="2" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" />
+                <MenuItem Name="eq3" Uid="3" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" />
+                <MenuItem Name="eq4" Uid="4" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" />
+                <MenuItem Name="eqa" ItemsSource="{Binding}" DisplayMemberPath="" />
                 <MenuItem Name="Fleet" Header="編成變更">
                     <MenuItem Name="miFl1" Uid="1">
-                        <MenuItem Header="旗艦" Uid="0" Click="MenuItem_Click" />
-                        <MenuItem Header="二番艦" Uid="1" Click="MenuItem_Click" />
-                        <MenuItem Header="三番艦" Uid="2" Click="MenuItem_Click" />
-                        <MenuItem Header="四番艦" Uid="3" Click="MenuItem_Click" />
-                        <MenuItem Header="五番艦" Uid="4" Click="MenuItem_Click" />
-                        <MenuItem Header="六番艦" Uid="5" Click="MenuItem_Click" />
+                        <MenuItem Header="旗艦" Uid="0" Click="HenseiItem_Click" />
+                        <MenuItem Header="二番艦" Uid="1" Click="HenseiItem_Click" />
+                        <MenuItem Header="三番艦" Uid="2" Click="HenseiItem_Click" />
+                        <MenuItem Header="四番艦" Uid="3" Click="HenseiItem_Click" />
+                        <MenuItem Header="五番艦" Uid="4" Click="HenseiItem_Click" />
+                        <MenuItem Header="六番艦" Uid="5" Click="HenseiItem_Click" />
                     </MenuItem>
                     <MenuItem Name="miFl2" Uid="2">
-                        <MenuItem Header="旗艦" Uid="0" Click="MenuItem_Click" />
-                        <MenuItem Header="二番艦" Uid="1" Click="MenuItem_Click" />
-                        <MenuItem Header="三番艦" Uid="2" Click="MenuItem_Click" />
-                        <MenuItem Header="四番艦" Uid="3" Click="MenuItem_Click" />
-                        <MenuItem Header="五番艦" Uid="4" Click="MenuItem_Click" />
-                        <MenuItem Header="六番艦" Uid="5" Click="MenuItem_Click" />
+                        <MenuItem Header="旗艦" Uid="0" Click="HenseiItem_Click" />
+                        <MenuItem Header="二番艦" Uid="1" Click="HenseiItem_Click" />
+                        <MenuItem Header="三番艦" Uid="2" Click="HenseiItem_Click" />
+                        <MenuItem Header="四番艦" Uid="3" Click="HenseiItem_Click" />
+                        <MenuItem Header="五番艦" Uid="4" Click="HenseiItem_Click" />
+                        <MenuItem Header="六番艦" Uid="5" Click="HenseiItem_Click" />
                     </MenuItem>
                     <MenuItem Name="miFl3" Uid="3">
-                        <MenuItem Header="旗艦" Uid="0" Click="MenuItem_Click" />
-                        <MenuItem Header="二番艦" Uid="1" Click="MenuItem_Click" />
-                        <MenuItem Header="三番艦" Uid="2" Click="MenuItem_Click" />
-                        <MenuItem Header="四番艦" Uid="3" Click="MenuItem_Click" />
-                        <MenuItem Header="五番艦" Uid="4" Click="MenuItem_Click" />
-                        <MenuItem Header="六番艦" Uid="5" Click="MenuItem_Click" />
+                        <MenuItem Header="旗艦" Uid="0" Click="HenseiItem_Click" />
+                        <MenuItem Header="二番艦" Uid="1" Click="HenseiItem_Click" />
+                        <MenuItem Header="三番艦" Uid="2" Click="HenseiItem_Click" />
+                        <MenuItem Header="四番艦" Uid="3" Click="HenseiItem_Click" />
+                        <MenuItem Header="五番艦" Uid="4" Click="HenseiItem_Click" />
+                        <MenuItem Header="六番艦" Uid="5" Click="HenseiItem_Click" />
                     </MenuItem>
                     <MenuItem Name="miFl4" Uid="4">
-                        <MenuItem Header="旗艦" Uid="0" Click="MenuItem_Click" />
-                        <MenuItem Header="二番艦" Uid="1" Click="MenuItem_Click" />
-                        <MenuItem Header="三番艦" Uid="2" Click="MenuItem_Click" />
-                        <MenuItem Header="四番艦" Uid="3" Click="MenuItem_Click" />
-                        <MenuItem Header="五番艦" Uid="4" Click="MenuItem_Click" />
-                        <MenuItem Header="六番艦" Uid="5" Click="MenuItem_Click" />
+                        <MenuItem Header="旗艦" Uid="0" Click="HenseiItem_Click" />
+                        <MenuItem Header="二番艦" Uid="1" Click="HenseiItem_Click" />
+                        <MenuItem Header="三番艦" Uid="2" Click="HenseiItem_Click" />
+                        <MenuItem Header="四番艦" Uid="3" Click="HenseiItem_Click" />
+                        <MenuItem Header="五番艦" Uid="4" Click="HenseiItem_Click" />
+                        <MenuItem Header="六番艦" Uid="5" Click="HenseiItem_Click" />
                     </MenuItem>
                 </MenuItem>
             </ContextMenu>

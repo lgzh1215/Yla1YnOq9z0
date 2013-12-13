@@ -21,12 +21,7 @@ namespace KanColleTool {
 
         List<MenuItem> Panel = new List<MenuItem>();
 
-        List<List<MenuItem>> SubMenu = new List<List<MenuItem>>();
-        List<MenuItem> ItemSubMenu0 = new List<MenuItem>();
-        List<MenuItem> ItemSubMenu1 = new List<MenuItem>();
-        List<MenuItem> ItemSubMenu2 = new List<MenuItem>();
-        List<MenuItem> ItemSubMenu3 = new List<MenuItem>();
-        List<MenuItem> ItemSubMenu4 = new List<MenuItem>();
+        IEnumerable<JToken> SubMenuItems;
 
         public ShipListPage () {
             UIThread = Thread.CurrentThread;
@@ -43,11 +38,6 @@ namespace KanColleTool {
             Panel.Add(eq2);
             Panel.Add(eq3);
             Panel.Add(eq4);
-            SubMenu.Add(ItemSubMenu0);
-            SubMenu.Add(ItemSubMenu1);
-            SubMenu.Add(ItemSubMenu2);
-            SubMenu.Add(ItemSubMenu3);
-            SubMenu.Add(ItemSubMenu4);
         }
 
         ~ShipListPage () {
@@ -62,11 +52,11 @@ namespace KanColleTool {
 
         void KCODt_ItemDataChanged (object sender, DataChangedEventArgs e) {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
-                //try {
-                //    queryItems();
-                //} catch (Exception ex) {
-                //    Debug.Print(ex.ToString());
-                //}
+                try {
+                    queryItems();
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
             }, null);
         }
 
@@ -90,7 +80,7 @@ namespace KanColleTool {
             }, null);
         }
 
-        private void MenuItem_Click (object sender, RoutedEventArgs e) {
+        private void HenseiItem_Click (object sender, RoutedEventArgs e) {
             try {
                 MenuItem muPos = sender as MenuItem;
                 MenuItem muFle = muPos.Parent as MenuItem;
@@ -117,20 +107,28 @@ namespace KanColleTool {
                     string eqid = shipDetail["Ship"]["api_slot"][i].ToString();
                     string eqName = "無";
                     if (eqid != "-1") {
-                        eqName = KCODt.Instance.ItemDataMap[eqid]["api_name"].ToString();
+                        if (KCODt.Instance.ItemDataMap.ContainsKey(eqid)) {
+                            eqName = KCODt.Instance.ItemDataMap[eqid]["api_name"].ToString();
+                        } else {
+                            eqName = "未讀入";
+                        }
                         Panel[i].Icon = String.Format("({0})", onslot);
                         Panel[i].Header = String.Format("{0} \t {1}", eqid, eqName);
                     } else {
-                        // put sub menu here
                         Panel[i].Header = String.Format("{0}", eqName);
-                        //Panel[i].ItemsSource = null;
-                        //Panel[i].ItemsSource = SubMenu[i];
+                        Panel[i].ItemsSource = null;
+                        Panel[i].ItemsSource = SubMenuItems;
                     }
                 }
                 miFl1.Header = KCODt.Instance.DeckData[0]["api_name"].ToString();
                 miFl2.Header = KCODt.Instance.DeckData[1]["api_name"].ToString();
                 miFl3.Header = KCODt.Instance.DeckData[2]["api_name"].ToString();
                 miFl4.Header = KCODt.Instance.DeckData[3]["api_name"].ToString();
+                // TEST
+                eqa.ItemsSource = null;
+                eqa.ItemsSource = KCODt.Instance.SlotTypeMap.Keys;
+                MenuItem sx = eqa.Items[0] as MenuItem;
+                sx.ItemsSource = KCODt.Instance.SlotTypeMap[1];
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
             }
@@ -141,23 +139,13 @@ namespace KanColleTool {
                       from item in KCODt.Instance.ItemData
                       where spec["api_id"].ToString() == item["api_slotitem_id"].ToString()
                       select JToken.FromObject(new ItemDetail(spec, item)))
-                     .OrderByDescending(x => x["Spec"]["api_rare"].ToString());
-            ItemSubMenu0.Clear();
-            ItemSubMenu1.Clear();
-            ItemSubMenu2.Clear();
-            ItemSubMenu3.Clear();
-            ItemSubMenu4.Clear();
-            foreach (var item in qm) {
-                MenuItem mi = new MenuItem();
-                mi.Header = item["Spec"]["api_name"].ToString();
-                mi.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-                mi.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-                ItemSubMenu0.Add(mi);
-                ItemSubMenu1.Add(mi);
-                ItemSubMenu2.Add(mi);
-                ItemSubMenu3.Add(mi);
-                ItemSubMenu4.Add(mi);
-            }
+                     .OrderByDescending(x => x["Spec"]["api_rare"].ToString())
+                     .Take(10);
+            SubMenuItems = qm;
+        }
+
+        private void eq0_Click (object sender, RoutedEventArgs e) {
+            Debug.Print("Haha");
         }
 
     }

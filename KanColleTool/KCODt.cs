@@ -22,10 +22,12 @@ namespace KanColleTool {
         public JToken ItemData { get; private set; }
         public JToken DeckData { get; private set; }
         public JToken ShipType { get; private set; }
+        public JToken SlotType { get; private set; }
         public Dictionary<string, JToken> ShipSpecMap { get; private set; }
         public Dictionary<string, JToken> ShipDataMap { get; private set; }
         public Dictionary<string, JToken> ItemDataMap { get; private set; }
         public Dictionary<string, JToken> ItemSpecMap { get; private set; }
+        public Dictionary<int, List<int>> SlotTypeMap { get; private set; }
 
         public delegate void ShipSpecChangedEventHandler (object sender, DataChangedEventArgs e);
 
@@ -34,6 +36,8 @@ namespace KanColleTool {
         public delegate void ItemSpecChangedEventHandler (object sender, DataChangedEventArgs e);
 
         public delegate void ItemDataChangedEventHandler (object sender, DataChangedEventArgs e);
+
+        public delegate void SlotTypeChangedEventHandler (object sender, DataChangedEventArgs e);
 
         public delegate void DeckDataChangedEventHandler (object sender, DataChangedEventArgs e);
 
@@ -44,6 +48,8 @@ namespace KanColleTool {
         public event ItemSpecChangedEventHandler ItemSpecChanged;
 
         public event ItemDataChangedEventHandler ItemDataChanged;
+
+        public event SlotTypeChangedEventHandler SlotTypeChanged;
 
         public event DeckDataChangedEventHandler DeckDataChanged;
 
@@ -115,6 +121,36 @@ namespace KanColleTool {
             }
         }
 
+        public virtual void OnSlotTypeChangedEvent (DataChangedEventArgs e) {
+            string pattern = @"api_slottype(\d*)";
+            Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            lock (SlotTypeMap) {
+                SlotType = e.Data;
+                SlotTypeMap.Clear();
+                foreach (JToken element in SlotType) {
+                    JProperty prop = element as JProperty;
+                    Match m = Regex.Match(prop.Name, pattern);
+                    string group = m.Groups[1].ToString();
+                    int typeId = int.Parse(group);
+                    List<JToken> items = prop.Value.ToList();
+                    if (items.Count == 0) {
+                        continue;
+                    }
+                    if (!SlotTypeMap.ContainsKey(typeId)) {
+                        SlotTypeMap[typeId] = new List<int>();
+                    }
+                    foreach (var item in items) {
+                        int id = int.Parse(item.ToString());
+                        SlotTypeMap[typeId].Add(id);
+                    }
+                }
+                SlotTypeChangedEventHandler handler = SlotTypeChanged;
+                if (handler != null) {
+                    handler(this, e);
+                }
+            }
+        }
+
         protected virtual void OnDeckDataChangedEvent (DataChangedEventArgs e) {
             DeckData = e.Data;
             for (int i = 0; i < DeckData.Count(); i++) {
@@ -145,6 +181,7 @@ namespace KanColleTool {
             ShipDataMap = new Dictionary<string, JToken>();
             ItemSpecMap = new Dictionary<string, JToken>();
             ItemDataMap = new Dictionary<string, JToken>();
+            SlotTypeMap = new Dictionary<int, List<int>>();
             Assembly assembly = typeof(MainWindow).Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.ship.json"))
             using (StreamReader reader = new StreamReader(stream)) {
@@ -163,6 +200,7 @@ namespace KanColleTool {
                 string json = reader.ReadToEnd();
                 ShipType = JToken.Parse(json)["api_data"];
             }
+            ItemData = JToken.Parse("{\"api_result\":1,\"api_result_msg\":\"成功\",\"api_data\":[]}");
         }
 
         private void testMasterData () {
@@ -240,6 +278,7 @@ namespace KanColleTool {
                             JToken temp = JToken.Parse(json);
                             OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_ship_data"]));
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_deck_data"]));
+                            OnSlotTypeChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_slot_data"]));
                         } catch (Exception exception) {
                             Debug.Print(exception.ToString());
                         }

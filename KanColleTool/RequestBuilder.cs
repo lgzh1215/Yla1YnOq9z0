@@ -89,7 +89,8 @@ namespace KanColleTool {
 
         public void HenseiChange (int shipId, int shipIdx, int fleet) {
             DoChange(shipId, shipIdx, fleet);
-            DoDeck();
+            //DoDeck();
+            DoShip2();
             Invoke();
         }
 
