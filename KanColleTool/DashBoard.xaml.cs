@@ -76,7 +76,7 @@ namespace KanColleTool {
                         Panel[i].ETA.Content = Utils.valueOfUTC(mission[2].ToString());
                         Panel[i].CD.Content = Utils.countSpan(mission[2].ToString()).ToString(@"hh\:mm\:ss");
                         if (mission[0].ToString() != "0") {
-                            Panel[i].Mission.SelectedIndex = Int16.Parse(mission[1].ToString());
+                            Panel[i].Mission.SelectedIndex = MissionDetail.IdMap[int.Parse(mission[1].ToString())];
                             Panel[i].Mission.IsEnabled = false;
                             Panel[i].Button.IsEnabled = false;
                         } else {
@@ -94,7 +94,7 @@ namespace KanColleTool {
         private void btnFleet_Click (object sender, RoutedEventArgs e) {
             try {
                 Button btn = sender as Button;
-                int pId = Int16.Parse(btn.Uid);
+                int pId = int.Parse(btn.Uid);
                 ICollection<string> chargeIds = listChargeShips(pId);
                 if (chargeIds.Count > 0) {
                     RequestBuilder.Instance.FleetCharge(pId, chargeIds);

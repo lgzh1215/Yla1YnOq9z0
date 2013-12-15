@@ -23,11 +23,13 @@ namespace KanColleTool {
         public JToken DeckData { get; private set; }
         public JToken ShipType { get; private set; }
         public JToken SlotType { get; private set; }
+        public JToken QuestData { get; private set; }
         public Dictionary<string, JToken> ShipSpecMap { get; private set; }
         public Dictionary<string, JToken> ShipDataMap { get; private set; }
         public Dictionary<string, JToken> ItemDataMap { get; private set; }
         public Dictionary<string, JToken> ItemSpecMap { get; private set; }
         public Dictionary<int, List<int>> SlotTypeMap { get; private set; }
+        public Dictionary<int, JToken> QuestDataMap { get; private set; }
 
         public delegate void ShipSpecChangedEventHandler (object sender, DataChangedEventArgs e);
 
@@ -41,6 +43,8 @@ namespace KanColleTool {
 
         public delegate void DeckDataChangedEventHandler (object sender, DataChangedEventArgs e);
 
+        public delegate void QuestDataChangedEventHandler (object sender, DataChangedEventArgs e);
+
         public event ShipSpecChangedEventHandler ShipSpecChanged;
 
         public event ShipDataChangedEventHandler ShipDataChanged;
@@ -52,6 +56,8 @@ namespace KanColleTool {
         public event SlotTypeChangedEventHandler SlotTypeChanged;
 
         public event DeckDataChangedEventHandler DeckDataChanged;
+
+        public event QuestDataChangedEventHandler QuestDataChanged;
 
         static public KCODt Instance {
             get {
@@ -170,6 +176,27 @@ namespace KanColleTool {
             }
         }
 
+        public virtual void OnQuestDataChangedEvent (DataChangedEventArgs e) {
+            lock (QuestDataMap) {
+                QuestData = e.Data;
+                foreach (JToken it in QuestData["api_list"]) {
+                    if (it.ToString() == "-1") {
+                        continue;
+                    }
+                    int questId = int.Parse(it["api_no"].ToString());
+                    if (QuestDataMap.ContainsKey(questId)) {
+                        QuestDataMap[questId] = it;
+                    } else {
+                        QuestDataMap.Add(questId, it);
+                    }
+                }
+                QuestDataChangedEventHandler handler = QuestDataChanged;
+                if (handler != null) {
+                    handler(this, e);
+                }
+            }
+        }
+
         private KCODt () {
             InitializeMasterData();
             testMasterData();
@@ -182,6 +209,7 @@ namespace KanColleTool {
             ItemSpecMap = new Dictionary<string, JToken>();
             ItemDataMap = new Dictionary<string, JToken>();
             SlotTypeMap = new Dictionary<int, List<int>>();
+            QuestDataMap = new Dictionary<int, JToken>();
             Assembly assembly = typeof(MainWindow).Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.ship.json"))
             using (StreamReader reader = new StreamReader(stream)) {
@@ -318,6 +346,16 @@ namespace KanColleTool {
                             }
                         } catch (Exception exception) {
                             Debug.Print(exception.ToString());
+                        }
+                        break;
+                    case "questlist":
+                        try {
+                            string svdata = oS.GetResponseBodyAsString();
+                            string json = svdata.Substring(7);
+                            JToken temp = JToken.Parse(json);
+                            OnQuestDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                        } catch (Exception exception) {
+                            Debug.Print("deck parse error: " + exception.ToString());
                         }
                         break;
                     default:

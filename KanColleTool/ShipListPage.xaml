@@ -17,15 +17,14 @@
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
               SelectionMode="Extended" HorizontalAlignment="Stretch" Name="ShipGrid" 
               VerticalAlignment="Stretch" AlternatingRowBackground="Lavender"
-              IsReadOnly="True" ContextMenuOpening="ShipGrid_ContextMenuOpening">
+              IsReadOnly="True" ContextMenuOpening="ShipGrid_ContextMenuOpening" FontSize="16">
         <DataGrid.ContextMenu>
             <ContextMenu Name="cm">
-                <MenuItem Name="eq0" Uid="0" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" Click="eq0_Click"/>
-                <MenuItem Name="eq1" Uid="1" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" />
-                <MenuItem Name="eq2" Uid="2" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" />
-                <MenuItem Name="eq3" Uid="3" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" />
-                <MenuItem Name="eq4" Uid="4" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" />
-                <MenuItem Name="eqa" ItemsSource="{Binding}" DisplayMemberPath="" />
+                <MenuItem Name="eq0" Uid="0" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" Click="SlotSet_Click" />
+                <MenuItem Name="eq1" Uid="1" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" Click="SlotSet_Click" />
+                <MenuItem Name="eq2" Uid="2" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" Click="SlotSet_Click" />
+                <MenuItem Name="eq3" Uid="3" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" Click="SlotSet_Click" />
+                <MenuItem Name="eq4" Uid="4" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" Click="SlotSet_Click" />
                 <MenuItem Name="Fleet" Header="編成變更">
                     <MenuItem Name="miFl1" Uid="1">
                         <MenuItem Header="旗艦" Uid="0" Click="HenseiItem_Click" />
@@ -78,21 +77,21 @@
                     </MultiBinding>
                 </DataGridTextColumn.Binding>
             </DataGridTextColumn>
-            <DataGridTextColumn Header="燃料" Width="100" SortMemberPath="FuelRatio">
-                <DataGridTextColumn.Binding>
-                    <MultiBinding StringFormat=" {0}/{1}  {2:P0}">
-                        <Binding Path="Ship.api_fuel" />
-                        <Binding Path="Spec.api_fuel_max" />
-                        <Binding Path="FuelRatio" />
-                    </MultiBinding>
-                </DataGridTextColumn.Binding>
-            </DataGridTextColumn>
             <DataGridTextColumn Header="彈藥" Width="100" SortMemberPath="BullRatio">
                 <DataGridTextColumn.Binding>
                     <MultiBinding StringFormat=" {0}/{1}  {2:P0}">
                         <Binding Path="Ship.api_bull" />
                         <Binding Path="Spec.api_bull_max" />
                         <Binding Path="BullRatio" />
+                    </MultiBinding>
+                </DataGridTextColumn.Binding>
+            </DataGridTextColumn>
+            <DataGridTextColumn Header="燃料" Width="100" SortMemberPath="FuelRatio">
+                <DataGridTextColumn.Binding>
+                    <MultiBinding StringFormat=" {0}/{1}  {2:P0}">
+                        <Binding Path="Ship.api_fuel" />
+                        <Binding Path="Spec.api_fuel_max" />
+                        <Binding Path="FuelRatio" />
                     </MultiBinding>
                 </DataGridTextColumn.Binding>
             </DataGridTextColumn>

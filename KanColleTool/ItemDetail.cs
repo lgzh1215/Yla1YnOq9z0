@@ -12,7 +12,7 @@ namespace KanColleTool {
 
         public string LengString {
             get {
-                int leng = Int32.Parse(Spec["api_leng"].ToString());
+                int leng = int.Parse(Spec["api_leng"].ToString());
                 switch (leng) {
                     case 0:
                         return "-";

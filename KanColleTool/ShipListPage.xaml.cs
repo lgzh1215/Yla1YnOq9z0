@@ -7,9 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
-using System.Windows.Documents;
-using System.Windows.Data;
-using System.Windows.Navigation;
 
 namespace KanColleTool {
     /// <summary>
@@ -88,9 +85,9 @@ namespace KanColleTool {
                 ContextMenu contextMenu = muExe.Parent as ContextMenu;
                 DataGrid dataGrid = contextMenu.PlacementTarget as DataGrid;
                 JToken detail = dataGrid.CurrentItem as JToken;
-                int shipId = Int16.Parse(detail["Ship"]["api_id"].ToString());
-                int shipIdx = Int16.Parse(muPos.Uid);
-                int fleet = Int16.Parse(muFle.Uid);
+                int shipId = int.Parse(detail["Ship"]["api_id"].ToString());
+                int shipIdx = int.Parse(muPos.Uid);
+                int fleet = int.Parse(muFle.Uid);
                 RequestBuilder.Instance.HenseiChange(shipId, shipIdx, fleet);
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
@@ -101,7 +98,7 @@ namespace KanColleTool {
             try {
                 DataGrid dataGrid = sender as DataGrid;
                 JToken shipDetail = dataGrid.CurrentItem as JToken;
-                int shipId = Int32.Parse(shipDetail["Ship"]["api_id"].ToString());
+                int shipId = int.Parse(shipDetail["Ship"]["api_id"].ToString());
                 for (int i = 0; i < 5; i++) {
                     string onslot = shipDetail["Ship"]["api_onslot"][i].ToString();
                     string eqid = shipDetail["Ship"]["api_slot"][i].ToString();
@@ -116,19 +113,14 @@ namespace KanColleTool {
                         Panel[i].Header = String.Format("{0} \t {1}", eqid, eqName);
                     } else {
                         Panel[i].Header = String.Format("{0}", eqName);
-                        Panel[i].ItemsSource = null;
-                        Panel[i].ItemsSource = SubMenuItems;
                     }
+                    Panel[i].ItemsSource = null;
+                    Panel[i].ItemsSource = SubMenuItems;
                 }
                 miFl1.Header = KCODt.Instance.DeckData[0]["api_name"].ToString();
                 miFl2.Header = KCODt.Instance.DeckData[1]["api_name"].ToString();
                 miFl3.Header = KCODt.Instance.DeckData[2]["api_name"].ToString();
                 miFl4.Header = KCODt.Instance.DeckData[3]["api_name"].ToString();
-                // TEST
-                eqa.ItemsSource = null;
-                eqa.ItemsSource = KCODt.Instance.SlotTypeMap.Keys;
-                MenuItem sx = eqa.Items[0] as MenuItem;
-                sx.ItemsSource = KCODt.Instance.SlotTypeMap[1];
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
             }
@@ -139,13 +131,27 @@ namespace KanColleTool {
                       from item in KCODt.Instance.ItemData
                       where spec["api_id"].ToString() == item["api_slotitem_id"].ToString()
                       select JToken.FromObject(new ItemDetail(spec, item)))
-                     .OrderByDescending(x => x["Spec"]["api_rare"].ToString())
-                     .Take(10);
+                     .OrderByDescending(x => x["Spec"]["api_rare"].ToString());
             SubMenuItems = qm;
         }
 
-        private void eq0_Click (object sender, RoutedEventArgs e) {
-            Debug.Print("Haha");
+        private void SlotSet_Click (object sender, RoutedEventArgs e) {
+            try {
+                MenuItem item = e.OriginalSource as MenuItem;
+                JToken itemDetail = item.Header as JToken;
+                int itemId = int.Parse(itemDetail["Item"]["api_id"].ToString());
+
+                MenuItem muPos = sender as MenuItem;
+                ContextMenu contextMenu = muPos.Parent as ContextMenu;
+                DataGrid dataGrid = contextMenu.PlacementTarget as DataGrid;
+                JToken shipDetail = dataGrid.CurrentItem as JToken;
+                int shipId = int.Parse(shipDetail["Ship"]["api_id"].ToString());
+                int slotIdx = int.Parse(muPos.Uid);
+                RequestBuilder.Instance.SlotSet(slotIdx, itemId, shipId);
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+            
         }
 
     }

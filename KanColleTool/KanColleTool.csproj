@@ -82,6 +82,9 @@
     </Compile>
     <Compile Include="KCODt.cs" />
     <Compile Include="MissionDetail.cs" />
+    <Compile Include="QuestListPage.xaml.cs">
+      <DependentUpon>QuestListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RequestBuilder.cs" />
     <Compile Include="ShipDetail.cs" />
     <Compile Include="ShipListPage.xaml.cs">
@@ -112,6 +115,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="QuestListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ShipListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

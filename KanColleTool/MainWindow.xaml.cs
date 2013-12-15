@@ -22,6 +22,7 @@ namespace KanColleTool {
 
         ItemListPage itemListPage;
 
+        QuestListPage questListPage;
         //EquipmentPage equipmentPage;
 
         public delegate void Invoker ();
@@ -33,6 +34,7 @@ namespace KanColleTool {
             dashBoard = new DashBoard();
             shipListPage = new ShipListPage();
             itemListPage = new ItemListPage();
+            questListPage = new QuestListPage();
             //equipmentPage = new EquipmentPage();
             mainFrame.NavigationService.Navigate(dashBoard);
         }
@@ -59,6 +61,9 @@ namespace KanColleTool {
                     break;
                 case "EquipmentPage":
                     mainFrame.NavigationService.Navigate(EquipmentPage.Instance);
+                    break;
+                case "QuestListPage":
+                    mainFrame.NavigationService.Navigate(questListPage);
                     break;
                 default:
                     break;

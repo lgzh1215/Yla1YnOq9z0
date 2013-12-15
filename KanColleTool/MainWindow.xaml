@@ -9,7 +9,8 @@
             <Frame Name="mainFrame" NavigationUIVisibility="Hidden" />
         </DockPanel>
         <Button Content="DashBoard" x:Uid="DashBoard" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click" />
-        <Button Content="Ship List" x:Uid="ShipListPage" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click" Margin="74,0,0,0" />
-        <Button Content="Item List" x:Uid="ItemListPage" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click" Margin="148,0,0,0" />
+        <Button Content="Ship" x:Uid="ShipListPage" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click" Margin="74,0,0,0" />
+        <Button Content="Item" x:Uid="ItemListPage" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click" Margin="148,0,0,0" />
+        <Button Content="Quest" x:Uid="QuestListPage" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click" Margin="222,0,0,0" />
     </Grid>
 </Window>

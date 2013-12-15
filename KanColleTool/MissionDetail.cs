@@ -6,6 +6,8 @@ namespace KanColleTool {
 
         public static readonly List<MissionDetail> All = new List<MissionDetail>();
 
+        public static readonly Dictionary<int, int> IdMap = new Dictionary<int, int>();
+
         static MissionDetail () {
             All.Add(new MissionDetail(0, "0:出擊"));
             All.Add(new MissionDetail(1, "1:練習航海"));
@@ -38,6 +40,9 @@ namespace KanColleTool {
             All.Add(new MissionDetail(34, "34:艦隊決戦支援任務"));
             All.Add(new MissionDetail(35, "35:MO作戦"));
             All.Add(new MissionDetail(36, "36:水上機基地建設"));
+            for (int i = 0; i < All.Count; i++) {
+                IdMap.Add(All[i].Id, i);
+            }
         }
 
         public string Name { get; private set; }
