@@ -4,11 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
-	Title="ItemListPage">
+	Title="ItemListPage" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
 
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
               SelectionMode="Extended" HorizontalAlignment="Stretch" Name="ItemGrid" 
-              VerticalAlignment="Stretch" AlternatingRowBackground="LemonChiffon">
+              VerticalAlignment="Stretch" AlternatingRowBackground="LemonChiffon" FontSize="14">
         <DataGrid.Columns>
             <DataGridTextColumn Header="ID" Binding="{Binding Path=Item.api_id.Value}" />
             <DataGridTextColumn Header="レア" Binding="{Binding Path=Spec.api_rare.Value}" />

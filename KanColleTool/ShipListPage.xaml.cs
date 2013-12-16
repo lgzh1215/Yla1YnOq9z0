@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
+using System.Windows.Input;
 
 namespace KanColleTool {
     /// <summary>
@@ -23,9 +24,6 @@ namespace KanColleTool {
         public ShipListPage () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
-            KCODt.Instance.ShipDataChanged += new KCODt.ShipDataChangedEventHandler(KCODt_ShipDataChanged);
-            KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
-            KCODt.Instance.ItemDataChanged += new KCODt.ItemDataChangedEventHandler(KCODt_ItemDataChanged);
             InitializeMenuPanel();
         }
 
@@ -35,12 +33,6 @@ namespace KanColleTool {
             Panel.Add(eq2);
             Panel.Add(eq3);
             Panel.Add(eq4);
-        }
-
-        ~ShipListPage () {
-            KCODt.Instance.ShipDataChanged -= new KCODt.ShipDataChangedEventHandler(KCODt_ShipDataChanged);
-            KCODt.Instance.DeckDataChanged -= new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
-            KCODt.Instance.ItemDataChanged -= new KCODt.ItemDataChangedEventHandler(KCODt_ItemDataChanged);
         }
 
         void KCODt_ShipDataChanged (object sender, DataChangedEventArgs e) {
@@ -151,7 +143,25 @@ namespace KanColleTool {
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
             }
-            
+        }
+
+        private void Page_Loaded (object sender, RoutedEventArgs e) {
+            KCODt.Instance.ShipDataChanged += new KCODt.ShipDataChangedEventHandler(KCODt_ShipDataChanged);
+            KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
+            KCODt.Instance.ItemDataChanged += new KCODt.ItemDataChangedEventHandler(KCODt_ItemDataChanged);
+            reflash();
+        }
+
+        private void Page_Unloaded (object sender, RoutedEventArgs e) {
+            KCODt.Instance.ShipDataChanged -= new KCODt.ShipDataChangedEventHandler(KCODt_ShipDataChanged);
+            KCODt.Instance.DeckDataChanged -= new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
+            KCODt.Instance.ItemDataChanged -= new KCODt.ItemDataChangedEventHandler(KCODt_ItemDataChanged);
+        }
+
+        private void ShipGrid_KeyDown (object sender, KeyEventArgs e) {
+            if (e.Key == Key.F5) {
+                RequestBuilder.Instance.ReLoadShip3();
+            }
         }
 
     }

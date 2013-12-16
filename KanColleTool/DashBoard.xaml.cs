@@ -61,6 +61,8 @@ namespace KanColleTool {
             Panel.Add(new DashBoardPanel(labFl2Name, cbxFl2Mission, labFl2MissionETA, labFl2MissionCD, btnFl2Result));
             Panel.Add(new DashBoardPanel(labFl3Name, cbxFl3Mission, labFl3MissionETA, labFl3MissionCD, btnFl3Result));
             Panel.Add(new DashBoardPanel(labFl4Name, cbxFl4Mission, labFl4MissionETA, labFl4MissionCD, btnFl4Result));
+
+            cbxFl5Mission.ItemsSource = MissionDetail.All;
         }
 
         public void update (Object context) {

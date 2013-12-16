@@ -199,7 +199,6 @@ namespace KanColleTool {
 
         private KCODt () {
             InitializeMasterData();
-            testMasterData();
             InitializeFiddler();
         }
 
@@ -229,17 +228,6 @@ namespace KanColleTool {
                 ShipType = JToken.Parse(json)["api_data"];
             }
             ItemData = JToken.Parse("{\"api_result\":1,\"api_result_msg\":\"成功\",\"api_data\":[]}");
-        }
-
-        private void testMasterData () {
-            try {
-                var qm = from ss in ShipSpec where ss["api_stype"].ToString() == "8" select ss;
-                foreach (var qs in qm) {
-                    Debug.Print(qs["api_name"].ToString());
-                }
-            } catch (Exception e) {
-                Debug.Print(e.ToString());
-            }
         }
 
         private void InitializeFiddler () {
@@ -355,7 +343,7 @@ namespace KanColleTool {
                             JToken temp = JToken.Parse(json);
                             OnQuestDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
-                            Debug.Print("deck parse error: " + exception.ToString());
+                            Debug.Print("ques parse error: " + exception.ToString());
                         }
                         break;
                     default:

@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       xmlns:local="clr-namespace:KanColleTool"
-	Title="ShipListPage">
+	Title="ShipListPage" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
 
     <Page.Resources>
         <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
@@ -17,7 +17,8 @@
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
               SelectionMode="Extended" HorizontalAlignment="Stretch" Name="ShipGrid" 
               VerticalAlignment="Stretch" AlternatingRowBackground="Lavender"
-              IsReadOnly="True" ContextMenuOpening="ShipGrid_ContextMenuOpening" FontSize="16">
+              IsReadOnly="True" ContextMenuOpening="ShipGrid_ContextMenuOpening"
+              FontSize="14" KeyDown="ShipGrid_KeyDown">
         <DataGrid.ContextMenu>
             <ContextMenu Name="cm">
                 <MenuItem Name="eq0" Uid="0" ItemsSource="{Binding}" DisplayMemberPath="Spec.api_name.Value" Click="SlotSet_Click" />
@@ -62,12 +63,11 @@
             </ContextMenu>
         </DataGrid.ContextMenu>
         <DataGrid.Columns>
+            <DataGridTextColumn Header="疲" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_cond}" Width="30" />
             <DataGridTextColumn Header="所屬艦隊" Binding="{Binding Path=FleetInfo.Value}" />
-            <DataGridTextColumn Header="ID" Binding="{Binding Path=Ship.api_id}" />
+            <DataGridTextColumn Header="LV" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_lv}" Width="30" />
             <DataGridTextColumn Header="艦種" Binding="{Binding StringFormat={}{0:G}, Path=SType.api_name}" Width="90" />
             <DataGridTextColumn Header="艦船名" Binding="{Binding StringFormat={}{0:G}, Path=Spec.api_name}" Width="90" />
-            <DataGridTextColumn Header="LV" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_lv}" Width="30" />
-            <DataGridTextColumn Header="疲" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_cond}" Width="30" />
             <DataGridTextColumn Header="耐久" Width="96" SortMemberPath="HPRatio">
                 <DataGridTextColumn.Binding>
                     <MultiBinding StringFormat=" {0}/{1}  {2}">
@@ -95,6 +95,7 @@
                     </MultiBinding>
                 </DataGridTextColumn.Binding>
             </DataGridTextColumn>
+            <DataGridTextColumn Header="ID" Binding="{Binding Path=Ship.api_id}" />
         </DataGrid.Columns>
     </DataGrid>
 </Page>

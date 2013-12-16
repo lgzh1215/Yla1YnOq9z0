@@ -10,7 +10,7 @@ namespace KanColleTool {
 
         static MissionDetail () {
             All.Add(new MissionDetail(0, "0:出擊"));
-            All.Add(new MissionDetail(1, "1:練習航海"));
+            All.Add(new MissionDetail(1, "1:練習航海", "15m", 1, "駆×2"));
             All.Add(new MissionDetail(2, "2:長距離練習航海"));
             All.Add(new MissionDetail(3, "3:警備任務"));
             All.Add(new MissionDetail(4, "4:対潜警戒任務"));
@@ -49,15 +49,28 @@ namespace KanColleTool {
 
         public int Id { get; private set; }
 
+        public string Time { get; private set; }
+
+        public int FlagLv { get; private set; }
+
+        public string Require { get; private set; }
+
         private MissionDetail (int id, string name) {
             Id = id;
             Name = name;
         }
 
+        private MissionDetail (int id, string name, string time, int flagLv, string require) {
+            Id = id;
+            Name = name;
+            Time = time;
+            FlagLv = flagLv;
+            Require = require;
+        }
+
         public override string ToString () {
             return Name;
         }
-
 
     }
 }

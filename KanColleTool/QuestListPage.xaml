@@ -7,14 +7,27 @@
       xmlns:local="clr-namespace:KanColleTool"
 	Title="QuestListPage" Loaded="Page_Loaded">
 
+    <Page.Resources>
+        <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        </Style>
+    </Page.Resources>
+
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
               SelectionMode="Extended" HorizontalAlignment="Stretch" Name="QuestGrid" 
-              VerticalAlignment="Stretch" AlternatingRowBackground="LemonChiffon">
+              VerticalAlignment="Stretch" AlternatingRowBackground="Lavender"
+              IsReadOnly="True" ContextMenuOpening="QuestGrid_ContextMenuOpening"
+              FontSize="14">
+        <DataGrid.ContextMenu>
+            <ContextMenu Name="cm" />
+        </DataGrid.ContextMenu>
         <DataGrid.Columns>
-            <DataGridTextColumn Header="ID" Binding="{Binding Path=api_no.Value}" />
-            <DataGridTextColumn Header="完成度" Binding="{Binding Path=api_progress_flag.Value}" />
-            <DataGridTextColumn Header="任務" Binding="{Binding Path=api_title.Value}" />
-            <DataGridTextColumn Header="詳細" Binding="{Binding Path=api_detail.Value}" />
+            <DataGridTextColumn Header="ID" Binding="{Binding Path=Data.api_no.Value}" />
+            <DataGridTextColumn Header="狀態" Binding="{Binding Path=Status.Value}" />
+            <DataGridTextColumn Header="完成度" Binding="{Binding Path=Progress.Value}" />
+            <DataGridTextColumn Header="任務" Binding="{Binding Path=Data.api_title.Value}" />
+            <DataGridTextColumn Header="詳細" Binding="{Binding Path=Data.api_detail.Value}" />
         </DataGrid.Columns>
     </DataGrid>
 </Page>

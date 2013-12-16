@@ -30,5 +30,34 @@
         <Label Name="labFl4MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="424,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <Label Name="labFl4MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="334,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <Button Name="btnFl4Result" Uid="3" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="253,102,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
+
+        <ComboBox Name="cbxFl5Mission" Height="35" HorizontalAlignment="Left" Margin="0,152,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="247">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <!--
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0" Content="{Binding Name}" />
+                            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Time}" />
+                            <Label Grid.Row="1" Grid.Column="0" Content="{Binding FlagLv}" />
+                            <Label Grid.Row="1" Grid.Column="2" Content="{Binding Require}" />
+                        </Grid>
+                        -->
+                        <Label Content="{Binding Name}" />
+                        <Label Content="{Binding Time}" />
+                        <Label Content="{Binding FlagLv}" ContentStringFormat="必要LV:{0}"/>
+                        <!--<Label Content="{Binding Require}" />-->
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
     </Grid>
 </Page>

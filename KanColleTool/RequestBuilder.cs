@@ -95,13 +95,38 @@ namespace KanColleTool {
 
         public void SlotSet (int slotIdx, int itemId, int shipId) {
             DoSlotSet(slotIdx, itemId, shipId);
-            //DoShip2();
+            Invoke();
+        }
+
+        public void ReLoadShip3 () {
+            DoShip3();
             Invoke();
         }
 
         public void QuestList (int page) {
             string body = String.Format("api%5Fpage%5Fno={0}&api%5Fverno=1&api%5Ftoken={1}", page, Token);
-            KCRequest req = new KCRequest("api_get_member/questlist", body, 100);
+            KCRequest req = new KCRequest("api_get_member/questlist", body, 200);
+            tasks.Enqueue(req);
+            Invoke();
+        }
+
+        public void QuestStart (int id) {
+            string body = String.Format("api%5Fquest%5Fid={0}&api%5Fverno=1&api%5Ftoken={1}", id, Token);
+            KCRequest req = new KCRequest("api_req_quest/start", body, 1000);
+            tasks.Enqueue(req);
+            Invoke();
+        }
+
+        public void QuestStop (int id) {
+            string body = String.Format("api%5Fquest%5Fid={0}&api%5Fverno=1&api%5Ftoken={1}", id, Token);
+            KCRequest req = new KCRequest("api_req_quest/stop", body, 1000);
+            tasks.Enqueue(req);
+            Invoke();
+        }
+
+        public void QuestClear (int id) {
+            string body = String.Format("api%5Fquest%5Fid={0}&api%5Fverno=1&api%5Ftoken={1}", id, Token);
+            KCRequest req = new KCRequest("api_req_quest/clearitemget", body, 1000);
             tasks.Enqueue(req);
             Invoke();
         }
@@ -195,6 +220,12 @@ namespace KanColleTool {
         private void DoShip2 () {
             string body = "api%5Fsort%5Forder=2&api%5Fsort%5Fkey=2&api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_get_member/ship2", body, 500);
+            tasks.Enqueue(req);
+        }
+
+        private void DoShip3 () {
+            string body = String.Format("api%5Fsort%5Forder=2&api%5Fsort%5Fkey=1&api%5Fverno=1&api%5Ftoken={0}", Token);
+            KCRequest req = new KCRequest("api_get_member/ship3", body, 500);
             tasks.Enqueue(req);
         }
 

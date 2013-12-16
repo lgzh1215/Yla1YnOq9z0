@@ -39,6 +39,10 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FiddlerCore4">
       <HintPath>..\Lib\FiddlerCore4.dll</HintPath>
@@ -73,15 +77,13 @@
     <Compile Include="DashBoard.xaml.cs">
       <DependentUpon>DashBoard.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EquipmentPage.xaml.cs">
-      <DependentUpon>EquipmentPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ItemDetail.cs" />
     <Compile Include="ItemListPage.xaml.cs">
       <DependentUpon>ItemListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="KCODt.cs" />
     <Compile Include="MissionDetail.cs" />
+    <Compile Include="QuestDetail.cs" />
     <Compile Include="QuestListPage.xaml.cs">
       <DependentUpon>QuestListPage.xaml</DependentUpon>
     </Compile>
@@ -92,10 +94,6 @@
     </Compile>
     <Compile Include="Utils.cs" />
     <Page Include="DashBoard.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="EquipmentPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -154,6 +152,10 @@
     <EmbeddedResource Include="JSON\ship.json" />
     <EmbeddedResource Include="JSON\slotitem.json" />
     <EmbeddedResource Include="JSON\shiptype.json" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\compass.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

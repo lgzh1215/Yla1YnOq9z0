@@ -1,12 +1,7 @@
 ﻿using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Windows.Documents;
 
 namespace KanColleTool {
     /// <summary>
@@ -23,7 +18,6 @@ namespace KanColleTool {
         ItemListPage itemListPage;
 
         QuestListPage questListPage;
-        //EquipmentPage equipmentPage;
 
         public delegate void Invoker ();
 
@@ -35,7 +29,6 @@ namespace KanColleTool {
             shipListPage = new ShipListPage();
             itemListPage = new ItemListPage();
             questListPage = new QuestListPage();
-            //equipmentPage = new EquipmentPage();
             mainFrame.NavigationService.Navigate(dashBoard);
         }
 
@@ -59,38 +52,12 @@ namespace KanColleTool {
                 case "ItemListPage":
                     mainFrame.NavigationService.Navigate(itemListPage);
                     break;
-                case "EquipmentPage":
-                    mainFrame.NavigationService.Navigate(EquipmentPage.Instance);
-                    break;
                 case "QuestListPage":
                     mainFrame.NavigationService.Navigate(questListPage);
                     break;
                 default:
                     break;
             }
-        }
-
-        private void button1_Click (object sender, RoutedEventArgs e) {
-            Assembly assembly = typeof(MainWindow).Assembly;
-            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.ship2.json"))
-            using (StreamReader reader = new StreamReader(stream)) {
-                string json = reader.ReadToEnd();
-                JToken temp = JToken.Parse(json);
-                KCODt.Instance.OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
-            }
-            
-        }
-
-        private void button2_Click (object sender, RoutedEventArgs e) {
-            EquipmentPage.Instance.ShipId = 2499;
-            mainFrame.NavigationService.Navigate(EquipmentPage.Instance);
-            //Assembly assembly = typeof(MainWindow).Assembly;
-            //using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.slotitem2.json"))
-            //using (StreamReader reader = new StreamReader(stream)) {
-            //    string json = reader.ReadToEnd();
-            //    JToken temp = JToken.Parse(json);
-            //    KCODt.Instance.OnItemDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
-            //}
         }
 
     }

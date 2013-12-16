@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -19,7 +18,6 @@ namespace KanColleTool {
         public ItemListPage () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
-            KCODt.Instance.ItemDataChanged += new KCODt.ItemDataChangedEventHandler(KCODt_SlotItemChanged);
         }
 
         void KCODt_SlotItemChanged (object sender, DataChangedEventArgs e) {
@@ -41,6 +39,15 @@ namespace KanColleTool {
                     Debug.Print(ex.ToString());
                 }
             }, null);
+        }
+
+        private void Page_Loaded (object sender, RoutedEventArgs e) {
+            KCODt.Instance.ItemDataChanged += new KCODt.ItemDataChangedEventHandler(KCODt_SlotItemChanged);
+            reflash();
+        }
+
+        private void Page_Unloaded (object sender, RoutedEventArgs e) {
+            KCODt.Instance.ItemDataChanged -= new KCODt.ItemDataChangedEventHandler(KCODt_SlotItemChanged);
         }
     }
 }
