@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace KanColleTool {
 
@@ -54,6 +55,16 @@ namespace KanColleTool {
         public int FlagLv { get; private set; }
 
         public string Require { get; private set; }
+
+        public string FlagLvInfo {
+            get {
+                if (FlagLv == 0) {
+                    return "";
+                } else {
+                    return String.Format("必要LV: {0}", FlagLv);
+                }
+            }
+        }
 
         private MissionDetail (int id, string name) {
             Id = id;

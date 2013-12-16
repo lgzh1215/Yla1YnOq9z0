@@ -53,7 +53,7 @@
                         -->
                         <Label Content="{Binding Name}" />
                         <Label Content="{Binding Time}" />
-                        <Label Content="{Binding FlagLv}" ContentStringFormat="必要LV:{0}"/>
+                        <Label Content="{Binding FlagLvInfo}" />
                         <!--<Label Content="{Binding Require}" />-->
                     </StackPanel>
                 </DataTemplate>
