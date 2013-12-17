@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
 
@@ -43,11 +44,19 @@ namespace KanColleTool {
 
         private void Page_Loaded (object sender, RoutedEventArgs e) {
             KCODt.Instance.ItemDataChanged += new KCODt.ItemDataChangedEventHandler(KCODt_SlotItemChanged);
-            reflash();
+            if (KCODt.Instance.ItemData == null || KCODt.Instance.ItemSpec == null) {
+                RequestBuilder.Instance.ReLoadSlotItem();
+            }
         }
 
         private void Page_Unloaded (object sender, RoutedEventArgs e) {
             KCODt.Instance.ItemDataChanged -= new KCODt.ItemDataChangedEventHandler(KCODt_SlotItemChanged);
+        }
+
+        private void ItemGrid_KeyDown (object sender, KeyEventArgs e) {
+            if (e.Key == Key.F5) {
+                RequestBuilder.Instance.ReLoadSlotItem();
+            }
         }
     }
 }

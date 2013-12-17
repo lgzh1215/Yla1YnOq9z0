@@ -227,7 +227,7 @@ namespace KanColleTool {
                 string json = reader.ReadToEnd();
                 ShipType = JToken.Parse(json)["api_data"];
             }
-            ItemData = JToken.Parse("{\"api_result\":1,\"api_result_msg\":\"成功\",\"api_data\":[]}");
+            //ItemData = JToken.Parse("{\"api_result\":1,\"api_result_msg\":\"成功\",\"api_data\":[]}");
         }
 
         private void InitializeFiddler () {
@@ -343,7 +343,17 @@ namespace KanColleTool {
                             JToken temp = JToken.Parse(json);
                             OnQuestDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
-                            Debug.Print("ques parse error: " + exception.ToString());
+                            Debug.Print("quest parse error: " + exception.ToString());
+                        }
+                        break;
+                    case "next":
+                        try {
+                            string svdata = oS.GetResponseBodyAsString();
+                            string json = svdata.Substring(7);
+                            JToken temp = JToken.Parse(json);
+                            Debug.Print(temp.ToString());
+                        } catch (Exception exception) {
+                            Debug.Print("next parse error: " + exception.ToString());
                         }
                         break;
                     default:

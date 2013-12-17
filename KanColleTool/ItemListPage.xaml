@@ -8,7 +8,8 @@
 
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
               SelectionMode="Extended" HorizontalAlignment="Stretch" Name="ItemGrid" 
-              VerticalAlignment="Stretch" AlternatingRowBackground="LemonChiffon" FontSize="14">
+              VerticalAlignment="Stretch" AlternatingRowBackground="LemonChiffon"
+              FontSize="14" KeyDown="ItemGrid_KeyDown">
         <DataGrid.Columns>
             <DataGridTextColumn Header="ID" Binding="{Binding Path=Item.api_id.Value}" />
             <DataGridTextColumn Header="レア" Binding="{Binding Path=Spec.api_rare.Value}" />

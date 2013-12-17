@@ -15,7 +15,6 @@ namespace KanColleTool {
         public double BullRatio {
             get {
                 double r = Double.Parse(Ship["api_bull"].ToString()) / Double.Parse(Spec["api_bull_max"].ToString());
-                //Debug.Print(Spec["api_name"].ToString() + " b% " + r.ToString());
                 return r;
             }
         }
@@ -23,7 +22,6 @@ namespace KanColleTool {
         public double FuelRatio {
             get {
                 double r = Double.Parse(Ship["api_fuel"].ToString()) / Double.Parse(Spec["api_fuel_max"].ToString());
-                //Debug.Print(Spec["api_name"].ToString() + " f% " + r.ToString());
                 return r;
             }
         }
@@ -31,7 +29,6 @@ namespace KanColleTool {
         public double HPRatio {
             get {
                 double r = Double.Parse(Ship["api_nowhp"].ToString()) / Double.Parse(Ship["api_maxhp"].ToString());
-                //Debug.Print(Spec["api_name"].ToString() + " f% " + r.ToString());
                 return r;
             }
         }
@@ -43,6 +40,20 @@ namespace KanColleTool {
                 } else {
                     return Ship["fleet_info"].ToString();
                 }
+            }
+        }
+
+        public string ShipIcoName {
+            get {
+                string filename = "";
+                string formatting = @"file:///C:/Users/ghchen/Documents/kancolleImages/No.{0}-{1}{2}.png";
+                string cond = "1";
+                if (HPRatio <= 0.5) {
+                    cond = "2";
+                    //filename = String.Format("No.{0}-{1}2.png", Spec["api_id"].ToString(), Spec["api_name"].ToString());
+                }
+                filename = String.Format(formatting, Spec["api_id"].ToString(), Spec["api_name"].ToString(), cond);
+                return filename;
             }
         }
 

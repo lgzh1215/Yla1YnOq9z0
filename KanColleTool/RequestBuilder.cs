@@ -103,6 +103,11 @@ namespace KanColleTool {
             Invoke();
         }
 
+        public void ReLoadSlotItem () {
+            DoSlotItem();
+            Invoke();
+        }
+
         public void QuestList (int page) {
             string body = String.Format("api%5Fpage%5Fno={0}&api%5Fverno=1&api%5Ftoken={1}", page, Token);
             KCRequest req = new KCRequest("api_get_member/questlist", body, 200);
@@ -250,6 +255,12 @@ namespace KanColleTool {
         private void DoSlotSet (int slotIdx, int itemId, int shipId) {
             string body = "api%5Fslot%5Fidx=" + slotIdx + "&api%5Fitem%5Fid=" + itemId + "&api%5Fid=" + shipId + "&api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_req_kaisou/slotset", body, 100);
+            tasks.Enqueue(req);
+        }
+
+        private void DoSlotItem () {
+            string body = String.Format("api%5Fverno=1&api%5Ftoken={0}", Token);
+            KCRequest req = new KCRequest("api_get_member/slotitem", body, 300);
             tasks.Enqueue(req);
         }
         #endregion

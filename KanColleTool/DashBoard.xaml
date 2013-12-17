@@ -6,58 +6,54 @@
       mc:Ignorable="d" 
 	Title="DashBoard">
 
+    <Page.Resources>
+        <DataTemplate x:Key="MissionTemplate">
+            <StackPanel Orientation="Vertical" >
+                <Label Content="{Binding Name}" />
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding FlagLvInfo}" Width="60" />
+                    <Label Content="{Binding Require}" Width="100" />
+                    <Label Content="{Binding Time}" Width="60" />
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+        <Style x:Key="BaseStyle" TargetType="{x:Type ContentControl}">
+            <Setter Property="Height" Value="28" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="MissionStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Width" Value="235" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+    </Page.Resources>
+
     <Grid>
-        <Label Name="labFl1Name" Content="" Height="28" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <ComboBox Name="cbxFl1Mission" Height="28" HorizontalAlignment="Left" Margin="64,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="183" />
-        <Label Name="labFl1MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="424,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl1MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="334,0,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl1Result" Uid="0" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="253,0,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
+        <ComboBox Name="cbxFl1Mission" Margin="12,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" />
+        <Label Name="labFl1MissionETA" Margin="424,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Label Name="labFl1MissionCD" Margin="334,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Button Name="btnFl1Result" Margin="253,0,0,0" Uid="0" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
 
-        <Label Name="labFl2Name" Content="" Height="28" HorizontalAlignment="Left" Margin="0,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <ComboBox Name="cbxFl2Mission" Height="28" HorizontalAlignment="Left" Margin="64,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="183" />
-        <Label Name="labFl2MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="424,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl2MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="334,34,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl2Result" Uid="1" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="253,34,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
+        <ComboBox Name="cbxFl2Mission" Margin="12,34,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" />
+        <Label Name="labFl2MissionETA" Margin="424,34,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Label Name="labFl2MissionCD" Margin="334,34,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Button Name="btnFl2Result" Margin="253,34,0,0" Uid="1" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
 
-        <Label Name="labFl3Name" Content="" Height="28" HorizontalAlignment="Left" Margin="0,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <ComboBox Name="cbxFl3Mission" Height="28" HorizontalAlignment="Left" Margin="64,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="183" />
-        <Label Name="labFl3MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="424,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl3MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="334,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl3Result" Uid="2" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="253,68,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
+        <ComboBox Name="cbxFl3Mission" Margin="12,68,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" />
+        <Label Name="labFl3MissionETA" Margin="424,68,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Label Name="labFl3MissionCD" Margin="334,68,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Button Name="btnFl3Result" Margin="253,68,0,0" Uid="2" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
 
-        <Label Name="labFl4Name" Content="" Height="28" HorizontalAlignment="Left" Margin="0,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <ComboBox Name="cbxFl4Mission" Height="28" HorizontalAlignment="Left" Margin="64,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="183" />
-        <Label Name="labFl4MissionETA" Content="" Height="28" HorizontalAlignment="Left" Margin="424,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Name="labFl4MissionCD" Content="" Height="28" HorizontalAlignment="Left" Margin="334,102,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Button Name="btnFl4Result" Uid="3" Content="補給&amp;遠征" Height="28" HorizontalAlignment="Left" Margin="253,102,0,0" VerticalAlignment="Top" Width="75" Click="btnFleet_Click" />
+        <ComboBox Name="cbxFl4Mission" Margin="12,102,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" />
+        <Label Name="labFl4MissionETA" Margin="424,102,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Label Name="labFl4MissionCD" Margin="334,102,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Button Name="btnFl4Result" Margin="253,102,0,0" Uid="3" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
 
-        <ComboBox Name="cbxFl5Mission" Height="35" HorizontalAlignment="Left" Margin="0,152,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="247">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <!--
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0" Content="{Binding Name}" />
-                            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Time}" />
-                            <Label Grid.Row="1" Grid.Column="0" Content="{Binding FlagLv}" />
-                            <Label Grid.Row="1" Grid.Column="2" Content="{Binding Require}" />
-                        </Grid>
-                        -->
-                        <Label Content="{Binding Name}" />
-                        <Label Content="{Binding Time}" />
-                        <Label Content="{Binding FlagLvInfo}" />
-                        <!--<Label Content="{Binding Require}" />-->
-                    </StackPanel>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+        <Label Name="labShipCount" Margin="12,136,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Label Name="labItemCount" Margin="12,170,0,0" Content="" Style="{StaticResource BaseStyle}" />
     </Grid>
 </Page>

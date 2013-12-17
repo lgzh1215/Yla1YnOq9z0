@@ -63,6 +63,13 @@
             </ContextMenu>
         </DataGrid.ContextMenu>
         <DataGrid.Columns>
+            <DataGridTemplateColumn Header="ico" Width="80">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding ShipIcoName.Value}" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
             <DataGridTextColumn Header="疲" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_cond}" Width="30" />
             <DataGridTextColumn Header="所屬艦隊" Binding="{Binding Path=FleetInfo.Value}" />
             <DataGridTextColumn Header="LV" Binding="{Binding StringFormat={}{0:G}, Path=Ship.api_lv}" Width="30" />

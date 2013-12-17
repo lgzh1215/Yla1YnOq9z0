@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
 
@@ -12,22 +13,6 @@ namespace KanColleTool {
     /// <summary>
     /// DashBoard.xaml 的互動邏輯
     /// </summary>
-
-    class DashBoardPanel {
-        public Label Name { get; private set; }
-        public ComboBox Mission { get; private set; }
-        public Label ETA { get; private set; }
-        public Label CD { get; private set; }
-        public Button Button { get; private set; }
-
-        public DashBoardPanel (Label name, ComboBox mission, Label eta, Label cd, Button button) {
-            Name = name;
-            Mission = mission;
-            ETA = eta;
-            CD = cd;
-            Button = button;
-        }
-    }
 
     public partial class DashBoard : Page {
 
@@ -57,12 +42,10 @@ namespace KanColleTool {
                 cbxFl3Mission.Items.Add(mission);
                 cbxFl4Mission.Items.Add(mission);
             }
-            Panel.Add(new DashBoardPanel(labFl1Name, cbxFl1Mission, labFl1MissionETA, labFl1MissionCD, btnFl1Result));
-            Panel.Add(new DashBoardPanel(labFl2Name, cbxFl2Mission, labFl2MissionETA, labFl2MissionCD, btnFl2Result));
-            Panel.Add(new DashBoardPanel(labFl3Name, cbxFl3Mission, labFl3MissionETA, labFl3MissionCD, btnFl3Result));
-            Panel.Add(new DashBoardPanel(labFl4Name, cbxFl4Mission, labFl4MissionETA, labFl4MissionCD, btnFl4Result));
-
-            cbxFl5Mission.ItemsSource = MissionDetail.All;
+            Panel.Add(new DashBoardPanel(cbxFl1Mission, labFl1MissionETA, labFl1MissionCD, btnFl1Result));
+            Panel.Add(new DashBoardPanel(cbxFl2Mission, labFl2MissionETA, labFl2MissionCD, btnFl2Result));
+            Panel.Add(new DashBoardPanel(cbxFl3Mission, labFl3MissionETA, labFl3MissionCD, btnFl3Result));
+            Panel.Add(new DashBoardPanel(cbxFl4Mission, labFl4MissionETA, labFl4MissionCD, btnFl4Result));
         }
 
         public void update (Object context) {
@@ -74,7 +57,7 @@ namespace KanColleTool {
                     for (int i = 0; i < 4; i++) {
                         JToken fleet = KCODt.Instance.DeckData[i];
                         JToken mission = fleet["api_mission"];
-                        Panel[i].Name.Content = fleet["api_name"].ToString();
+                        //Panel[i].Name.Content = fleet["api_name"].ToString();
                         Panel[i].ETA.Content = Utils.valueOfUTC(mission[2].ToString());
                         Panel[i].CD.Content = Utils.countSpan(mission[2].ToString()).ToString(@"hh\:mm\:ss");
                         if (mission[0].ToString() != "0") {
@@ -87,6 +70,8 @@ namespace KanColleTool {
                             Panel[i].CD.Content = "";
                         }
                     }
+                    labShipCount.Content = String.Format("艦娘數 {0}", KCODt.Instance.ShipDataMap.Count);
+                    labItemCount.Content = String.Format("裝備數 {0}", KCODt.Instance.ItemDataMap.Count);
                 } catch (Exception e) {
                     Debug.Print(e.ToString());
                 }
@@ -108,6 +93,13 @@ namespace KanColleTool {
                 }
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
+            }
+        }
+
+        private void cbxMission_KeyDown (object sender, KeyEventArgs e) {
+            if (e.Key == Key.Back) {
+                ComboBox cb = sender as ComboBox;
+                cb.SelectedItem = null;
             }
         }
 
@@ -150,6 +142,21 @@ namespace KanColleTool {
                 Debug.Print(ex.Message);
             }
             return chargeIds;
+        }
+
+    }
+
+    class DashBoardPanel {
+        public ComboBox Mission { get; private set; }
+        public Label ETA { get; private set; }
+        public Label CD { get; private set; }
+        public Button Button { get; private set; }
+
+        public DashBoardPanel (ComboBox mission, Label eta, Label cd, Button button) {
+            Mission = mission;
+            ETA = eta;
+            CD = cd;
+            Button = button;
         }
     }
 

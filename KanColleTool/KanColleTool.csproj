@@ -153,7 +153,6 @@
     <EmbeddedResource Include="JSON\slotitem.json" />
     <EmbeddedResource Include="JSON\shiptype.json" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\compass.ico" />
   </ItemGroup>
