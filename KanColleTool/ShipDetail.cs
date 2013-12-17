@@ -46,11 +46,10 @@ namespace KanColleTool {
         public string ShipIcoName {
             get {
                 string filename = "";
-                string formatting = @"file:///C:/Users/ghchen/Documents/kancolleImages/No.{0}-{1}{2}.png";
+                string formatting = @"file:///D:/usr/KanColleTool/No.{0}-{1}{2}.png";
                 string cond = "1";
                 if (HPRatio <= 0.5) {
                     cond = "2";
-                    //filename = String.Format("No.{0}-{1}2.png", Spec["api_id"].ToString(), Spec["api_name"].ToString());
                 }
                 filename = String.Format(formatting, Spec["api_id"].ToString(), Spec["api_name"].ToString(), cond);
                 return filename;

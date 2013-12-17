@@ -155,6 +155,8 @@ namespace KanColleTool {
             KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
             if (KCODt.Instance.ShipData == null || KCODt.Instance.ShipSpec == null) {
                 RequestBuilder.Instance.ReLoadShip3();
+            } else if (ShipGrid.ItemsSource == null) {
+                reflash();
             }
         }
 

@@ -46,6 +46,8 @@ namespace KanColleTool {
             KCODt.Instance.ItemDataChanged += new KCODt.ItemDataChangedEventHandler(KCODt_SlotItemChanged);
             if (KCODt.Instance.ItemData == null || KCODt.Instance.ItemSpec == null) {
                 RequestBuilder.Instance.ReLoadSlotItem();
+            } else if (ItemGrid.ItemsSource == null) {
+                reflash();
             }
         }
 
