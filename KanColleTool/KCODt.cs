@@ -24,10 +24,12 @@ namespace KanColleTool {
         public JToken ShipType { get; private set; }
         public JToken SlotType { get; private set; }
         public JToken QuestData { get; private set; }
+        public JToken NDockData { get; private set; }
         public Dictionary<string, JToken> ShipSpecMap { get; private set; }
         public Dictionary<string, JToken> ShipDataMap { get; private set; }
         public Dictionary<string, JToken> ItemDataMap { get; private set; }
         public Dictionary<string, JToken> ItemSpecMap { get; private set; }
+        public Dictionary<string, string> NavalFleet { get; private set; }
         public Dictionary<int, List<int>> SlotTypeMap { get; private set; }
         public Dictionary<int, JToken> QuestDataMap { get; private set; }
 
@@ -159,10 +161,12 @@ namespace KanColleTool {
 
         protected virtual void OnDeckDataChangedEvent (DataChangedEventArgs e) {
             DeckData = e.Data;
+            NavalFleet.Clear();
             for (int i = 0; i < DeckData.Count(); i++) {
                 for (int j = 0; j < DeckData[i]["api_ship"].Count(); j++) {
                     string key = DeckData[i]["api_ship"][j].ToString();
                     if (ShipDataMap.ContainsKey(key)) {
+                        NavalFleet[key] = (i + 1) + "-" + (j + 1);
                         JObject jo = ShipDataMap[key] as JObject;
                         if (jo["fleet_info"] == null) {
                             jo.Add("fleet_info", (i + 1) + "-" + (j + 1));
@@ -209,6 +213,7 @@ namespace KanColleTool {
             ItemDataMap = new Dictionary<string, JToken>();
             SlotTypeMap = new Dictionary<int, List<int>>();
             QuestDataMap = new Dictionary<int, JToken>();
+            NavalFleet = new Dictionary<string, string>();
             Assembly assembly = typeof(MainWindow).Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.ship.json"))
             using (StreamReader reader = new StreamReader(stream)) {
@@ -227,7 +232,6 @@ namespace KanColleTool {
                 string json = reader.ReadToEnd();
                 ShipType = JToken.Parse(json)["api_data"];
             }
-            //ItemData = JToken.Parse("{\"api_result\":1,\"api_result_msg\":\"成功\",\"api_data\":[]}");
         }
 
         private void InitializeFiddler () {
@@ -347,13 +351,13 @@ namespace KanColleTool {
                         }
                         break;
                     case "next":
-                        try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            JToken temp = JToken.Parse(json);
-                            Debug.Print(temp.ToString());
-                        } catch (Exception exception) {
-                            Debug.Print("next parse error: " + exception.ToString());
+                        printInfo(oS);
+                        break;
+                    case "start":
+                        if (m.Groups[1].ToString() == "api_req_map") {
+                            printInfo(oS);
+                        } else if (m.Groups[1].ToString() == "api_req_nyukyo") {
+                            // TODO
                         }
                         break;
                     default:
@@ -374,6 +378,16 @@ namespace KanColleTool {
             FiddlerApplication.Log.LogFormat("Gateway: {0}", CONFIG.UpstreamGateway.ToString());
         }
 
+        private void printInfo (Fiddler.Session oS) {
+            try {
+                string svdata = oS.GetResponseBodyAsString();
+                string json = svdata.Substring(7);
+                JToken temp = JToken.Parse(json);
+                Debug.Print(temp.ToString());
+            } catch (Exception exception) {
+                Debug.Print("next parse error: " + exception.ToString());
+            }
+        }
     }
 
     public class DataChangedEventArgs : EventArgs {

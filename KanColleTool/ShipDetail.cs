@@ -35,10 +35,11 @@ namespace KanColleTool {
 
         public string FleetInfo {
             get {
-                if (Ship["fleet_info"] == null) {
-                    return "n/a";
+                string key = Ship["api_id"].ToString();
+                if (KCODt.Instance.NavalFleet.ContainsKey(key)) {
+                    return KCODt.Instance.NavalFleet[key];
                 } else {
-                    return Ship["fleet_info"].ToString();
+                    return "n/a";
                 }
             }
         }

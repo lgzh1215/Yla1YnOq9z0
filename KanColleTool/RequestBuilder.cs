@@ -89,7 +89,7 @@ namespace KanColleTool {
 
         public void HenseiChange (int shipId, int shipIdx, int fleet) {
             DoChange(shipId, shipIdx, fleet);
-            DoShip2();
+            DoDeck();
             Invoke();
         }
 
@@ -217,7 +217,7 @@ namespace KanColleTool {
         }
 
         private void DoNDock () {
-            string body = "api%5Fverno=1&api%5Ftoken=" + Token;
+            string body = String.Format("api%5Fverno=1&api%5Ftoken={0}", Token);
             KCRequest req = new KCRequest("api_get_member/ndock", body, 100);
             tasks.Enqueue(req);
         }
@@ -261,6 +261,12 @@ namespace KanColleTool {
         private void DoSlotItem () {
             string body = String.Format("api%5Fverno=1&api%5Ftoken={0}", Token);
             KCRequest req = new KCRequest("api_get_member/slotitem", body, 300);
+            tasks.Enqueue(req);
+        }
+
+        private void DoNDockStart (int shipId, int ndockId, int speed) {
+            string body = String.Format("api%5Fship%5Fid={0}&api%5Fndock%5Fid={1}&api%5Fhighspeed={2}&api%5Fverno=1&api%5Ftoken={3}", shipId, ndockId, speed, Token);
+            KCRequest req = new KCRequest("api_req_nyukyo/start", body, 300);
             tasks.Enqueue(req);
         }
         #endregion

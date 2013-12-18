@@ -35,17 +35,13 @@ namespace KanColleTool {
         }
 
         void InitializeMission () {
-            List<MissionDetail> missions = new List<MissionDetail>();
-            foreach (var mission in MissionDetail.All) {
-                cbxFl1Mission.Items.Add(mission);
-                cbxFl2Mission.Items.Add(mission);
-                cbxFl3Mission.Items.Add(mission);
-                cbxFl4Mission.Items.Add(mission);
+            Panel.Add(new DashBoardPanel(stpFleet1Panel));
+            Panel.Add(new DashBoardPanel(stpFleet2Panel));
+            Panel.Add(new DashBoardPanel(stpFleet3Panel));
+            Panel.Add(new DashBoardPanel(stpFleet4Panel));
+            foreach (DashBoardPanel item in Panel) {
+                item.Mission.ItemsSource = MissionDetail.All;
             }
-            Panel.Add(new DashBoardPanel(cbxFl1Mission, labFl1MissionETA, labFl1MissionCD, btnFl1Result));
-            Panel.Add(new DashBoardPanel(cbxFl2Mission, labFl2MissionETA, labFl2MissionCD, btnFl2Result));
-            Panel.Add(new DashBoardPanel(cbxFl3Mission, labFl3MissionETA, labFl3MissionCD, btnFl3Result));
-            Panel.Add(new DashBoardPanel(cbxFl4Mission, labFl4MissionETA, labFl4MissionCD, btnFl4Result));
         }
 
         public void update (Object context) {
@@ -54,10 +50,9 @@ namespace KanColleTool {
                     if (KCODt.Instance.DeckData == null) {
                         return;
                     }
-                    for (int i = 0; i < 4; i++) {
+                    for (int i = 0; i < Panel.Count; i++) {
                         JToken fleet = KCODt.Instance.DeckData[i];
                         JToken mission = fleet["api_mission"];
-                        //Panel[i].Name.Content = fleet["api_name"].ToString();
                         Panel[i].ETA.Content = Utils.valueOfUTC(mission[2].ToString());
                         Panel[i].CD.Content = Utils.countSpan(mission[2].ToString()).ToString(@"hh\:mm\:ss");
                         if (mission[0].ToString() != "0") {
@@ -68,6 +63,29 @@ namespace KanColleTool {
                             Panel[i].Mission.IsEnabled = true;
                             Panel[i].Button.IsEnabled = true;
                             Panel[i].CD.Content = "";
+                        }
+                        // check fuel && cond
+                        Panel[i].Fuel.Visibility = System.Windows.Visibility.Hidden;
+                        Panel[i].Cond.Visibility = System.Windows.Visibility.Hidden;
+                        if (KCODt.Instance.ShipData == null) {
+                            continue;
+                        }
+                        foreach (JToken item in fleet["api_ship"]) {
+                            string shipId = item.ToString();
+                            if (KCODt.Instance.ShipDataMap.ContainsKey(shipId)) {
+                                int fc = int.Parse(KCODt.Instance.ShipDataMap[shipId]["api_fuel"].ToString());
+                                string specId = KCODt.Instance.ShipDataMap[shipId]["api_ship_id"].ToString();
+                                JToken spec = KCODt.Instance.ShipSpecMap[specId];
+                                int fs = int.Parse(spec["api_fuel_max"].ToString());
+                                if (fs - fc > 0) {
+                                    Panel[i].Fuel.Visibility = System.Windows.Visibility.Visible;
+                                }
+
+                                int cond = int.Parse(KCODt.Instance.ShipDataMap[shipId]["api_cond"].ToString());
+                                if (cond < 40) {
+                                    Panel[i].Cond.Visibility = System.Windows.Visibility.Visible;
+                                }
+                            }
                         }
                     }
                     labShipCount.Content = String.Format("艦娘數 {0}", KCODt.Instance.ShipDataMap.Count);
@@ -147,16 +165,61 @@ namespace KanColleTool {
     }
 
     class DashBoardPanel {
-        public ComboBox Mission { get; private set; }
-        public Label ETA { get; private set; }
-        public Label CD { get; private set; }
-        public Button Button { get; private set; }
+        private int imgCond = 0;
+        private int imgFuel = 1;
+        private int cbxMission = 2;
+        private int btnButton = 3;
+        private int labCD = 4;
+        private int labETA = 5;
 
-        public DashBoardPanel (ComboBox mission, Label eta, Label cd, Button button) {
-            Mission = mission;
-            ETA = eta;
-            CD = cd;
-            Button = button;
+        #region getter
+        public Image Cond {
+            get {
+                return stackPanel.Children[imgCond] as Image;
+            }
+            private set { }
+        }
+
+        public Image Fuel {
+            get {
+                return stackPanel.Children[imgFuel] as Image;
+            }
+            private set { }
+        }
+
+        public ComboBox Mission {
+            get {
+                return stackPanel.Children[cbxMission] as ComboBox;
+            }
+            private set { }
+        }
+
+        public Label ETA {
+            get {
+                return stackPanel.Children[labETA] as Label;
+            }
+            private set { }
+        }
+
+        public Label CD {
+            get {
+                return stackPanel.Children[labCD] as Label;
+            }
+            private set { }
+        }
+
+        public Button Button {
+            get {
+                return stackPanel.Children[btnButton] as Button;
+            }
+            private set { }
+        }
+        #endregion
+
+        private StackPanel stackPanel;
+
+        public DashBoardPanel (StackPanel stackPanel) {
+            this.stackPanel = stackPanel;
         }
     }
 
