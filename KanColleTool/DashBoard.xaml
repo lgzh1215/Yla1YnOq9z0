@@ -76,19 +76,5 @@
         <Label Name="labShipCount" Margin="12,142,0,0" Content="" Style="{StaticResource BaseStyle}" />
         <Label Name="labItemCount" Margin="12,176,0,0" Content="" Style="{StaticResource BaseStyle}" />
 
-        <!--
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="600" Margin="0,208,0,0">
-            <Image Source="file:///D:/usr/KanColleTool/No.80-長門1.png" Width="200" Height="200">
-                <Image.Clip>
-                    <RectangleGeometry Rect="0,0,100,100" />
-                </Image.Clip>
-                <Image.Effect>
-                    <DropShadowEffect Color="Black" BlurRadius="120" />
-                </Image.Effect>
-            </Image>
-            <Image Source="file:///D:/usr/KanColleTool/No.80-長門1.png" Width="200" Height="200" />
-            <Image Source="/KanColleTool;component/Images/eng.png" Style="{StaticResource IcoStyle}" />
-        </StackPanel>
-        -->
     </Grid>
 </Page>
