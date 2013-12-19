@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
 
@@ -22,11 +24,46 @@ namespace KanColleTool {
 
         List<DashBoardPanel> Panel = new List<DashBoardPanel>();
 
+        BitmapImage eng0;
+        BitmapImage eng1;
+        BitmapImage eng2;
+        BitmapImage eng3;
+
         public DashBoard () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             InitializeMission();
             InitializeTimer();
+            KCODt.Instance.NDockDataChanged += new KCODt.NDockDataChangedEventHandler(KCODt_NDockDataChanged);
+            KCODt.Instance.FixList.CollectionChanged += new NotifyCollectionChangedEventHandler(FixList_CollectionChanged);
+        }
+
+        void FixList_CollectionChanged (object sender, NotifyCollectionChangedEventArgs e) {
+            if (e.Action == NotifyCollectionChangedAction.Add) {
+                Debug.Print(sender.ToString());
+                for (int i = 0; i < KCODt.Instance.FixList.Count; i++) {
+                    string shipId = KCODt.Instance.FixList[i];
+                    if (!KCODt.Instance.ShipDataMap.ContainsKey(shipId)) {
+                        KCODt.Instance.FixList.RemoveAt(i);
+                        continue;
+                    }
+                    JToken ship = KCODt.Instance.ShipDataMap[shipId];
+                    string ndtime = ship["api_ndock_time"].ToString();
+                    if (ndtime == "0") {
+                        KCODt.Instance.FixList.RemoveAt(i);
+                        continue;
+                    }
+                }
+            }
+        }
+
+        void KCODt_NDockDataChanged (object sender, DataChangedEventArgs e) {
+            // ??? find out which dock avaliable
+            var qm = from ndock in KCODt.Instance.NDockData
+                     where ndock["api_state"].ToString() == "0"
+                     && ndock["api_ship_id"].ToString() == "0"
+                     select ndock;
+            Debug.Print(String.Format("avalable ndock = {0}", qm.Count()));
         }
 
         void InitializeTimer () {
@@ -35,6 +72,10 @@ namespace KanColleTool {
         }
 
         void InitializeMission () {
+            eng0 = (BitmapImage) this.FindResource("eng0");
+            eng1 = (BitmapImage) this.FindResource("eng1");
+            eng2 = (BitmapImage) this.FindResource("eng2");
+            eng3 = (BitmapImage) this.FindResource("eng3");
             Panel.Add(new DashBoardPanel(stpFleet1Panel));
             Panel.Add(new DashBoardPanel(stpFleet2Panel));
             Panel.Add(new DashBoardPanel(stpFleet3Panel));
@@ -70,6 +111,8 @@ namespace KanColleTool {
                         if (KCODt.Instance.ShipData == null) {
                             continue;
                         }
+
+                        int minCond = 99;
                         foreach (JToken item in fleet["api_ship"]) {
                             string shipId = item.ToString();
                             if (KCODt.Instance.ShipDataMap.ContainsKey(shipId)) {
@@ -80,12 +123,23 @@ namespace KanColleTool {
                                 if (fs - fc > 0) {
                                     Panel[i].Fuel.Visibility = System.Windows.Visibility.Visible;
                                 }
-
                                 int cond = int.Parse(KCODt.Instance.ShipDataMap[shipId]["api_cond"].ToString());
-                                if (cond < 40) {
-                                    Panel[i].Cond.Visibility = System.Windows.Visibility.Visible;
-                                }
+                                minCond = Math.Min(minCond, cond);
+
                             }
+                        }
+                        if (minCond > 49) {
+                            Panel[i].Cond.Source = eng3;
+                            Panel[i].Cond.Visibility = System.Windows.Visibility.Visible;
+                        } else if (minCond <= 49 && minCond >= 40) {
+                            Panel[i].Cond.Source = eng2;
+                            Panel[i].Cond.Visibility = System.Windows.Visibility.Visible;
+                        } else if (minCond < 40 && minCond >= 30) {
+                            Panel[i].Cond.Source = eng1;
+                            Panel[i].Cond.Visibility = System.Windows.Visibility.Visible;
+                        } else {
+                            Panel[i].Cond.Source = eng0;
+                            Panel[i].Cond.Visibility = System.Windows.Visibility.Visible;
                         }
                     }
                     labShipCount.Content = String.Format("艦娘數 {0}", KCODt.Instance.ShipDataMap.Count);
@@ -115,7 +169,7 @@ namespace KanColleTool {
         }
 
         private void cbxMission_KeyDown (object sender, KeyEventArgs e) {
-            if (e.Key == Key.Back) {
+            if (e.Key == Key.Delete) {
                 ComboBox cb = sender as ComboBox;
                 cb.SelectedItem = null;
             }

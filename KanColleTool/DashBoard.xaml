@@ -33,13 +33,19 @@
         <Style x:Key="IcoStyle" TargetType="{x:Type Image}">
             <Setter Property="Height" Value="28" />
             <Setter Property="Width" Value="28" />
+            <Setter Property="Visibility" Value="Hidden" />
         </Style>
+        <BitmapImage x:Key="eng0" UriSource="Images/eng0.png" />
+        <BitmapImage x:Key="eng1" UriSource="Images/eng1.png" />
+        <BitmapImage x:Key="eng2" UriSource="Images/eng2.png" />
+        <BitmapImage x:Key="eng3" UriSource="Images/eng3.png" />
+        <BitmapImage x:Key="gas" UriSource="Images/gas.png" />
     </Page.Resources>
 
     <Grid>
         <StackPanel Name="stpFleet1Panel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="600" Margin="0">
-            <Image Source="/KanColleTool;component/Images/eng.png" Style="{StaticResource IcoStyle}" />
-            <Image Source="/KanColleTool;component/Images/gas.png" Style="{StaticResource IcoStyle}" />
+            <Image Source="{StaticResource eng3}" Style="{StaticResource IcoStyle}" />
+            <Image Source="{StaticResource gas}" Style="{StaticResource IcoStyle}" />
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="0" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
@@ -47,8 +53,8 @@
         </StackPanel>
 
         <StackPanel Name="stpFleet2Panel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="600" Margin="0,36,0,0">
-            <Image Source="/KanColleTool;component/Images/eng.png" Style="{StaticResource IcoStyle}" />
-            <Image Source="/KanColleTool;component/Images/gas.png" Style="{StaticResource IcoStyle}" />
+            <Image Source="{StaticResource eng3}" Style="{StaticResource IcoStyle}" />
+            <Image Source="{StaticResource gas}" Style="{StaticResource IcoStyle}" />
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="1" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
@@ -56,8 +62,8 @@
         </StackPanel>
 
         <StackPanel Name="stpFleet3Panel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="600" Margin="0,72,0,0">
-            <Image Source="/KanColleTool;component/Images/eng.png" Style="{StaticResource IcoStyle}" />
-            <Image Source="/KanColleTool;component/Images/gas.png" Style="{StaticResource IcoStyle}" />
+            <Image Source="{StaticResource eng3}" Style="{StaticResource IcoStyle}" />
+            <Image Source="{StaticResource gas}" Style="{StaticResource IcoStyle}" />
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="2" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
@@ -65,8 +71,8 @@
         </StackPanel>
 
         <StackPanel Name="stpFleet4Panel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="600" Margin="0,108,0,0">
-            <Image Source="/KanColleTool;component/Images/eng.png" Style="{StaticResource IcoStyle}" />
-            <Image Source="/KanColleTool;component/Images/gas.png" Style="{StaticResource IcoStyle}" />
+            <Image Source="{StaticResource eng3}" Style="{StaticResource IcoStyle}" />
+            <Image Source="{StaticResource gas}" Style="{StaticResource IcoStyle}" />
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="3" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />

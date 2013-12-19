@@ -152,10 +152,23 @@ namespace KanColleTool {
             }
         }
 
+        private void NDocking_click (object sender, RoutedEventArgs e) {
+            try {
+                MenuItem item = e.OriginalSource as MenuItem;
+                ContextMenu contextMenu = item.Parent as ContextMenu;
+                DataGrid dataGrid = contextMenu.PlacementTarget as DataGrid;
+                JToken shipDetail = dataGrid.CurrentItem as JToken;
+                string shipId = shipDetail["Ship"]["api_id"].ToString();
+                KCODt.Instance.FixList.Add(shipId);
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
+
         private void Page_Loaded (object sender, RoutedEventArgs e) {
             KCODt.Instance.ShipDataChanged += new KCODt.ShipDataChangedEventHandler(KCODt_ShipDataChanged);
             KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
-            if (KCODt.Instance.ShipData == null || KCODt.Instance.ShipSpec == null) {
+            if (KCODt.Instance.ShipData == null) {
                 RequestBuilder.Instance.ReLoadShip3();
             } else if (ShipGrid.ItemsSource == null) {
                 reflash();
@@ -175,6 +188,7 @@ namespace KanColleTool {
 
     }
 
+    #region converter
     public class UriToImageConverter : IValueConverter {
         public object Convert (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             if (value == null) {
@@ -192,7 +206,6 @@ namespace KanColleTool {
                 CroppedBitmap cb = new CroppedBitmap(bi, new Int32Rect(0, 50, 150, 60));
                 return cb;
             }
-
             return null;
         }
 
@@ -200,4 +213,5 @@ namespace KanColleTool {
             throw new NotImplementedException();
         }
     }
+    #endregion
 }

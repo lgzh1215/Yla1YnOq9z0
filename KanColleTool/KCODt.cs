@@ -9,12 +9,23 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Fiddler;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 
 namespace KanColleTool {
 
     public class KCODt {
 
         private static KCODt instance = null;
+
+        private ObservableCollection<string> fixList;
+        public ObservableCollection<string> FixList {
+            get {
+                if (fixList == null) {
+                    fixList = new ObservableCollection<string>();
+                }
+                return fixList;
+            }
+        }
 
         public JToken ShipSpec { get; private set; }
         public JToken ShipData { get; private set; }
@@ -47,6 +58,8 @@ namespace KanColleTool {
 
         public delegate void QuestDataChangedEventHandler (object sender, DataChangedEventArgs e);
 
+        public delegate void NDockDataChangedEventHandler (object sender, DataChangedEventArgs e);
+
         public event ShipSpecChangedEventHandler ShipSpecChanged;
 
         public event ShipDataChangedEventHandler ShipDataChanged;
@@ -60,6 +73,8 @@ namespace KanColleTool {
         public event DeckDataChangedEventHandler DeckDataChanged;
 
         public event QuestDataChangedEventHandler QuestDataChanged;
+
+        public event NDockDataChangedEventHandler NDockDataChanged;
 
         static public KCODt Instance {
             get {
@@ -198,6 +213,14 @@ namespace KanColleTool {
                 if (handler != null) {
                     handler(this, e);
                 }
+            }
+        }
+
+        protected virtual void OnNDockDataChangedEvent (DataChangedEventArgs e) {
+            NDockData = e.Data;
+            NDockDataChangedEventHandler handler = NDockDataChanged;
+            if (handler != null) {
+                handler(this, e);
             }
         }
 
@@ -358,6 +381,16 @@ namespace KanColleTool {
                             printInfo(oS);
                         } else if (m.Groups[1].ToString() == "api_req_nyukyo") {
                             // TODO
+                        }
+                        break;
+                    case "ndock":
+                        try {
+                            string svdata = oS.GetResponseBodyAsString();
+                            string json = svdata.Substring(7);
+                            JToken temp = JToken.Parse(json);
+                            OnNDockDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                        } catch (Exception exception) {
+                            Debug.Print("quest parse error: " + exception.ToString());
                         }
                         break;
                     default:

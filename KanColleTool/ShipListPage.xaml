@@ -74,6 +74,7 @@
                         <MenuItem Header="六番艦" Uid="5" Click="HenseiItem_Click" />
                     </MenuItem>
                 </MenuItem>
+                <MenuItem Header="入渠" Name="NDocking" Click="NDocking_click" />
             </ContextMenu>
         </DataGrid.ContextMenu>
         <DataGrid.Columns>
