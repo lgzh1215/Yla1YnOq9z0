@@ -83,7 +83,7 @@ namespace KanColleTool {
                 return;
             }
             DoCharge(3, ship);
-            DoShip2();
+            DoShip3();
             Invoke();
         }
 
@@ -105,6 +105,26 @@ namespace KanColleTool {
 
         public void ReLoadSlotItem () {
             DoSlotItem();
+            Invoke();
+        }
+
+        public void DestroyItem (ICollection<string> items) {
+            DoDestroyItem2(items);
+            DoSlotItem();
+            Invoke();
+        }
+
+        public void DestroyShip (ICollection<string> ships) {
+            foreach (var ship in ships) {
+                DoDestroyShip(ship);
+            }
+            DoShip3();
+            Invoke();
+        }
+
+        public void NDockStart (int shipId, int ndockId, int speed) {
+            DoNDockStart(shipId, ndockId, speed);
+            DoNDock();
             Invoke();
         }
 
@@ -168,8 +188,8 @@ namespace KanColleTool {
 
         #region 各種post
 
-        private void DoCharge (int kind, ICollection<string> ship) {
-            string body = "api%5Fkind=" + kind + "&api%5Fid%5Fitems=" + String.Join("%2C", ship) + "&api%5Fverno=1&api%5Ftoken=" + Token;
+        private void DoCharge (int kind, ICollection<string> ships) {
+            string body = "api%5Fkind=" + kind + "&api%5Fid%5Fitems=" + String.Join("%2C", ships) + "&api%5Fverno=1&api%5Ftoken=" + Token;
             KCRequest req = new KCRequest("api_req_hokyu/charge", body, 100);
             tasks.Enqueue(req);
         }
@@ -266,7 +286,19 @@ namespace KanColleTool {
 
         private void DoNDockStart (int shipId, int ndockId, int speed) {
             string body = String.Format("api%5Fship%5Fid={0}&api%5Fndock%5Fid={1}&api%5Fhighspeed={2}&api%5Fverno=1&api%5Ftoken={3}", shipId, ndockId, speed, Token);
-            KCRequest req = new KCRequest("api_req_nyukyo/start", body, 300);
+            KCRequest req = new KCRequest("api_req_nyukyo/start", body, 500);
+            tasks.Enqueue(req);
+        }
+
+        private void DoDestroyItem2 (ICollection<string> items) {
+            string body = String.Format("api%5Fslotitem%5Fids={0}&api%5Fverno=1&api%5Ftoken={1}", String.Join("%2C", items), Token);
+            KCRequest req = new KCRequest("api_req_kousyou/destroyitem2", body, 500);
+            tasks.Enqueue(req);
+        }
+
+        private void DoDestroyShip (string ship) {
+            string body = String.Format("api%5Fship%5Fid={0}&api%5Fverno=1&api%5Ftoken={1}", ship, Token);
+            KCRequest req = new KCRequest("api_req_kousyou/destroyship", body, 500);
             tasks.Enqueue(req);
         }
         #endregion

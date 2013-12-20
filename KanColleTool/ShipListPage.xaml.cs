@@ -165,12 +165,28 @@ namespace KanColleTool {
             }
         }
 
+        private void Destroy_click (object sender, RoutedEventArgs e) {
+            try {
+                HashSet<string> destroyShips = new HashSet<string>();
+                foreach (var item in ShipGrid.SelectedItems) {
+                    JToken shipDetail = item as JToken;
+                    destroyShips.Add(shipDetail["Ship"]["api_id"].ToString());
+                }
+                MessageBoxResult messageBoxResult = MessageBox.Show("解體確認", "Delete Confirmation", MessageBoxButton.YesNo);
+                if (messageBoxResult == MessageBoxResult.Yes) {
+                    RequestBuilder.Instance.DestroyShip(destroyShips);
+                }
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
+
         private void Page_Loaded (object sender, RoutedEventArgs e) {
             KCODt.Instance.ShipDataChanged += new KCODt.ShipDataChangedEventHandler(KCODt_ShipDataChanged);
             KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_ShipDataChanged);
             if (KCODt.Instance.ShipData == null) {
                 RequestBuilder.Instance.ReLoadShip3();
-            } else if (ShipGrid.ItemsSource == null) {
+            } else {
                 reflash();
             }
         }

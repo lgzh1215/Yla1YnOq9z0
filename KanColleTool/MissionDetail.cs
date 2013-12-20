@@ -15,7 +15,7 @@ namespace KanColleTool {
             All.Add(new MissionDetail(3, "3:警備任務", "20m", 3, "駆×3"));
             All.Add(new MissionDetail(4, "4:対潜警戒任務", "50m", 3, "軽×1,駆×2"));
             All.Add(new MissionDetail(5, "5:海上護衛任務", "1h30m", 3, "軽×1,駆×3"));
-            All.Add(new MissionDetail(6, "6:防空射撃演習", "40m", 4, "駆×3"));
+            All.Add(new MissionDetail(6, "6:防空射撃演習", "40m", 4, "駆×4"));
             All.Add(new MissionDetail(7, "7:観艦式予行", "1h", 5, "駆×6"));
             All.Add(new MissionDetail(8, "8:観艦式", "3h", 6, "駆×6"));
 

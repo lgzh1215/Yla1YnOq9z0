@@ -22,6 +22,8 @@ namespace KanColleTool {
 
         Timer UITimer;
 
+        Timer NDTimer;
+
         List<DashBoardPanel> Panel = new List<DashBoardPanel>();
 
         BitmapImage eng0;
@@ -38,7 +40,7 @@ namespace KanColleTool {
             KCODt.Instance.FixList.CollectionChanged += new NotifyCollectionChangedEventHandler(FixList_CollectionChanged);
         }
 
-        void FixList_CollectionChanged (object sender, NotifyCollectionChangedEventArgs e) {
+        private void FixList_CollectionChanged (object sender, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add) {
                 Debug.Print(sender.ToString());
                 for (int i = 0; i < KCODt.Instance.FixList.Count; i++) {
@@ -57,21 +59,20 @@ namespace KanColleTool {
             }
         }
 
-        void KCODt_NDockDataChanged (object sender, DataChangedEventArgs e) {
-            // ??? find out which dock avaliable
-            var qm = from ndock in KCODt.Instance.NDockData
-                     where ndock["api_state"].ToString() == "0"
-                     && ndock["api_ship_id"].ToString() == "0"
-                     select ndock;
-            Debug.Print(String.Format("avalable ndock = {0}", qm.Count()));
+        private void KCODt_NDockDataChanged (object sender, DataChangedEventArgs e) {
+            ndocking(e);
+            if (NDTimer == null) {
+                TimerCallback tcn = this.ndocking;
+                NDTimer = new Timer(tcn, null, 0, 60000);
+            }
         }
 
-        void InitializeTimer () {
+        private void InitializeTimer () {
             TimerCallback tcb = this.update;
             UITimer = new Timer(tcb, null, 0, 1000);
         }
 
-        void InitializeMission () {
+        private void InitializeMission () {
             eng0 = (BitmapImage) this.FindResource("eng0");
             eng1 = (BitmapImage) this.FindResource("eng1");
             eng2 = (BitmapImage) this.FindResource("eng2");
@@ -85,7 +86,7 @@ namespace KanColleTool {
             }
         }
 
-        public void update (Object context) {
+        private void update (Object context) {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 try {
                     if (KCODt.Instance.DeckData == null) {
@@ -216,6 +217,55 @@ namespace KanColleTool {
             return chargeIds;
         }
 
+        private IEnumerable<JToken> availableNDock () {
+            IEnumerable<JToken> qm = from ndock in KCODt.Instance.NDockData
+                                     where ndock["api_state"].ToString() == "0"
+                                     && ndock["api_ship_id"].ToString() == "0"
+                                     select ndock;
+            Debug.Print(String.Format("avalable ndock = {0}", qm.Count()));
+            return qm;
+        }
+
+        private void ndocking (Object context) {
+            try {
+                DataChangedEventArgs ce = context as DataChangedEventArgs;
+                if (ce != null) {
+                    Debug.Print("call from ~~" + ce.ToString());
+                }
+                if (KCODt.Instance.NDockData == null) {
+                    return;
+                }
+                IEnumerable<JToken> qm = availableNDock();
+                int count = int.Parse(qm.Count().ToString());
+                if (KCODt.Instance.ShipSpec == null || KCODt.Instance.ShipData == null || count < 1) {
+                    return;
+                }
+                var ns = from ndock in KCODt.Instance.NDockData
+                         select ndock["api_ship_id"].ToString();
+                var qm2 = (from spec in KCODt.Instance.ShipSpec
+                           from ship in KCODt.Instance.ShipData
+                           from stype in KCODt.Instance.ShipType
+                           where spec["api_id"].ToString() == ship["api_ship_id"].ToString()
+                           && spec["api_stype"].ToString() == stype["api_id"].ToString()
+                           && ship["api_ndock_time"].ToString() != "0"
+                           && !ns.Contains(ship["api_id"].ToString())
+                           select JToken.FromObject(new ShipDetail(spec, ship, stype)))
+                          .OrderBy(x => long.Parse(x["Ship"]["api_ndock_time"].ToString()))
+                          .Take(1);
+                foreach (JToken sd in qm2) {
+                    long ticks = long.Parse(sd["Ship"]["api_ndock_time"].ToString() + "0000");
+                    TimeSpan ts = new TimeSpan(ticks);
+                    Debug.Print(String.Format("{0} fix: {1}", sd["Spec"]["api_name"].ToString(), ts.ToString()));
+                    int shipId = int.Parse(sd["Ship"]["api_id"].ToString());
+                    JToken nd = qm.First() as JToken;
+                    int ndockId = int.Parse(nd["api_id"].ToString());
+                    Debug.Print(String.Format("DoNDockStart: ship:{0}, nd:{1}", shipId, ndockId));
+                    //RequestBuilder.Instance.NDockStart(shipId, ndockId, 0);
+                }
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
     }
 
     class DashBoardPanel {

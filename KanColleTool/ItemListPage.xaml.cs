@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -60,5 +62,19 @@ namespace KanColleTool {
                 RequestBuilder.Instance.ReLoadSlotItem();
             }
         }
+
+        private void Destroy_click (object sender, RoutedEventArgs e) {
+            try {
+                HashSet<string> destroyItems = new HashSet<string>();
+                foreach (var item in ItemGrid.SelectedItems) {
+                    JToken itemDetail = item as JToken;
+                    destroyItems.Add(itemDetail["Item"]["api_id"].ToString());
+                }
+                RequestBuilder.Instance.DestroyItem(destroyItems);
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
+
     }
 }

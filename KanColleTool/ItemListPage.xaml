@@ -6,12 +6,21 @@
       mc:Ignorable="d" 
 	Title="ItemListPage" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
 
+    <Page.Resources>
+        <ContextMenu x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="廢棄" Click="Destroy_click" />
+        </ContextMenu>
+        <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+        </Style>
+    </Page.Resources>
+
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
               SelectionMode="Extended" HorizontalAlignment="Stretch" Name="ItemGrid" 
               VerticalAlignment="Stretch" AlternatingRowBackground="LemonChiffon"
-              FontSize="14" KeyDown="ItemGrid_KeyDown">
+              IsReadOnly="True" FontSize="14" KeyDown="ItemGrid_KeyDown"
+              RowStyle="{StaticResource DefaultRowStyle}">
         <DataGrid.Columns>
-            <DataGridTextColumn Header="ID" Binding="{Binding Path=Item.api_id.Value}" />
             <DataGridTextColumn Header="レア" Binding="{Binding Path=Spec.api_rare.Value}" />
             <DataGridTextColumn Header="裝備名" Binding="{Binding Path=Spec.api_name.Value}" />
             <DataGridTextColumn Header="火力" Binding="{Binding Path=Spec.api_houg.Value}" />
@@ -25,6 +34,7 @@
             <DataGridTextColumn Header="射程" Binding="{Binding Path=LengString.Value}" SortMemberPath="Spec.api_leng.Value" />
             <DataGridTextColumn Header="分類" Binding="{Binding Path=Spec.api_sortno.Value}" />
             <DataGridTextColumn Header="雷命(仮)" Binding="{Binding Path=Spec.api_raim.Value}" />
+            <DataGridTextColumn Header="ID" Binding="{Binding Path=Item.api_id.Value}" />
         </DataGrid.Columns>
     </DataGrid>
 </Page>

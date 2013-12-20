@@ -75,6 +75,7 @@
                     </MenuItem>
                 </MenuItem>
                 <MenuItem Header="入渠" Name="NDocking" Click="NDocking_click" />
+                <MenuItem Header="解體" Click="Destroy_click" />
             </ContextMenu>
         </DataGrid.ContextMenu>
         <DataGrid.Columns>
