@@ -20,9 +20,9 @@ namespace KanColleTool {
 
         Thread UIThread;
 
-        Timer UITimer;
+        List<Timer> NDTimers = new List<Timer>();
 
-        Timer NDTimer;
+        Timer UITimer;
 
         List<DashBoardPanel> Panel = new List<DashBoardPanel>();
 
@@ -61,15 +61,20 @@ namespace KanColleTool {
 
         private void KCODt_NDockDataChanged (object sender, DataChangedEventArgs e) {
             ndocking(e);
-            if (NDTimer == null) {
-                TimerCallback tcn = this.ndocking;
-                NDTimer = new Timer(tcn, null, 0, 60000);
-            }
+            //if (NDTimer == null) {
+            //    TimerCallback tcn = this.ndocking;
+            //    NDTimer = new Timer(tcn, null, 0, 60000);
+            //}
         }
 
         private void InitializeTimer () {
             TimerCallback tcb = this.update;
             UITimer = new Timer(tcb, null, 0, 1000);
+            NDTimers.Add(null);
+            NDTimers.Add(null);
+            NDTimers.Add(null);
+            NDTimers.Add(null);
+            NDTimers.Add(null);
         }
 
         private void InitializeMission () {
@@ -219,48 +224,96 @@ namespace KanColleTool {
 
         private IEnumerable<JToken> availableNDock () {
             IEnumerable<JToken> qm = from ndock in KCODt.Instance.NDockData
-                                     where ndock["api_state"].ToString() == "0"
-                                     && ndock["api_ship_id"].ToString() == "0"
+                                     where ndock["api_state"].ToString() != "-1"
                                      select ndock;
-            Debug.Print(String.Format("avalable ndock = {0}", qm.Count()));
             return qm;
+        }
+
+        private void checkNDock (Object context) {
+            try {
+                RequestBuilder.Instance.EnterNDock();
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
+
+        private void findNShips (Object context) {
+            try {
+                var ns = from ndock in KCODt.Instance.NDockData
+                         select ndock["api_ship_id"].ToString();
+                var qm = (from spec in KCODt.Instance.ShipSpec
+                          from ship in KCODt.Instance.ShipData
+                          from stype in KCODt.Instance.ShipType
+                          where spec["api_id"].ToString() == ship["api_ship_id"].ToString()
+                          && spec["api_stype"].ToString() == stype["api_id"].ToString()
+                          && ship["api_ndock_time"].ToString() != "0"
+                          && !ns.Contains(ship["api_id"].ToString())
+                          select JToken.FromObject(new ShipDetail(spec, ship, stype)))
+                          .OrderBy(x => long.Parse(x["Ship"]["api_ndock_time"].ToString()))
+                          .Take(1);
+                foreach (JToken sd in qm) {
+                    string api_ndock_id = context as string;
+                    int ndockId = int.Parse(api_ndock_id);
+                    int shipId = int.Parse(sd["Ship"]["api_id"].ToString());
+                    Debug.Print(String.Format("next nd ship is ({0}) {1} enter No.{2} dock", shipId, sd["Spec"]["api_name"], api_ndock_id));
+                    Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                        if (chkAutoNDock.IsChecked == true) {
+                            RequestBuilder.Instance.NDockStart(shipId, ndockId, 0);
+                        }
+                    });
+                }
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+
         }
 
         private void ndocking (Object context) {
             try {
-                DataChangedEventArgs ce = context as DataChangedEventArgs;
-                if (ce != null) {
-                    Debug.Print("call from ~~" + ce.ToString());
-                }
                 if (KCODt.Instance.NDockData == null) {
                     return;
                 }
-                IEnumerable<JToken> qm = availableNDock();
-                int count = int.Parse(qm.Count().ToString());
+                IEnumerable<JToken> ndocks = availableNDock();
+                int count = int.Parse(ndocks.Count().ToString());
                 if (KCODt.Instance.ShipSpec == null || KCODt.Instance.ShipData == null || count < 1) {
                     return;
                 }
-                var ns = from ndock in KCODt.Instance.NDockData
-                         select ndock["api_ship_id"].ToString();
-                var qm2 = (from spec in KCODt.Instance.ShipSpec
-                           from ship in KCODt.Instance.ShipData
-                           from stype in KCODt.Instance.ShipType
-                           where spec["api_id"].ToString() == ship["api_ship_id"].ToString()
-                           && spec["api_stype"].ToString() == stype["api_id"].ToString()
-                           && ship["api_ndock_time"].ToString() != "0"
-                           && !ns.Contains(ship["api_id"].ToString())
-                           select JToken.FromObject(new ShipDetail(spec, ship, stype)))
-                          .OrderBy(x => long.Parse(x["Ship"]["api_ndock_time"].ToString()))
-                          .Take(1);
-                foreach (JToken sd in qm2) {
-                    long ticks = long.Parse(sd["Ship"]["api_ndock_time"].ToString() + "0000");
-                    TimeSpan ts = new TimeSpan(ticks);
-                    Debug.Print(String.Format("{0} fix: {1}", sd["Spec"]["api_name"].ToString(), ts.ToString()));
-                    int shipId = int.Parse(sd["Ship"]["api_id"].ToString());
-                    JToken nd = qm.First() as JToken;
-                    int ndockId = int.Parse(nd["api_id"].ToString());
-                    Debug.Print(String.Format("DoNDockStart: ship:{0}, nd:{1}", shipId, ndockId));
-                    //RequestBuilder.Instance.NDockStart(shipId, ndockId, 0);
+                foreach (JToken ndock in ndocks) {
+                    int timerId = int.Parse(ndock["api_id"].ToString());
+                    Timer timer;
+                    int dueTime = 5000;
+                    if (ndock["api_complete_time"].ToString() == "0") {
+                        timerId = 0;
+                        timer = new Timer(this.findNShips, ndock["api_id"].ToString(), dueTime, Timeout.Infinite);
+                        Debug.Print(string.Format("find ship after {0} ms", dueTime));
+                    } else {
+                        long x = long.Parse(ndock["api_complete_time"].ToString());
+                        x -= 60000;
+                        DateTime dt = Utils.parseUTC(x.ToString());
+                        TimeSpan ts = dt - DateTime.Now;
+                        dueTime = int.Parse(ts.TotalMilliseconds.ToString("0"));
+                        timer = new Timer(this.checkNDock, null, dueTime, Timeout.Infinite);
+                        Debug.Print(string.Format("nodock {0} finish after {1} ms", ndock["api_id"], ts));
+                    }
+                    if (NDTimers[timerId] != null) {
+                        NDTimers[timerId].Dispose();
+                    }
+                    NDTimers[timerId] = timer;
+                }
+
+                var qm = (from spec in KCODt.Instance.ShipSpec
+                          from ship in KCODt.Instance.ShipData
+                          from stype in KCODt.Instance.ShipType
+                          where spec["api_id"].ToString() == ship["api_ship_id"].ToString()
+                          && spec["api_stype"].ToString() == stype["api_id"].ToString()
+                          && ship["api_ndock_time"].ToString() != "0"
+                          && !KCODt.Instance.NavalFleet.Keys.Contains(ship["api_id"].ToString())
+                          select JToken.FromObject(new ShipDetail(spec, ship, stype)))
+                          .OrderBy(x => long.Parse(x["Ship"]["api_ndock_time"].ToString()));
+                foreach (var sd in qm) {
+                    long t = long.Parse(sd["Ship"]["api_ndock_time"].ToString() + "0000");
+                    TimeSpan ts = new TimeSpan(t);
+                    Debug.Print(String.Format("({0}) {1} \t\t {2}", sd["Ship"]["api_id"], sd["Spec"]["api_name"], ts));
                 }
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());

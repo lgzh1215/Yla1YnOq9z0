@@ -81,6 +81,6 @@
 
         <Label Name="labShipCount" Margin="12,142,0,0" Content="" Style="{StaticResource BaseStyle}" />
         <Label Name="labItemCount" Margin="12,176,0,0" Content="" Style="{StaticResource BaseStyle}" />
-
+        <CheckBox Name="chkAutoNDock" Margin="303,142,0,0" Content="自動入渠" Height="28" HorizontalAlignment="Left" Width="84" VerticalAlignment="Top" />
     </Grid>
 </Page>
