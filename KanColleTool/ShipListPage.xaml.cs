@@ -203,31 +203,4 @@ namespace KanColleTool {
         }
 
     }
-
-    #region converter
-    public class UriToImageConverter : IValueConverter {
-        public object Convert (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            if (value == null) {
-                return null;
-            }
-            if (value is string) {
-                value = new Uri((string) value);
-            }
-            if (value is Uri) {
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.DecodePixelWidth = 150;
-                bi.UriSource = (Uri) value;
-                bi.EndInit();
-                CroppedBitmap cb = new CroppedBitmap(bi, new Int32Rect(0, 50, 150, 60));
-                return cb;
-            }
-            return null;
-        }
-
-        public object ConvertBack (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            throw new NotImplementedException();
-        }
-    }
-    #endregion
 }

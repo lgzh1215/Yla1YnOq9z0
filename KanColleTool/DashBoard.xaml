@@ -3,7 +3,8 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      mc:Ignorable="d" 
+      mc:Ignorable="d"
+      xmlns:local="clr-namespace:KanColleTool"
 	Title="DashBoard">
 
     <Page.Resources>
@@ -35,52 +36,76 @@
             <Setter Property="Width" Value="28" />
             <Setter Property="Visibility" Value="Hidden" />
         </Style>
+        <Style x:Key="SPStyle" TargetType="{x:Type StackPanel}">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="MinWidth" Value="600" />
+        </Style>
         <BitmapImage x:Key="eng0" UriSource="Images/eng0.png" />
         <BitmapImage x:Key="eng1" UriSource="Images/eng1.png" />
         <BitmapImage x:Key="eng2" UriSource="Images/eng2.png" />
         <BitmapImage x:Key="eng3" UriSource="Images/eng3.png" />
         <BitmapImage x:Key="gas" UriSource="Images/gas.png" />
+        <local:UriToImageConverter x:Key="LocalUriToImageConverter"/>
     </Page.Resources>
 
     <Grid>
-        <StackPanel Name="stpFleet1Panel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="600" Margin="0">
+        <StackPanel Name="stpFleet1Panel" Style="{StaticResource SPStyle}" Margin="0">
             <Image Source="{StaticResource eng3}" Style="{StaticResource IcoStyle}" />
             <Image Source="{StaticResource gas}" Style="{StaticResource IcoStyle}" />
+            <Label Margin="-54,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="0" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
-            <Label Margin="76,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <Label Margin="60,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
         </StackPanel>
 
-        <StackPanel Name="stpFleet2Panel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="600" Margin="0,36,0,0">
+        <StackPanel Name="stpFleet2Panel" Style="{StaticResource SPStyle}" Margin="0,36,0,0">
             <Image Source="{StaticResource eng3}" Style="{StaticResource IcoStyle}" />
             <Image Source="{StaticResource gas}" Style="{StaticResource IcoStyle}" />
+            <Label Margin="-54,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="1" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
-            <Label Margin="76,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <Label Margin="60,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
         </StackPanel>
 
-        <StackPanel Name="stpFleet3Panel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="600" Margin="0,72,0,0">
+        <StackPanel Name="stpFleet3Panel" Style="{StaticResource SPStyle}" Margin="0,72,0,0">
             <Image Source="{StaticResource eng3}" Style="{StaticResource IcoStyle}" />
             <Image Source="{StaticResource gas}" Style="{StaticResource IcoStyle}" />
+            <Label Margin="-54,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="2" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
-            <Label Margin="76,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <Label Margin="60,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
         </StackPanel>
 
-        <StackPanel Name="stpFleet4Panel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="600" Margin="0,108,0,0">
+        <StackPanel Name="stpFleet4Panel" Style="{StaticResource SPStyle}" Margin="0,108,0,0">
             <Image Source="{StaticResource eng3}" Style="{StaticResource IcoStyle}" />
             <Image Source="{StaticResource gas}" Style="{StaticResource IcoStyle}" />
+            <Label Margin="-54,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="3" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
-            <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
-            <Label Margin="76,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <Label Margin="6,0,0,0" Style="{StaticResource BaseStyle}" />
+            <Label Margin="60,0,0,0" Style="{StaticResource BaseStyle}" />
         </StackPanel>
 
         <Label Name="labShipCount" Margin="12,142,0,0" Content="" Style="{StaticResource BaseStyle}" />
         <Label Name="labItemCount" Margin="12,176,0,0" Content="" Style="{StaticResource BaseStyle}" />
-        <CheckBox Name="chkAutoNDock" Margin="303,142,0,0" Content="自動入渠" Height="28" HorizontalAlignment="Left" Width="84" VerticalAlignment="Top" />
+        <CheckBox Name="chkAutoNDock" Margin="384,142,0,0" Content="自動入渠" Height="28" HorizontalAlignment="Left" Width="84" VerticalAlignment="Top" Checked="chkAutoNDock_Checked" />
+
+        <StackPanel Name="stpNDock1Panel" Style="{StaticResource SPStyle}" Height="60" Margin="0,210,0,0">
+            <Image Stretch="None" Width="150" />
+            <ProgressBar Width="200" Height="16" Margin="6,0" />
+            <Label Margin="22,0,0,0" Content="zzz" Style="{StaticResource BaseStyle}" />
+            <Label Margin="60,0,0,0" Content="ggg" Style="{StaticResource BaseStyle}" />
+        </StackPanel>
+        <StackPanel Name="stpNDock2Panel" Style="{StaticResource SPStyle}" Height="60" Margin="0,276,0,0">
+            <Image Stretch="None" Width="150" />
+            <ProgressBar Width="200" Height="16" Margin="6,0" />
+            <Label Margin="22,0,0,0" Content="xxx" Style="{StaticResource BaseStyle}" />
+            <Label Margin="60,0,0,0" Content="yyy" Style="{StaticResource BaseStyle}" />
+        </StackPanel>
     </Grid>
 </Page>

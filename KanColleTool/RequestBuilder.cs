@@ -285,7 +285,7 @@ namespace KanColleTool {
 
         private void DoNDockStart (int shipId, int ndockId, int speed) {
             string body = String.Format("api%5Fship%5Fid={0}&api%5Fndock%5Fid={1}&api%5Fhighspeed={2}&api%5Fverno=1&api%5Ftoken={3}", shipId, ndockId, speed, Token);
-            KCRequest req = new KCRequest("api_req_nyukyo/start", body, 5000);
+            KCRequest req = new KCRequest("api_req_nyukyo/start", body, 1000);
             tasks.Enqueue(req);
         }
 

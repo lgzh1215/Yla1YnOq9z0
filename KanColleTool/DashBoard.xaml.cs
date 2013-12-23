@@ -22,9 +22,15 @@ namespace KanColleTool {
 
         List<Timer> NDTimers = new List<Timer>();
 
+        List<NDockPanel> NDPanels = new List<NDockPanel>();
+
         Timer UITimer;
 
         List<DashBoardPanel> Panel = new List<DashBoardPanel>();
+
+        UriToImageConverter uic = new UriToImageConverter();
+
+        DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         BitmapImage eng0;
         BitmapImage eng1;
@@ -61,10 +67,6 @@ namespace KanColleTool {
 
         private void KCODt_NDockDataChanged (object sender, DataChangedEventArgs e) {
             ndocking(e);
-            //if (NDTimer == null) {
-            //    TimerCallback tcn = this.ndocking;
-            //    NDTimer = new Timer(tcn, null, 0, 60000);
-            //}
         }
 
         private void InitializeTimer () {
@@ -75,6 +77,8 @@ namespace KanColleTool {
             NDTimers.Add(null);
             NDTimers.Add(null);
             NDTimers.Add(null);
+            NDPanels.Add(new NDockPanel(stpNDock1Panel));
+            NDPanels.Add(new NDockPanel(stpNDock2Panel));
         }
 
         private void InitializeMission () {
@@ -147,9 +151,22 @@ namespace KanColleTool {
                             Panel[i].Cond.Source = eng0;
                             Panel[i].Cond.Visibility = System.Windows.Visibility.Visible;
                         }
+                        Panel[i].CondNo.Content = minCond;
                     }
+
                     labShipCount.Content = String.Format("艦娘數 {0}", KCODt.Instance.ShipDataMap.Count);
                     labItemCount.Content = String.Format("裝備數 {0}", KCODt.Instance.ItemDataMap.Count);
+
+                    for (int i = 0; i < NDPanels.Count; i++) {
+                        if (NDPanels[i].Visibility == Visibility.Visible) {
+                            long x = (long) (DateTime.UtcNow - start).TotalMilliseconds;
+                            NDPanels[i].Bar.Value = x;
+                            JToken ndock = KCODt.Instance.NDockData[i];
+                            string time = ndock["api_complete_time"].ToString();
+                            NDPanels[i].ETA.Content = Utils.valueOfUTC(time);
+                            NDPanels[i].CD.Content = Utils.countSpan(time).ToString(@"hh\:mm\:ss");
+                        }
+                    }
                 } catch (Exception e) {
                     Debug.Print(e.ToString());
                 }
@@ -164,7 +181,6 @@ namespace KanColleTool {
                 if (chargeIds.Count > 0) {
                     RequestBuilder.Instance.FleetCharge(pId, chargeIds);
                 }
-                // post mission start if possable
                 MissionDetail md = (MissionDetail) Panel[pId].Mission.SelectedItem;
                 if (md != null && md.Id != 0) {
                     RequestBuilder.Instance.StartMission(pId + 1, md.Id);
@@ -204,12 +220,12 @@ namespace KanColleTool {
                     JToken myShip = KCODt.Instance.ShipDataMap[sid];
                     JToken defShip = KCODt.Instance.ShipSpecMap[myShip["api_ship_id"].ToString()];
                     string msg = defShip["api_name"].ToString();
-                    msg += "\t\tF: " + myShip["api_fuel"].ToString() + "/" + defShip["api_fuel_max"].ToString();
+                    msg += "\t\t\tF: " + myShip["api_fuel"].ToString() + "/" + defShip["api_fuel_max"].ToString();
                     if (myShip["api_fuel"].ToString() != defShip["api_fuel_max"].ToString()) {
                         chargeIds.Add(sid);
                         msg += "*";
                     }
-                    msg += "\tB: " + myShip["api_bull"].ToString() + "/" + defShip["api_bull_max"].ToString();
+                    msg += "\t\tB: " + myShip["api_bull"].ToString() + "/" + defShip["api_bull_max"].ToString();
                     if (myShip["api_bull"].ToString() != defShip["api_bull_max"].ToString()) {
                         chargeIds.Add(sid);
                         msg += "x";
@@ -265,7 +281,6 @@ namespace KanColleTool {
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
             }
-
         }
 
         private void ndocking (Object context) {
@@ -281,11 +296,12 @@ namespace KanColleTool {
                 foreach (JToken ndock in ndocks) {
                     int timerId = int.Parse(ndock["api_id"].ToString());
                     Timer timer;
-                    int dueTime = 5000;
+                    int dueTime = 2000;
                     if (ndock["api_complete_time"].ToString() == "0") {
-                        timerId = 0;
                         timer = new Timer(this.findNShips, ndock["api_id"].ToString(), dueTime, Timeout.Infinite);
                         Debug.Print(string.Format("find ship after {0} ms", dueTime));
+                        closeNDockPanel(timerId - 1);
+                        timerId = 0;
                     } else {
                         long x = long.Parse(ndock["api_complete_time"].ToString());
                         x -= 60000;
@@ -294,6 +310,8 @@ namespace KanColleTool {
                         dueTime = int.Parse(ts.TotalMilliseconds.ToString("0"));
                         timer = new Timer(this.checkNDock, null, dueTime, Timeout.Infinite);
                         Debug.Print(string.Format("nodock {0} finish after {1} ms", ndock["api_id"], ts));
+
+                        setupNDockPanel(timerId - 1, ndock["api_ship_id"].ToString(), ndock);
                     }
                     if (NDTimers[timerId] != null) {
                         NDTimers[timerId].Dispose();
@@ -319,15 +337,61 @@ namespace KanColleTool {
                 Debug.Print(ex.ToString());
             }
         }
+
+        private void closeNDockPanel (int pid) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                try {
+                    NDPanels[pid].Visibility = Visibility.Hidden;
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
+            });
+        }
+
+        private void setupNDockPanel (int pid, string shipId, JToken ndock) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                try {
+                    var qs = from spec in KCODt.Instance.ShipSpec
+                             from ship in KCODt.Instance.ShipData
+                             from stype in KCODt.Instance.ShipType
+                             where spec["api_id"].ToString() == ship["api_ship_id"].ToString()
+                             && spec["api_stype"].ToString() == stype["api_id"].ToString()
+                             && ship["api_id"].ToString() == shipId
+                             select JToken.FromObject(new ShipDetail(spec, ship, stype));
+                    JToken sd = qs.First() as JToken;
+                    NDPanels[pid].Icon.Source = (CroppedBitmap) uic.Convert(new Uri(sd["ShipIcoName"].ToString()), null, null, null);
+
+                    long t = long.Parse(sd["Ship"]["api_ndock_time"].ToString());
+                    NDPanels[pid].Bar.Maximum = double.Parse(ndock["api_complete_time"].ToString()) - 60000;
+                    NDPanels[pid].Bar.Minimum = NDPanels[pid].Bar.Maximum - t;
+                    NDPanels[pid].Visibility = Visibility.Visible;
+                    Debug.Print("bar from: {0} -> {1}", NDPanels[pid].Bar.Minimum, NDPanels[pid].Bar.Maximum);
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
+            });
+        }
+
+        private void chkAutoNDock_Checked (object sender, RoutedEventArgs e) {
+            try {
+                CheckBox cbx = sender as CheckBox;
+                if (cbx.IsChecked.HasValue && (bool) cbx.IsChecked) {
+                    checkNDock(null);
+                }
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
     }
 
     class DashBoardPanel {
         private int imgCond = 0;
         private int imgFuel = 1;
-        private int cbxMission = 2;
-        private int btnButton = 3;
-        private int labCD = 4;
-        private int labETA = 5;
+        private int labCond = 2;
+        private int cbxMission = 3;
+        private int btnButton = 4;
+        private int labCD = 5;
+        private int labETA = 6;
 
         #region getter
         public Image Cond {
@@ -371,6 +435,13 @@ namespace KanColleTool {
             }
             private set { }
         }
+
+        public Label CondNo {
+            get {
+                return stackPanel.Children[labCond] as Label;
+            }
+            private set { }
+        }
         #endregion
 
         private StackPanel stackPanel;
@@ -380,4 +451,56 @@ namespace KanColleTool {
         }
     }
 
+    class NDockPanel {
+        private int imgIcon = 0;
+        private int prgBar = 1;
+        private int labCD = 2;
+        private int labETA = 3;
+
+        public Image Icon {
+            get {
+                return stackPanel.Children[imgIcon] as Image;
+            }
+            private set { }
+        }
+
+        public Label ETA {
+            get {
+                return stackPanel.Children[labETA] as Label;
+            }
+            private set { }
+        }
+
+        public Label CD {
+            get {
+                return stackPanel.Children[labCD] as Label;
+            }
+            private set { }
+        }
+
+        public ProgressBar Bar {
+            get {
+                return stackPanel.Children[prgBar] as ProgressBar;
+            }
+            private set { }
+        }
+
+        public Visibility Visibility {
+            get {
+                return stackPanel.Visibility;
+            }
+            set {
+                stackPanel.Visibility = value;
+            }
+        }
+
+        private StackPanel stackPanel;
+
+        public NDockPanel (StackPanel stackPanel) {
+            this.stackPanel = stackPanel;
+            this.CD.VerticalAlignment = VerticalAlignment.Center;
+            this.ETA.VerticalAlignment = VerticalAlignment.Center;
+            this.Visibility = Visibility.Hidden;
+        }
+    }
 }
