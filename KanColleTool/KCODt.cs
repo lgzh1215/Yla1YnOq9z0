@@ -76,6 +76,12 @@ namespace KanColleTool {
 
         public event NDockDataChangedEventHandler NDockDataChanged;
 
+        private string defMasterShip = @"D:\usr\KanColleTool\masterShip.json";
+
+        private string defMasterSlotItem = @"D:\usr\KanColleTool\masterSlotItem.json";
+
+        private string defMasterSType = @"D:\usr\KanColleTool\masterSType.json";
+
         static public KCODt Instance {
             get {
                 if (instance == null) {
@@ -90,6 +96,7 @@ namespace KanColleTool {
 
         protected virtual void OnShipSpecChangedEvent (DataChangedEventArgs e) {
             lock (ShipSpecMap) {
+                File.WriteAllText(defMasterShip, e.Data.ToString());
                 ShipSpec = e.Data;
                 ShipSpecMap.Clear();
                 foreach (JToken sh in ShipSpec) {
@@ -118,6 +125,7 @@ namespace KanColleTool {
 
         public virtual void OnItemSpecChangedEvent (DataChangedEventArgs e) {
             lock (ItemSpecMap) {
+                File.WriteAllText(defMasterSlotItem, e.Data.ToString());
                 ItemSpec = e.Data;
                 ItemSpecMap.Clear();
                 foreach (JToken it in ItemSpec) {
@@ -238,22 +246,41 @@ namespace KanColleTool {
             QuestDataMap = new Dictionary<int, JToken>();
             NavalFleet = new Dictionary<string, string>();
             Assembly assembly = typeof(MainWindow).Assembly;
-            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.ship.json"))
-            using (StreamReader reader = new StreamReader(stream)) {
-                string json = reader.ReadToEnd();
+
+            if (File.Exists(defMasterShip)) {
+                string json = File.ReadAllText(defMasterShip);
                 JToken temp = JToken.Parse(json);
-                OnShipSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                OnShipSpecChangedEvent(new DataChangedEventArgs(temp));
+            } else {
+                using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.masterShip.json"))
+                using (StreamReader reader = new StreamReader(stream)) {
+                    string json = reader.ReadToEnd();
+                    JToken temp = JToken.Parse(json);
+                    OnShipSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                }
             }
-            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.slotitem.json"))
-            using (StreamReader reader = new StreamReader(stream)) {
-                string json = reader.ReadToEnd();
+            if (File.Exists(defMasterSlotItem)) {
+                string json = File.ReadAllText(defMasterSlotItem);
                 JToken temp = JToken.Parse(json);
-                OnItemSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                OnItemSpecChangedEvent(new DataChangedEventArgs(temp));
+            } else {
+                using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.masterSlotItem.json"))
+                using (StreamReader reader = new StreamReader(stream)) {
+                    string json = reader.ReadToEnd();
+                    JToken temp = JToken.Parse(json);
+                    OnItemSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                }
             }
-            using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.shiptype.json"))
-            using (StreamReader reader = new StreamReader(stream)) {
-                string json = reader.ReadToEnd();
-                ShipType = JToken.Parse(json)["api_data"];
+            if (File.Exists(defMasterSType)) {
+                string json = File.ReadAllText(defMasterSType);
+                JToken temp = JToken.Parse(json);
+                ShipType = JToken.Parse(json);
+            } else {
+                using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.masterSType.json"))
+                using (StreamReader reader = new StreamReader(stream)) {
+                    string json = reader.ReadToEnd();
+                    ShipType = JToken.Parse(json)["api_data"];
+                }
             }
         }
 

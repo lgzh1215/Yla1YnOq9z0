@@ -46,6 +46,8 @@ namespace KanColleTool {
 
         public string ShipIcoName {
             get {
+                //No.181-イオナ1.png
+                //No.182-タカオ1.png
                 string filename = "";
                 string formatting = @"file:///D:/usr/KanColleTool/No.{0}-{1}{2}.png";
                 string cond = "1";
@@ -77,6 +79,20 @@ namespace KanColleTool {
             Ship = ship;
             SType = stype;
         }
+    }
 
+    class ShipSpecDetail {
+
+        public JToken Spec {
+            get;
+            set;
+        }
+
+        public JToken SType { get; set; }
+
+        public ShipSpecDetail (JToken spec, JToken stype) {
+            Spec = spec;
+            SType = stype;
+        }
     }
 }

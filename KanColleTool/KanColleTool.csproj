@@ -91,6 +91,9 @@
     <Compile Include="ShipListPage.xaml.cs">
       <DependentUpon>ShipListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpecListPage.xaml.cs">
+      <DependentUpon>SpecListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils.cs" />
     <Page Include="DashBoard.xaml">
       <SubType>Designer</SubType>
@@ -117,6 +120,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ShipListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpecListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -148,9 +155,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <EmbeddedResource Include="JSON\ship.json" />
-    <EmbeddedResource Include="JSON\slotitem.json" />
-    <EmbeddedResource Include="JSON\shiptype.json" />
+    <EmbeddedResource Include="JSON\masterShip.json" />
+    <EmbeddedResource Include="JSON\masterSlotItem.json" />
+    <EmbeddedResource Include="JSON\masterSType.json" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\gas.png" />

@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace KanColleTool {
 
@@ -75,25 +77,48 @@ namespace KanColleTool {
     #region converter
     public class UriToImageConverter : IValueConverter {
         public object Convert (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            if (value == null) {
+            try {
+                if (value == null) {
+                    return null;
+                }
+                if (value is string) {
+                    value = new Uri((string) value);
+                }
+                if (value is Uri) {
+                    BitmapImage bi = new BitmapImage();
+                    bi.BeginInit();
+                    bi.DecodePixelWidth = 150;
+                    bi.UriSource = (Uri) value;
+                    bi.EndInit();
+                    CroppedBitmap cb = new CroppedBitmap(bi, new Int32Rect(0, 50, 150, 60));
+                    return cb;
+                }
                 return null;
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+                return "";
             }
-            if (value is string) {
-                value = new Uri((string) value);
-            }
-            if (value is Uri) {
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.DecodePixelWidth = 150;
-                bi.UriSource = (Uri) value;
-                bi.EndInit();
-                CroppedBitmap cb = new CroppedBitmap(bi, new Int32Rect(0, 50, 150, 60));
-                return cb;
-            }
-            return null;
+            
         }
 
         public object ConvertBack (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class JArrayIndexConverter : IMultiValueConverter {
+        public object Convert (object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            if (values == null) {
+                return null;
+            }
+            JToken node = values[0] as JToken;
+            if (node == null) {
+                return null;
+            }
+            return String.Join(", ", node.ToList());
+        }
+
+        public object[] ConvertBack (object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) {
             throw new NotImplementedException();
         }
     }

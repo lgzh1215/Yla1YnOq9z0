@@ -102,6 +102,11 @@ namespace KanColleTool {
             Invoke();
         }
 
+        public void ReLoadShipSpec () {
+            DoMasterShip();
+            Invoke();
+        }
+
         public void ReLoadSlotItem () {
             DoSlotItem();
             Invoke();
@@ -298,6 +303,12 @@ namespace KanColleTool {
         private void DoDestroyShip (string ship) {
             string body = String.Format("api%5Fship%5Fid={0}&api%5Fverno=1&api%5Ftoken={1}", ship, Token);
             KCRequest req = new KCRequest("api_req_kousyou/destroyship", body, 500);
+            tasks.Enqueue(req);
+        }
+
+        private void DoMasterShip () {
+            string body = String.Format("api%5Fverno=1&api%5Ftoken={0}", Token);
+            KCRequest req = new KCRequest("api_get_master/ship", body, 500);
             tasks.Enqueue(req);
         }
         #endregion
