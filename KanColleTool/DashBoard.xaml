@@ -96,16 +96,16 @@
         <CheckBox Name="chkAutoNDock" Margin="384,142,0,0" Content="自動入渠" Height="28" HorizontalAlignment="Left" Width="84" VerticalAlignment="Top" Checked="chkAutoNDock_Checked" />
 
         <StackPanel Name="stpNDock1Panel" Style="{StaticResource SPStyle}" Height="60" Margin="0,210,0,0">
-            <Image Stretch="None" Width="150" />
-            <ProgressBar Width="200" Height="16" Margin="6,0" />
-            <Label Margin="22,0,0,0" Content="zzz" Style="{StaticResource BaseStyle}" />
-            <Label Margin="60,0,0,0" Content="ggg" Style="{StaticResource BaseStyle}" />
+            <Image Stretch="None" Width="170" />
+            <ProgressBar Width="170" Height="6" Margin="-170,54,0,0" />
+            <Label Margin="22,0,0,0" Style="{StaticResource BaseStyle}" />
+            <Label Margin="60,0,0,0" Style="{StaticResource BaseStyle}" />
         </StackPanel>
         <StackPanel Name="stpNDock2Panel" Style="{StaticResource SPStyle}" Height="60" Margin="0,276,0,0">
-            <Image Stretch="None" Width="150" />
-            <ProgressBar Width="200" Height="16" Margin="6,0" />
-            <Label Margin="22,0,0,0" Content="xxx" Style="{StaticResource BaseStyle}" />
-            <Label Margin="60,0,0,0" Content="yyy" Style="{StaticResource BaseStyle}" />
+            <Image Stretch="None" Width="170" />
+            <ProgressBar Width="170" Height="6" Margin="-170,54,0,0" />
+            <Label Margin="22,0,0,0" Style="{StaticResource BaseStyle}" />
+            <Label Margin="60,0,0,0" Style="{StaticResource BaseStyle}" />
         </StackPanel>
     </Grid>
 </Page>

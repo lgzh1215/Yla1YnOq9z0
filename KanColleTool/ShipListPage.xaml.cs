@@ -130,7 +130,7 @@ namespace KanColleTool {
                       from item in KCODt.Instance.ItemData
                       where spec["api_id"].ToString() == item["api_slotitem_id"].ToString()
                       select JToken.FromObject(new ItemDetail(spec, item)))
-                     .OrderByDescending(x => x["Spec"]["api_rare"].ToString());
+                     .OrderByDescending(x => x["Spec"]["api_sortno"].ToString());
             SubMenuItems = qm;
         }
 

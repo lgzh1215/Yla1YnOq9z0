@@ -87,10 +87,15 @@ namespace KanColleTool {
                 if (value is Uri) {
                     BitmapImage bi = new BitmapImage();
                     bi.BeginInit();
-                    bi.DecodePixelWidth = 150;
+                    bi.DecodePixelWidth = 170;
                     bi.UriSource = (Uri) value;
                     bi.EndInit();
-                    CroppedBitmap cb = new CroppedBitmap(bi, new Int32Rect(0, 50, 150, 60));
+
+                    Int32Rect rect = new Int32Rect(0, 50, 170, 60);
+                    if (parameter is Int32Rect) {
+                        rect = (Int32Rect) parameter;
+                    }
+                    CroppedBitmap cb = new CroppedBitmap(bi, rect);
                     return cb;
                 }
                 return null;
@@ -98,7 +103,7 @@ namespace KanColleTool {
                 Debug.Print(ex.ToString());
                 return "";
             }
-            
+
         }
 
         public object ConvertBack (object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
@@ -119,6 +124,23 @@ namespace KanColleTool {
         }
 
         public object[] ConvertBack (object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class JArrayConverter : IValueConverter {
+        public object Convert (object values, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            if (values == null) {
+                return null;
+            }
+            JToken node = values as JToken;
+            if (node == null) {
+                return null;
+            }
+            return String.Join(", ", node.ToList());
+        }
+
+        public object ConvertBack (object value, Type targetTypes, object parameter, System.Globalization.CultureInfo culture) {
             throw new NotImplementedException();
         }
     }

@@ -13,213 +13,110 @@
         <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
         </Style>
-        <local:JArrayIndexConverter x:Key="indexConverter" />
+        <local:JArrayConverter x:Key="jarrayConverter" />
     </Page.Resources>
 
-    <StackPanel>
-        <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel >
+            <Expander Header="ShipSpec" IsExpanded="True">
+                <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
               SelectionMode="Extended" HorizontalAlignment="Stretch" Name="ShipGrid" 
               VerticalAlignment="Stretch" AlternatingRowBackground="LemonChiffon"
               IsReadOnly="True" FontSize="14" RowStyle="{StaticResource DefaultRowStyle}"
-              KeyDown="ShipGrid_KeyDown" Height="350">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="id" Binding="{Binding Path=api_id.Value}" />
-                <DataGridTextColumn Header="name" Binding="{Binding Path=api_name.Value}" />
-                <DataGridTextColumn Header="afterbull" Binding="{Binding Path=api_afterbull.Value}" />
-                <DataGridTextColumn Header="afterfuel" Binding="{Binding Path=api_afterfuel.Value}" />
-                <DataGridTextColumn Header="afterlv" Binding="{Binding Path=api_afterlv.Value}" />
-                <DataGridTextColumn Header="aftershipid" Binding="{Binding Path=api_aftershipid.Value}" />
-                <DataGridTextColumn Header="atap">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_atap" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="backs" Binding="{Binding Path=api_backs.Value}" />
-                <DataGridTextColumn Header="bakk">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_bakk" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="baku">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_baku" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="broken">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_broken" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="buildtime" Binding="{Binding Path=api_buildtime.Value}" />
-                <DataGridTextColumn Header="bull_max" Binding="{Binding Path=api_bull_max.Value}" />
-                <DataGridTextColumn Header="cnum" Binding="{Binding Path=api_cnum.Value}" />
-                <DataGridTextColumn Header="ctype" Binding="{Binding Path=api_ctype.Value}" />
-                <DataGridTextColumn Header="defeq">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_defeq" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="enqflg" Binding="{Binding Path=api_enqflg.Value}" />
-                <DataGridTextColumn Header="fuel_max" Binding="{Binding Path=api_fuel_max.Value}" />
-                <DataGridTextColumn Header="getmes" Binding="{Binding Path=api_getmes.Value}" />
-                <DataGridTextColumn Header="gomes" Binding="{Binding Path=api_gomes.Value}" />
-                <DataGridTextColumn Header="gomes2" Binding="{Binding Path=api_gomes.Value}" />
-                <DataGridTextColumn Header="grow">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_grow" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="gumax">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_gumax" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="homemes" Binding="{Binding Path=api_homemes.Value}" />
-                <DataGridTextColumn Header="houg">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_houg" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="houk">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_houk" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="kaih">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_kaih" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="leng" Binding="{Binding Path=api_leng.Value}" />
-                <DataGridTextColumn Header="luck">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_luck" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="maxeq">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_maxeq" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="missions" Binding="{Binding Path=api_missions.Value}" />
-                <DataGridTextColumn Header="powup">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_powup" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="raig">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_raig" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="raik">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_raik" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="raim">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_raim" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="sakb">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_sakb" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="saku">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_saku" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="sinfo" Binding="{Binding Path=api_sinfo.Value}" />
-                <DataGridTextColumn Header="slot_num" Binding="{Binding Path=api_slot_num.Value}" />
-                <DataGridTextColumn Header="soku" Binding="{Binding Path=api_soku.Value}" />
-                <DataGridTextColumn Header="sokuh" Binding="{Binding Path=api_sokuh.Value}" />
-                <DataGridTextColumn Header="sortno" Binding="{Binding Path=api_sortno.Value}" />
-                <DataGridTextColumn Header="souk">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_souk" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="stype" Binding="{Binding Path=api_stype.Value}" />
-                <DataGridTextColumn Header="systems" Binding="{Binding Path=api_systems.Value}" />
-                <DataGridTextColumn Header="taik">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_taik" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="tais">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_tais" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="touchs">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_touchs" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="tous">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_tous" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="tyku">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding Converter="{StaticResource indexConverter}">
-                            <Binding Path="api_tyku" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="voicef" Binding="{Binding Path=api_voicef.Value}" />
-                <DataGridTextColumn Header="yomi" Binding="{Binding Path=api_yomi.Value}" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </StackPanel>
+              KeyDown="ShipGrid_KeyDown" Height="340">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="id" Binding="{Binding api_id}" />
+                        <DataGridTextColumn Header="name" Binding="{Binding api_name.Value}" />
+                        <DataGridTextColumn Header="afterbull" Binding="{Binding api_afterbull}" />
+                        <DataGridTextColumn Header="afterfuel" Binding="{Binding api_afterfuel}" />
+                        <DataGridTextColumn Header="afterlv" Binding="{Binding api_afterlv}" />
+                        <DataGridTextColumn Header="aftershipid" Binding="{Binding api_aftershipid.Value}" />
+                        <DataGridTextColumn Header="atap" Binding="{Binding api_atap, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="backs" Binding="{Binding api_backs}" />
+                        <DataGridTextColumn Header="bakk" Binding="{Binding api_bakk, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="baku" Binding="{Binding api_baku, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="broken" Binding="{Binding api_broken, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="buildtime" Binding="{Binding api_buildtime}" />
+                        <DataGridTextColumn Header="bull_max" Binding="{Binding api_bull_max}" />
+                        <DataGridTextColumn Header="cnum" Binding="{Binding api_cnum}" />
+                        <DataGridTextColumn Header="ctype" Binding="{Binding api_ctype}" />
+                        <DataGridTextColumn Header="defeq" Binding="{Binding api_defeq, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="enqflg" Binding="{Binding api_enqflg.Value}" />
+                        <DataGridTextColumn Header="fuel_max" Binding="{Binding api_fuel_max}" />
+                        <DataGridTextColumn Header="getmes" Binding="{Binding api_getmes.Value}" Width="10" />
+                        <DataGridTextColumn Header="gomes" Binding="{Binding api_gomes}" />
+                        <DataGridTextColumn Header="gomes2" Binding="{Binding api_gomes}" />
+                        <DataGridTextColumn Header="grow" Binding="{Binding api_grow, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="gumax" Binding="{Binding api_gumax, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="homemes" Binding="{Binding api_homemes}" />
+                        <DataGridTextColumn Header="houg" Binding="{Binding api_houg, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="houk" Binding="{Binding api_houk, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="houm" Binding="{Binding api_houm, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="kaih" Binding="{Binding api_kaih, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="leng" Binding="{Binding api_leng}" />
+                        <DataGridTextColumn Header="luck" Binding="{Binding api_luck, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="maxeq" Binding="{Binding api_maxeq, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="missions" Binding="{Binding api_missions}" />
+                        <DataGridTextColumn Header="powup" Binding="{Binding api_powup, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="raig" Binding="{Binding api_raig, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="raik" Binding="{Binding api_raik, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="raim" Binding="{Binding api_raim, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="sakb" Binding="{Binding api_sakb, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="saku" Binding="{Binding api_saku, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="sinfo" Binding="{Binding api_sinfo.Value}" Width="10" />
+                        <DataGridTextColumn Header="slot_num" Binding="{Binding api_slot_num}" />
+                        <DataGridTextColumn Header="soku" Binding="{Binding api_soku}" />
+                        <DataGridTextColumn Header="sokuh" Binding="{Binding api_sokuh}" />
+                        <DataGridTextColumn Header="sortno" Binding="{Binding api_sortno}" />
+                        <DataGridTextColumn Header="souk" Binding="{Binding api_souk, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="stype" Binding="{Binding api_stype}" />
+                        <DataGridTextColumn Header="systems" Binding="{Binding api_systems}" />
+                        <DataGridTextColumn Header="taik" Binding="{Binding api_taik, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="tais" Binding="{Binding api_tais, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="touchs" Binding="{Binding api_touchs, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="tous" Binding="{Binding api_tous, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="tyku" Binding="{Binding api_tyku, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="voicef" Binding="{Binding api_voicef}" />
+                        <DataGridTextColumn Header="yomi" Binding="{Binding api_yomi.Value}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Expander>
+            <Expander Header="ItemSpec">
+                <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
+              SelectionMode="Extended" HorizontalAlignment="Stretch" Name="ItemGrid" 
+              VerticalAlignment="Stretch" AlternatingRowBackground="Azure"
+              IsReadOnly="True" FontSize="14" RowStyle="{StaticResource DefaultRowStyle}"
+              KeyDown="ShipGrid_KeyDown" Height="340">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="id" Binding="{Binding api_id}" />
+                        <DataGridTextColumn Header="name" Binding="{Binding api_name.Value}" />
+                        <DataGridTextColumn Header="atap" Binding="{Binding api_atap}" />
+                        <DataGridTextColumn Header="bakk" Binding="{Binding api_bakk}" />
+                        <DataGridTextColumn Header="baku" Binding="{Binding api_baku}" />
+                        <DataGridTextColumn Header="broken" Binding="{Binding api_broken, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="houg" Binding="{Binding api_houg}" />
+                        <DataGridTextColumn Header="houk" Binding="{Binding api_houk}" />
+                        <DataGridTextColumn Header="houm" Binding="{Binding api_houm}" />
+                        <DataGridTextColumn Header="info" Binding="{Binding api_info.Value}" Width="10" />
+                        <DataGridTextColumn Header="leng" Binding="{Binding api_leng}" />
+                        <DataGridTextColumn Header="luck" Binding="{Binding api_luck}" />
+                        <DataGridTextColumn Header="raig" Binding="{Binding api_raig}" />
+                        <DataGridTextColumn Header="raik" Binding="{Binding api_raik}" />
+                        <DataGridTextColumn Header="raim" Binding="{Binding api_raim}" />
+                        <DataGridTextColumn Header="rare" Binding="{Binding api_rare}" />
+                        <DataGridTextColumn Header="sakb" Binding="{Binding api_sakb}" />
+                        <DataGridTextColumn Header="saku" Binding="{Binding api_saku}" />
+                        <DataGridTextColumn Header="soku" Binding="{Binding api_soku}" />
+                        <DataGridTextColumn Header="sortno" Binding="{Binding api_sortno}" />
+                        <DataGridTextColumn Header="souk" Binding="{Binding api_souk}" />
+                        <DataGridTextColumn Header="taik" Binding="{Binding api_taik}" />
+                        <DataGridTextColumn Header="tais" Binding="{Binding api_tais}" />
+                        <DataGridTextColumn Header="tyku" Binding="{Binding api_tyku}" />
+                        <DataGridTextColumn Header="type" Binding="{Binding api_type, Converter={StaticResource jarrayConverter}}" />
+                        <DataGridTextColumn Header="usebull" Binding="{Binding api_usebull.Value}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Expander>
+        </StackPanel>
+    </ScrollViewer>
 </Page>

@@ -21,6 +21,7 @@ namespace KanColleTool {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
             KCODt.Instance.ShipSpecChanged += new KCODt.ShipSpecChangedEventHandler(KCODt_ShipSpecChanged);
+            KCODt.Instance.ItemSpecChanged += new KCODt.ItemSpecChangedEventHandler(KCODt_ItemSpecChanged);
         }
 
         ~SpecListPage () {
@@ -31,13 +32,21 @@ namespace KanColleTool {
             reflash();
         }
 
+        void KCODt_ItemSpecChanged (object sender, DataChangedEventArgs e) {
+            reflash();
+        }
+
         private void reflash () {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 try {
-                    IEnumerable<JToken> qm = from spec in KCODt.Instance.ShipSpec
-                                             select spec;
+                    IEnumerable<JToken> ships = from spec in KCODt.Instance.ShipSpec
+                                                select spec;
                     ShipGrid.ItemsSource = null;
-                    ShipGrid.ItemsSource = qm;
+                    ShipGrid.ItemsSource = ships;
+                    IEnumerable<JToken> items = from spec in KCODt.Instance.ItemSpec
+                                                select spec;
+                    ItemGrid.ItemsSource = null;
+                    ItemGrid.ItemsSource = items;
                 } catch (Exception ex) {
                     Debug.Print(ex.ToString());
                 }

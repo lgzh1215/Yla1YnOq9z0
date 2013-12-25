@@ -23,7 +23,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <local:UriToImageConverter x:Key="LocalUriToImageConverter"/>
+        <local:UriToImageConverter x:Key="uriConverter"/>
+        <local:JArrayConverter x:Key="jarrayConverter" />
     </Page.Resources>
 
     <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
@@ -73,7 +74,9 @@
                         <MenuItem Header="六番艦" Uid="5" Click="HenseiItem_Click" />
                     </MenuItem>
                 </MenuItem>
+                <!--
                 <MenuItem Header="入渠" Name="NDocking" Click="NDocking_click" />
+                -->
                 <MenuItem Header="解體" Click="Destroy_click" />
             </ContextMenu>
         </DataGrid.ContextMenu>
@@ -81,7 +84,7 @@
             <DataGridTemplateColumn Header="顏">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <Image Stretch="None" Source="{Binding ShipIcoName.Value, Converter={StaticResource LocalUriToImageConverter}}" />
+                        <Image Stretch="None" Source="{Binding ShipIcoName.Value, Converter={StaticResource uriConverter}}" />
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
@@ -117,7 +120,18 @@
                     </MultiBinding>
                 </DataGridTextColumn.Binding>
             </DataGridTextColumn>
-            <DataGridTextColumn Header="ID" Binding="{Binding Path=Ship.api_id}" />
+            <DataGridTextColumn Header="ID" Binding="{Binding Ship.api_id}" />
+
+            <DataGridTextColumn Header="Exp" Binding="{Binding Ship.api_exp, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="kaihi" Binding="{Binding Ship.api_kaihi, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="karyoku" Binding="{Binding Ship.api_karyoku, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="kyouka" Binding="{Binding Ship.api_kyouka, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="lucky" Binding="{Binding Ship.api_lucky, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="raisou" Binding="{Binding Ship.api_raisou, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="sakuteki" Binding="{Binding Ship.api_sakuteki, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="soukou" Binding="{Binding Ship.api_soukou, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="taiku" Binding="{Binding Ship.api_taiku, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="taisen" Binding="{Binding Ship.api_taisen, Converter={StaticResource jarrayConverter}}" />
         </DataGrid.Columns>
     </DataGrid>
 </Page>

@@ -105,7 +105,8 @@ namespace KanColleTool {
                         JToken fleet = KCODt.Instance.DeckData[i];
                         JToken mission = fleet["api_mission"];
                         Panel[i].ETA.Content = Utils.valueOfUTC(mission[2].ToString());
-                        Panel[i].CD.Content = Utils.countSpan(mission[2].ToString()).ToString(@"hh\:mm\:ss");
+                        TimeSpan cd = Utils.countSpan(mission[2].ToString());
+                        Panel[i].CD.Content = String.Format("{0:00}:{1}", (int) cd.TotalHours, cd.ToString(@"mm\:ss"));
                         if (mission[0].ToString() != "0") {
                             Panel[i].Mission.SelectedIndex = MissionDetail.IdMap[int.Parse(mission[1].ToString())];
                             Panel[i].Mission.IsEnabled = false;
@@ -304,13 +305,15 @@ namespace KanColleTool {
                         timerId = 0;
                     } else {
                         long x = long.Parse(ndock["api_complete_time"].ToString());
-                        x -= 60000;
+                        x -= 50000;
                         DateTime dt = Utils.parseUTC(x.ToString());
                         TimeSpan ts = dt - DateTime.Now;
                         dueTime = int.Parse(ts.TotalMilliseconds.ToString("0"));
+                        if (dueTime < 0) {
+                            continue;
+                        }
                         timer = new Timer(this.checkNDock, null, dueTime, Timeout.Infinite);
                         Debug.Print(string.Format("nodock {0} finish after {1} ms", ndock["api_id"], ts));
-
                         setupNDockPanel(timerId - 1, ndock["api_ship_id"].ToString(), ndock);
                     }
                     if (NDTimers[timerId] != null) {
@@ -359,7 +362,8 @@ namespace KanColleTool {
                              && ship["api_id"].ToString() == shipId
                              select JToken.FromObject(new ShipDetail(spec, ship, stype));
                     JToken sd = qs.First() as JToken;
-                    NDPanels[pid].Icon.Source = (CroppedBitmap) uic.Convert(new Uri(sd["ShipIcoName"].ToString()), null, null, null);
+                    NDPanels[pid].Icon.Source = (CroppedBitmap) uic.Convert(new Uri(sd["ShipIcoName"].ToString()),
+                        null, null, null);
 
                     long t = long.Parse(sd["Ship"]["api_ndock_time"].ToString());
                     NDPanels[pid].Bar.Maximum = double.Parse(ndock["api_complete_time"].ToString()) - 60000;
