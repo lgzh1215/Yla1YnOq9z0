@@ -122,16 +122,14 @@
             </DataGridTextColumn>
             <DataGridTextColumn Header="ID" Binding="{Binding Ship.api_id}" />
 
-            <DataGridTextColumn Header="Exp" Binding="{Binding Ship.api_exp, Converter={StaticResource jarrayConverter}}" />
-            <DataGridTextColumn Header="kaihi" Binding="{Binding Ship.api_kaihi, Converter={StaticResource jarrayConverter}}" />
-            <DataGridTextColumn Header="karyoku" Binding="{Binding Ship.api_karyoku, Converter={StaticResource jarrayConverter}}" />
-            <DataGridTextColumn Header="kyouka" Binding="{Binding Ship.api_kyouka, Converter={StaticResource jarrayConverter}}" />
-            <DataGridTextColumn Header="lucky" Binding="{Binding Ship.api_lucky, Converter={StaticResource jarrayConverter}}" />
-            <DataGridTextColumn Header="raisou" Binding="{Binding Ship.api_raisou, Converter={StaticResource jarrayConverter}}" />
-            <DataGridTextColumn Header="sakuteki" Binding="{Binding Ship.api_sakuteki, Converter={StaticResource jarrayConverter}}" />
-            <DataGridTextColumn Header="soukou" Binding="{Binding Ship.api_soukou, Converter={StaticResource jarrayConverter}}" />
-            <DataGridTextColumn Header="taiku" Binding="{Binding Ship.api_taiku, Converter={StaticResource jarrayConverter}}" />
-            <DataGridTextColumn Header="taisen" Binding="{Binding Ship.api_taisen, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="火力" Binding="{Binding Ship.api_karyoku, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="雷裝" Binding="{Binding Ship.api_raisou, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="對空" Binding="{Binding Ship.api_taiku, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="對潛" Binding="{Binding Ship.api_taisen, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="裝甲" Binding="{Binding Ship.api_soukou, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="迴避" Binding="{Binding Ship.api_kaihi, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="索敵" Binding="{Binding Ship.api_sakuteki, Converter={StaticResource jarrayConverter}}" />
+            <DataGridTextColumn Header="運" Binding="{Binding Ship.api_lucky, Converter={StaticResource jarrayConverter}}" />
         </DataGrid.Columns>
     </DataGrid>
 </Page>

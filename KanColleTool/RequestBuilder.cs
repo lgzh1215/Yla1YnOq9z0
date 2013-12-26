@@ -42,6 +42,9 @@ namespace KanColleTool {
             return Instance;
         }
 
+        public event DoWorkEventHandler StartInvoke;
+        public event DoWorkEventHandler FinishInvoke;
+
         private RequestBuilder () {
             Token = HttpUtility.ParseQueryString(Session.GetRequestBodyAsString())["api_token"];
             OnInvoke = false;
@@ -160,28 +163,51 @@ namespace KanColleTool {
             Invoke();
         }
 
+        private void bw_DoWork (object sender, DoWorkEventArgs e) {
+            lock (tasks) {
+                OnInvoke = true;
+                try {
+                    while (tasks.Count > 0) {
+                        KCRequest req = tasks.Dequeue();
+                        HTTPRequestHeaders header = (HTTPRequestHeaders) Session.oRequest.headers.Clone();
+                        header.RequestPath = "/kcsapi/" + req.Path;
+                        byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(req.Body);
+                        Session sess = new Session(header, postBytes);
+                        sess.utilSetRequestBody(req.Body);
+                        FiddlerApplication.oProxy.SendRequestAndWait(sess.oRequest.headers, sess.requestBodyBytes, null, null);
+                        Thread.Sleep(req.Sleep);
+                    }
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
+            }
+        }
+
         private void Invoke () {
             BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += new DoWorkEventHandler(
-                delegate(object o, DoWorkEventArgs args) {
-                    lock (tasks) {
-                        OnInvoke = true;
-                        try {
-                            while (tasks.Count > 0) {
-                                KCRequest req = tasks.Dequeue();
-                                HTTPRequestHeaders header = (HTTPRequestHeaders) Session.oRequest.headers.Clone();
-                                header.RequestPath = "/kcsapi/" + req.Path;
-                                byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(req.Body);
-                                Session sess = new Session(header, postBytes);
-                                sess.utilSetRequestBody(req.Body);
-                                FiddlerApplication.oProxy.SendRequestAndWait(sess.oRequest.headers, sess.requestBodyBytes, null, null);
-                                Thread.Sleep(req.Sleep);
-                            }
-                        } catch (Exception ex) {
-                            Debug.Print(ex.ToString());
-                        }
-                    }
-                });
+
+            bw.DoWork += new DoWorkEventHandler(bw_DoWork);
+
+            //bw.DoWork += new DoWorkEventHandler(
+            //    delegate(object o, DoWorkEventArgs args) {
+            //        lock (tasks) {
+            //            OnInvoke = true;
+            //            try {
+            //                while (tasks.Count > 0) {
+            //                    KCRequest req = tasks.Dequeue();
+            //                    HTTPRequestHeaders header = (HTTPRequestHeaders) Session.oRequest.headers.Clone();
+            //                    header.RequestPath = "/kcsapi/" + req.Path;
+            //                    byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(req.Body);
+            //                    Session sess = new Session(header, postBytes);
+            //                    sess.utilSetRequestBody(req.Body);
+            //                    FiddlerApplication.oProxy.SendRequestAndWait(sess.oRequest.headers, sess.requestBodyBytes, null, null);
+            //                    Thread.Sleep(req.Sleep);
+            //                }
+            //            } catch (Exception ex) {
+            //                Debug.Print(ex.ToString());
+            //            }
+            //        }
+            //    });
             bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
                 delegate(object o, RunWorkerCompletedEventArgs args) {
                     OnInvoke = false;
