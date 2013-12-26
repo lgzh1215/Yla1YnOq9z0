@@ -42,8 +42,23 @@ namespace KanColleTool {
             return Instance;
         }
 
-        public event DoWorkEventHandler StartInvoke;
-        public event DoWorkEventHandler FinishInvoke;
+        public delegate void RequestQueueEventHandler (object sender, EventArgs e);
+        public event RequestQueueEventHandler StartRequest;
+        public event RequestQueueEventHandler FinishRequest;
+
+        protected virtual void OnStartRequestEvent (EventArgs e) {
+            RequestQueueEventHandler handler = StartRequest;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnFinishRequestEvent (EventArgs e) {
+            RequestQueueEventHandler handler = FinishRequest;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
 
         private RequestBuilder () {
             Token = HttpUtility.ParseQueryString(Session.GetRequestBodyAsString())["api_token"];
@@ -164,56 +179,40 @@ namespace KanColleTool {
         }
 
         private void bw_DoWork (object sender, DoWorkEventArgs e) {
-            lock (tasks) {
-                OnInvoke = true;
-                try {
-                    while (tasks.Count > 0) {
-                        KCRequest req = tasks.Dequeue();
-                        HTTPRequestHeaders header = (HTTPRequestHeaders) Session.oRequest.headers.Clone();
-                        header.RequestPath = "/kcsapi/" + req.Path;
-                        byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(req.Body);
-                        Session sess = new Session(header, postBytes);
-                        sess.utilSetRequestBody(req.Body);
-                        FiddlerApplication.oProxy.SendRequestAndWait(sess.oRequest.headers, sess.requestBodyBytes, null, null);
-                        Thread.Sleep(req.Sleep);
-                    }
-                } catch (Exception ex) {
-                    Debug.Print(ex.ToString());
+            //lock (tasks) {
+            OnInvoke = true;
+            try {
+                while (tasks.Count > 0) {
+                    KCRequest req = tasks.Dequeue();
+                    HTTPRequestHeaders header = (HTTPRequestHeaders) Session.oRequest.headers.Clone();
+                    header.RequestPath = "/kcsapi/" + req.Path;
+                    byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(req.Body);
+                    Session sess = new Session(header, postBytes);
+                    sess.utilSetRequestBody(req.Body);
+                    FiddlerApplication.oProxy.SendRequestAndWait(sess.oRequest.headers, sess.requestBodyBytes, null, null);
+                    Thread.Sleep(req.Sleep);
                 }
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
             }
+            //}
+        }
+
+        void bw_RunWorkerCompleted (object sender, RunWorkerCompletedEventArgs e) {
+            OnInvoke = false;
+            Debug.Print("RunWorkerCompleted");
         }
 
         private void Invoke () {
             BackgroundWorker bw = new BackgroundWorker();
-
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
-
-            //bw.DoWork += new DoWorkEventHandler(
-            //    delegate(object o, DoWorkEventArgs args) {
-            //        lock (tasks) {
-            //            OnInvoke = true;
-            //            try {
-            //                while (tasks.Count > 0) {
-            //                    KCRequest req = tasks.Dequeue();
-            //                    HTTPRequestHeaders header = (HTTPRequestHeaders) Session.oRequest.headers.Clone();
-            //                    header.RequestPath = "/kcsapi/" + req.Path;
-            //                    byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(req.Body);
-            //                    Session sess = new Session(header, postBytes);
-            //                    sess.utilSetRequestBody(req.Body);
-            //                    FiddlerApplication.oProxy.SendRequestAndWait(sess.oRequest.headers, sess.requestBodyBytes, null, null);
-            //                    Thread.Sleep(req.Sleep);
-            //                }
-            //            } catch (Exception ex) {
-            //                Debug.Print(ex.ToString());
-            //            }
-            //        }
-            //    });
-            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
-                delegate(object o, RunWorkerCompletedEventArgs args) {
-                    OnInvoke = false;
-                    Debug.Print("RunWorkerCompleted");
-                });
+            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
             bw.RunWorkerAsync();
+            //bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
+            //    delegate(object o, RunWorkerCompletedEventArgs args) {
+            //        OnInvoke = false;
+            //        Debug.Print("RunWorkerCompleted");
+            //    });
         }
 
         #region 各種post
