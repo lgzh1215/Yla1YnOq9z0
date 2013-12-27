@@ -152,19 +152,6 @@ namespace KanColleTool {
             }
         }
 
-        private void NDocking_click (object sender, RoutedEventArgs e) {
-            try {
-                MenuItem item = e.OriginalSource as MenuItem;
-                ContextMenu contextMenu = item.Parent as ContextMenu;
-                DataGrid dataGrid = contextMenu.PlacementTarget as DataGrid;
-                JToken shipDetail = dataGrid.CurrentItem as JToken;
-                string shipId = shipDetail["Ship"]["api_id"].ToString();
-                KCODt.Instance.FixList.Add(shipId);
-            } catch (Exception ex) {
-                Debug.Print(ex.ToString());
-            }
-        }
-
         private void Destroy_click (object sender, RoutedEventArgs e) {
             try {
                 HashSet<string> destroyShips = new HashSet<string>();

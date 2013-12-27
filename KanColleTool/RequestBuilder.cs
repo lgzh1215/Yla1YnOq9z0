@@ -12,7 +12,7 @@ namespace KanColleTool {
 
         static public string Token { get; private set; }
 
-        static public bool OnInvoke { get; private set; }
+        static public bool IsInvoke { get; private set; }
 
         static public Session Session { get; private set; }
 
@@ -42,27 +42,9 @@ namespace KanColleTool {
             return Instance;
         }
 
-        public delegate void RequestQueueEventHandler (object sender, EventArgs e);
-        public event RequestQueueEventHandler StartRequest;
-        public event RequestQueueEventHandler FinishRequest;
-
-        protected virtual void OnStartRequestEvent (EventArgs e) {
-            RequestQueueEventHandler handler = StartRequest;
-            if (handler != null) {
-                handler(this, e);
-            }
-        }
-
-        protected virtual void OnFinishRequestEvent (EventArgs e) {
-            RequestQueueEventHandler handler = FinishRequest;
-            if (handler != null) {
-                handler(this, e);
-            }
-        }
-
         private RequestBuilder () {
             Token = HttpUtility.ParseQueryString(Session.GetRequestBodyAsString())["api_token"];
-            OnInvoke = false;
+            IsInvoke = false;
             tasks = new Queue<KCRequest>();
         }
 
@@ -159,14 +141,14 @@ namespace KanColleTool {
 
         public void QuestStart (int id) {
             string body = String.Format("api%5Fquest%5Fid={0}&api%5Fverno=1&api%5Ftoken={1}", id, Token);
-            KCRequest req = new KCRequest("api_req_quest/start", body, 1000);
+            KCRequest req = new KCRequest("api_req_quest/start", body, 500);
             tasks.Enqueue(req);
             Invoke();
         }
 
         public void QuestStop (int id) {
             string body = String.Format("api%5Fquest%5Fid={0}&api%5Fverno=1&api%5Ftoken={1}", id, Token);
-            KCRequest req = new KCRequest("api_req_quest/stop", body, 1000);
+            KCRequest req = new KCRequest("api_req_quest/stop", body, 500);
             tasks.Enqueue(req);
             Invoke();
         }
@@ -179,40 +161,46 @@ namespace KanColleTool {
         }
 
         private void bw_DoWork (object sender, DoWorkEventArgs e) {
-            //lock (tasks) {
-            OnInvoke = true;
-            try {
-                while (tasks.Count > 0) {
-                    KCRequest req = tasks.Dequeue();
-                    HTTPRequestHeaders header = (HTTPRequestHeaders) Session.oRequest.headers.Clone();
-                    header.RequestPath = "/kcsapi/" + req.Path;
-                    byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(req.Body);
-                    Session sess = new Session(header, postBytes);
-                    sess.utilSetRequestBody(req.Body);
-                    FiddlerApplication.oProxy.SendRequestAndWait(sess.oRequest.headers, sess.requestBodyBytes, null, null);
-                    Thread.Sleep(req.Sleep);
+            IsInvoke = true;
+            lock (tasks) {
+                try {
+                    Queue<KCRequest> taskBlock = new Queue<KCRequest>();
+                    for (int i = 0; i <= tasks.Count; i++) {
+                        taskBlock.Enqueue(tasks.Dequeue());
+                    }
+                    while (taskBlock.Count > 0) {
+                        KCRequest req = taskBlock.Dequeue();
+                        HTTPRequestHeaders header = (HTTPRequestHeaders) Session.oRequest.headers.Clone();
+                        header.RequestPath = "/kcsapi/" + req.Path;
+                        byte[] postBytes = System.Text.Encoding.UTF8.GetBytes(req.Body);
+                        Session sess = new Session(header, postBytes);
+                        sess.utilSetRequestBody(req.Body);
+                        FiddlerApplication.oProxy.SendRequestAndWait(sess.oRequest.headers, sess.requestBodyBytes, null, null);
+                        Thread.Sleep(req.Sleep);
+                    }
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
                 }
-            } catch (Exception ex) {
-                Debug.Print(ex.ToString());
             }
-            //}
         }
 
         void bw_RunWorkerCompleted (object sender, RunWorkerCompletedEventArgs e) {
-            OnInvoke = false;
+            IsInvoke = false;
             Debug.Print("RunWorkerCompleted");
+            if (tasks.Count > 0) {
+                Debug.Print("But queue still has job to do...");
+                BackgroundWorker bw = sender as BackgroundWorker;
+                bw.RunWorkerAsync();
+            }
         }
 
         private void Invoke () {
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += new DoWorkEventHandler(bw_DoWork);
-            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
-            bw.RunWorkerAsync();
-            //bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
-            //    delegate(object o, RunWorkerCompletedEventArgs args) {
-            //        OnInvoke = false;
-            //        Debug.Print("RunWorkerCompleted");
-            //    });
+            if (!IsInvoke) {
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += new DoWorkEventHandler(bw_DoWork);
+                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
+                bw.RunWorkerAsync();
+            }
         }
 
         #region 各種post
@@ -284,13 +272,13 @@ namespace KanColleTool {
         }
 
         private void DoBasic () {
-            string body = "api%5Fverno=1&api%5Ftoken=" + Token;
+            string body = String.Format("api%5Fverno=1&api%5Ftoken={0}", Token);
             KCRequest req = new KCRequest("api_get_member/basic", body, 100);
             tasks.Enqueue(req);
         }
 
         private void DoStartMission (int deckId, int missionId) {
-            string body = "api%5Fdeck%5Fid=" + deckId + "&api%5Fmission%5Fid=" + missionId + "&api%5Fverno=1&api%5Ftoken=" + Token;
+            string body = String.Format("api%5Fdeck%5Fid={0}&api%5Fmission%5Fid={1}&api%5Fverno=1&api%5Ftoken={2}", deckId, missionId, Token);
             KCRequest req = new KCRequest("api_req_mission/start", body, 100);
             tasks.Enqueue(req);
         }

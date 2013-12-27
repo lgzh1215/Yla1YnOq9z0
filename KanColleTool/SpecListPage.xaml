@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       xmlns:local="clr-namespace:KanColleTool"
-	Title="SpecListPage" Loaded="Page_Loaded">
+	Title="SpecListPage" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
 
     <Page.Resources>
         <ContextMenu x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
@@ -114,6 +114,23 @@
                         <DataGridTextColumn Header="tyku" Binding="{Binding api_tyku}" />
                         <DataGridTextColumn Header="type" Binding="{Binding api_type, Converter={StaticResource jarrayConverter}}" />
                         <DataGridTextColumn Header="usebull" Binding="{Binding api_usebull.Value}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Expander>
+
+            <Expander Header="BattleTable">
+                <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
+              SelectionMode="Extended" HorizontalAlignment="Stretch" Name="BattleGrid" 
+              VerticalAlignment="Stretch" AlternatingRowBackground="Azure"
+              IsReadOnly="True" FontSize="14" RowStyle="{StaticResource DefaultRowStyle}"
+              KeyDown="ShipGrid_KeyDown" Height="340">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Time" Binding="{Binding Time}" />
+                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" />
+                        <DataGridTextColumn Header="海域" Binding="{Binding Data.api_maparea_id}" />
+                        <DataGridTextColumn Header="位置" Binding="{Binding Data.api_mapinfo_no}" />
+                        <DataGridTextColumn Header="No" Binding="{Binding Data.api_no}" />
+                        <DataGridTextColumn Header="EID" Binding="{Binding Data.api_enemy.api_enemy_id}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Expander>

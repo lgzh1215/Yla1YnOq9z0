@@ -28,12 +28,16 @@ namespace KanColleTool {
             KCODt.Instance.ShipSpecChanged -= new KCODt.ShipSpecChangedEventHandler(KCODt_ShipSpecChanged);
         }
 
-        void KCODt_ShipSpecChanged (object sender, DataChangedEventArgs e) {
+        private void KCODt_ShipSpecChanged (object sender, DataChangedEventArgs e) {
             reflash();
         }
 
-        void KCODt_ItemSpecChanged (object sender, DataChangedEventArgs e) {
+        private void KCODt_ItemSpecChanged (object sender, DataChangedEventArgs e) {
             reflash();
+        }
+
+        private void KCODt_StartBattle (object sender, BattleEventArgs e) {
+            battle();
         }
 
         private void reflash () {
@@ -53,6 +57,17 @@ namespace KanColleTool {
             }, null);
         }
 
+        private void battle () {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                try {
+                    BattleGrid.ItemsSource = null;
+                    BattleGrid.ItemsSource = KCODt.Instance.BattleQueue;
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
+            }, null);
+        }
+
         private void ShipGrid_KeyDown (object sender, KeyEventArgs e) {
             if (e.Key == Key.F5) {
                 RequestBuilder.Instance.ReLoadShipSpec();
@@ -60,12 +75,12 @@ namespace KanColleTool {
         }
 
         private void Page_Loaded (object sender, RoutedEventArgs e) {
-            if (ShipGrid.ItemsSource == null) {
-                //RequestBuilder.Instance.ReLoadShipSpec();
-                reflash();
-            } else {
-                reflash();
-            }
+            reflash();
+            KCODt.Instance.StartBattle += new KCODt.StartBattleEventHandler(KCODt_StartBattle);
+        }
+
+        private void Page_Unloaded (object sender, RoutedEventArgs e) {
+            KCODt.Instance.StartBattle -= new KCODt.StartBattleEventHandler(KCODt_StartBattle);
         }
 
     }

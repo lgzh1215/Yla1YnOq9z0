@@ -43,26 +43,6 @@ namespace KanColleTool {
             InitializeMission();
             InitializeTimer();
             KCODt.Instance.NDockDataChanged += new KCODt.NDockDataChangedEventHandler(KCODt_NDockDataChanged);
-            KCODt.Instance.FixList.CollectionChanged += new NotifyCollectionChangedEventHandler(FixList_CollectionChanged);
-        }
-
-        private void FixList_CollectionChanged (object sender, NotifyCollectionChangedEventArgs e) {
-            if (e.Action == NotifyCollectionChangedAction.Add) {
-                Debug.Print(sender.ToString());
-                for (int i = 0; i < KCODt.Instance.FixList.Count; i++) {
-                    string shipId = KCODt.Instance.FixList[i];
-                    if (!KCODt.Instance.ShipDataMap.ContainsKey(shipId)) {
-                        KCODt.Instance.FixList.RemoveAt(i);
-                        continue;
-                    }
-                    JToken ship = KCODt.Instance.ShipDataMap[shipId];
-                    string ndtime = ship["api_ndock_time"].ToString();
-                    if (ndtime == "0") {
-                        KCODt.Instance.FixList.RemoveAt(i);
-                        continue;
-                    }
-                }
-            }
         }
 
         private void KCODt_NDockDataChanged (object sender, DataChangedEventArgs e) {
@@ -274,7 +254,7 @@ namespace KanColleTool {
                     int shipId = int.Parse(sd["Ship"]["api_id"].ToString());
                     Debug.Print(String.Format("next nd ship is ({0}) {1} enter No.{2} dock", shipId, sd["Spec"]["api_name"], api_ndock_id));
                     Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
-                        if (chkAutoNDock.IsChecked == true) {
+                        if (chkAutoNDock.IsChecked == true && !KCODt.Instance.IsInBattle) {
                             RequestBuilder.Instance.NDockStart(shipId, ndockId, 0);
                         }
                     });

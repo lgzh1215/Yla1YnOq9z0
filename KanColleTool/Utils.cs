@@ -145,4 +145,36 @@ namespace KanColleTool {
         }
     }
     #endregion
+
+    public class DataChangedEventArgs : EventArgs {
+        private readonly JToken data;
+        public DataChangedEventArgs (JToken data) {
+            this.data = data;
+        }
+        public JToken Data {
+            get { return this.data; }
+        }
+    }
+
+    public class BattleEventArgs : EventArgs {
+        private readonly BattleData data;
+        public BattleEventArgs (BattleData data) {
+            this.data = data;
+        }
+        public BattleData Data {
+            get { return this.data; }
+            set { this.Data = value; }
+        }
+    }
+
+    public class BattleData {
+        public string Type{ get; private set; }
+        public JToken Data { get; private set; }
+        public DateTime Time { get; private set; }
+        public BattleData (string type, JToken data) {
+            Type = type;
+            Data = data;
+            Time = DateTime.Now;
+        }
+    }
 }

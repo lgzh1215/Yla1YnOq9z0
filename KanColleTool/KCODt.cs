@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -9,7 +10,6 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Fiddler;
 using Newtonsoft.Json.Linq;
-using System.Collections.ObjectModel;
 
 namespace KanColleTool {
 
@@ -17,16 +17,7 @@ namespace KanColleTool {
 
         private static KCODt instance = null;
 
-        private ObservableCollection<string> fixList;
-        public ObservableCollection<string> FixList {
-            get {
-                if (fixList == null) {
-                    fixList = new ObservableCollection<string>();
-                }
-                return fixList;
-            }
-        }
-
+        public bool IsInBattle { get; private set; }
         public JToken ShipSpec { get; private set; }
         public JToken ShipData { get; private set; }
         public JToken ItemSpec { get; private set; }
@@ -43,6 +34,7 @@ namespace KanColleTool {
         public Dictionary<string, string> NavalFleet { get; private set; }
         public Dictionary<int, List<int>> SlotTypeMap { get; private set; }
         public Dictionary<int, JToken> QuestDataMap { get; private set; }
+        public Queue<BattleData> BattleQueue { get; private set; }
 
         public delegate void ShipSpecChangedEventHandler (object sender, DataChangedEventArgs e);
 
@@ -60,6 +52,8 @@ namespace KanColleTool {
 
         public delegate void NDockDataChangedEventHandler (object sender, DataChangedEventArgs e);
 
+        public delegate void StartBattleEventHandler (object sender, BattleEventArgs e);
+
         public event ShipSpecChangedEventHandler ShipSpecChanged;
 
         public event ShipDataChangedEventHandler ShipDataChanged;
@@ -75,6 +69,8 @@ namespace KanColleTool {
         public event QuestDataChangedEventHandler QuestDataChanged;
 
         public event NDockDataChangedEventHandler NDockDataChanged;
+
+        public event StartBattleEventHandler StartBattle;
 
         private string defMasterShip = @"D:\usr\KanColleTool\masterShip.json";
 
@@ -232,6 +228,14 @@ namespace KanColleTool {
             }
         }
 
+        protected virtual void OnStartBattleEvent (BattleEventArgs e) {
+            BattleQueue.Enqueue(e.Data);
+            StartBattleEventHandler handler = StartBattle;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
         private KCODt () {
             InitializeMasterData();
             InitializeFiddler();
@@ -245,6 +249,7 @@ namespace KanColleTool {
             SlotTypeMap = new Dictionary<int, List<int>>();
             QuestDataMap = new Dictionary<int, JToken>();
             NavalFleet = new Dictionary<string, string>();
+            BattleQueue = new Queue<BattleData>();
             Assembly assembly = typeof(MainWindow).Assembly;
 
             if (File.Exists(defMasterShip)) {
@@ -360,7 +365,7 @@ namespace KanColleTool {
                             JToken temp = JToken.Parse(json);
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
-                            Debug.Print("deck_port parse error: " + exception.ToString());
+                            Debug.Print(exception.ToString());
                         }
                         break;
                     case "deck":
@@ -370,7 +375,7 @@ namespace KanColleTool {
                             JToken temp = JToken.Parse(json);
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
-                            Debug.Print("deck parse error: " + exception.ToString());
+                            Debug.Print(exception.ToString());
                         }
                         break;
                     case "slotitem":
@@ -397,17 +402,28 @@ namespace KanColleTool {
                             JToken temp = JToken.Parse(json);
                             OnQuestDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
-                            Debug.Print("quest parse error: " + exception.ToString());
+                            Debug.Print(exception.ToString());
                         }
                         break;
                     case "next":
-                        printInfo(oS);
+                        battleInfo(oS, "next");
+                        break;
+                    case "mapcell":
+                        try {
+                            //BattleQueue = new Queue<BattleData>();
+                            IsInBattle = true;
+                        } catch (Exception exception) {
+                            Debug.Print(exception.ToString());
+                        }
+                        break;
+                    case "logincheck":
+                        if (IsInBattle) {
+                            IsInBattle = false;
+                        }
                         break;
                     case "start":
                         if (m.Groups[1].ToString() == "api_req_map") {
-                            printInfo(oS);
-                        } else if (m.Groups[1].ToString() == "api_req_nyukyo") {
-                            // TODO
+                            battleInfo(oS, "start");
                         }
                         break;
                     case "ndock":
@@ -417,7 +433,7 @@ namespace KanColleTool {
                             JToken temp = JToken.Parse(json);
                             OnNDockDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                         } catch (Exception exception) {
-                            Debug.Print("quest parse error: " + exception.ToString());
+                            Debug.Print(exception.ToString());
                         }
                         break;
                     default:
@@ -438,28 +454,16 @@ namespace KanColleTool {
             FiddlerApplication.Log.LogFormat("Gateway: {0}", CONFIG.UpstreamGateway.ToString());
         }
 
-        private void printInfo (Fiddler.Session oS) {
+        private void battleInfo (Fiddler.Session oS, string type) {
             try {
                 string svdata = oS.GetResponseBodyAsString();
                 string json = svdata.Substring(7);
                 JToken temp = JToken.Parse(json);
-                Debug.Print(temp.ToString());
+                OnStartBattleEvent(new BattleEventArgs(new BattleData(type, temp["api_data"])));
+                //Debug.Print(temp.ToString());
             } catch (Exception exception) {
-                Debug.Print("next parse error: " + exception.ToString());
+                Debug.Print(exception.ToString());
             }
-        }
-    }
-
-    public class DataChangedEventArgs : EventArgs {
-
-        private readonly JToken data;
-
-        public DataChangedEventArgs (JToken data) {
-            this.data = data;
-        }
-
-        public JToken Data {
-            get { return this.data; }
         }
     }
 }
