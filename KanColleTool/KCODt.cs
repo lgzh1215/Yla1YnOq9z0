@@ -34,7 +34,8 @@ namespace KanColleTool {
         public Dictionary<string, string> NavalFleet { get; private set; }
         public Dictionary<int, List<int>> SlotTypeMap { get; private set; }
         public Dictionary<int, JToken> QuestDataMap { get; private set; }
-        public Queue<BattleData> BattleQueue { get; private set; }
+        public Stack<NavigateData> NavigationQueue { get; private set; }
+        public Dictionary<string, JToken> EnemyMap { get; private set; }
 
         public delegate void ShipSpecChangedEventHandler (object sender, DataChangedEventArgs e);
 
@@ -52,7 +53,11 @@ namespace KanColleTool {
 
         public delegate void NDockDataChangedEventHandler (object sender, DataChangedEventArgs e);
 
-        public delegate void StartBattleEventHandler (object sender, BattleEventArgs e);
+        public delegate void MapNavigateEventHandler (object sender, NavigateEventArgs e);
+
+        public delegate void BattleEventHandler (object sender, NavigateEventArgs e);
+
+        //public delegate void EnemyIncomingEventHandler (object sender, NavigateEventArgs e);
 
         public event ShipSpecChangedEventHandler ShipSpecChanged;
 
@@ -70,13 +75,19 @@ namespace KanColleTool {
 
         public event NDockDataChangedEventHandler NDockDataChanged;
 
-        public event StartBattleEventHandler StartBattle;
+        public event MapNavigateEventHandler MapNavigate;
+
+        public event BattleEventHandler Battle;
+
+        //public event EnemyIncomingEventHandler EnemyIncoming;
 
         private string defMasterShip = @"D:\usr\KanColleTool\masterShip.json";
 
         private string defMasterSlotItem = @"D:\usr\KanColleTool\masterSlotItem.json";
 
         private string defMasterSType = @"D:\usr\KanColleTool\masterSType.json";
+
+        private string enemyDeck = @"D:\usr\KanColleTool\enemyDeck.json";
 
         static public KCODt Instance {
             get {
@@ -228,9 +239,25 @@ namespace KanColleTool {
             }
         }
 
-        protected virtual void OnStartBattleEvent (BattleEventArgs e) {
-            BattleQueue.Enqueue(e.Data);
-            StartBattleEventHandler handler = StartBattle;
+        protected virtual void OnMapNavigateEvent (NavigateEventArgs e) {
+            NavigationQueue.Push(e.Data);
+            MapNavigateEventHandler handler = MapNavigate;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnBattleEvent (NavigateEventArgs e) {
+            BattleEventHandler handler = Battle;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnEnemyIncoming (NavigateEventArgs e) {
+            //EnemyMap.Add(deck["eid"].ToString(), deck);
+
+            BattleEventHandler handler = Battle;
             if (handler != null) {
                 handler(this, e);
             }
@@ -249,9 +276,9 @@ namespace KanColleTool {
             SlotTypeMap = new Dictionary<int, List<int>>();
             QuestDataMap = new Dictionary<int, JToken>();
             NavalFleet = new Dictionary<string, string>();
-            BattleQueue = new Queue<BattleData>();
+            NavigationQueue = new Stack<NavigateData>();
+            EnemyMap = new Dictionary<string, JToken>();
             Assembly assembly = typeof(MainWindow).Assembly;
-
             if (File.Exists(defMasterShip)) {
                 string json = File.ReadAllText(defMasterShip);
                 JToken temp = JToken.Parse(json);
@@ -287,6 +314,15 @@ namespace KanColleTool {
                     ShipType = JToken.Parse(json)["api_data"];
                 }
             }
+            // TODO check
+            if (File.Exists(enemyDeck)) {
+                string json = File.ReadAllText(enemyDeck);
+                JToken temp = JToken.Parse(json);
+                JToken edeck = JToken.Parse(json);
+                foreach (JToken deck in edeck) {
+                    EnemyMap.Add(deck["eid"].ToString(), deck);
+                }
+            }
         }
 
         private void InitializeFiddler () {
@@ -300,7 +336,6 @@ namespace KanColleTool {
                 if (!r.IsMatch(oS.fullUrl)) {
                     return;
                 }
-                //Debug.Print(String.Format("{0:hh:mm:ss.fff}\tOp session:\t{1}", DateTime.Now, oS.fullUrl));
                 NameValueCollection form = HttpUtility.ParseQueryString(oS.GetRequestBodyAsString());
                 string token = form["api_token"];
                 if (token != null && RequestBuilder.Token == null) {
@@ -405,25 +440,18 @@ namespace KanColleTool {
                             Debug.Print(exception.ToString());
                         }
                         break;
-                    case "next":
-                        battleInfo(oS, "next");
-                        break;
                     case "mapcell":
-                        try {
-                            //BattleQueue = new Queue<BattleData>();
-                            IsInBattle = true;
-                        } catch (Exception exception) {
-                            Debug.Print(exception.ToString());
-                        }
+                        IsInBattle = true;
                         break;
                     case "logincheck":
-                        if (IsInBattle) {
-                            IsInBattle = false;
-                        }
+                        IsInBattle = false;
+                        break;
+                    case "next":
+                        naviInfo(oS, "next");
                         break;
                     case "start":
                         if (m.Groups[1].ToString() == "api_req_map") {
-                            battleInfo(oS, "start");
+                            naviInfo(oS, "start");
                         }
                         break;
                     case "ndock":
@@ -454,13 +482,12 @@ namespace KanColleTool {
             FiddlerApplication.Log.LogFormat("Gateway: {0}", CONFIG.UpstreamGateway.ToString());
         }
 
-        private void battleInfo (Fiddler.Session oS, string type) {
+        private void naviInfo (Fiddler.Session oS, string type) {
             try {
                 string svdata = oS.GetResponseBodyAsString();
                 string json = svdata.Substring(7);
                 JToken temp = JToken.Parse(json);
-                OnStartBattleEvent(new BattleEventArgs(new BattleData(type, temp["api_data"])));
-                //Debug.Print(temp.ToString());
+                OnMapNavigateEvent(new NavigateEventArgs(new NavigateData(type, temp["api_data"])));
             } catch (Exception exception) {
                 Debug.Print(exception.ToString());
             }

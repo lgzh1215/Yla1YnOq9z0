@@ -21,6 +21,7 @@
               IsReadOnly="True" FontSize="14" KeyDown="ItemGrid_KeyDown"
               RowStyle="{StaticResource DefaultRowStyle}">
         <DataGrid.Columns>
+            <DataGridTextColumn Header="ID" Binding="{Binding Path=Item.api_id.Value}" />
             <DataGridTextColumn Header="レア" Binding="{Binding Path=Spec.api_rare.Value}" />
             <DataGridTextColumn Header="裝備名" Binding="{Binding Path=Spec.api_name.Value}" />
             <DataGridTextColumn Header="火力" Binding="{Binding Path=Spec.api_houg.Value}" />
@@ -33,8 +34,7 @@
             <DataGridTextColumn Header="回避" Binding="{Binding Path=Spec.api_houk.Value}" />
             <DataGridTextColumn Header="射程" Binding="{Binding Path=LengString.Value}" SortMemberPath="Spec.api_leng.Value" />
             <DataGridTextColumn Header="分類" Binding="{Binding Path=Spec.api_sortno.Value}" />
-            <DataGridTextColumn Header="雷命(仮)" Binding="{Binding Path=Spec.api_raim.Value}" />
-            <DataGridTextColumn Header="ID" Binding="{Binding Path=Item.api_id.Value}" />
+            <DataGridTextColumn Header="雷命" Binding="{Binding Path=Spec.api_raim.Value}" />
         </DataGrid.Columns>
     </DataGrid>
 </Page>

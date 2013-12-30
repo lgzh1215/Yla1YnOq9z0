@@ -156,24 +156,24 @@ namespace KanColleTool {
         }
     }
 
-    public class BattleEventArgs : EventArgs {
-        private readonly BattleData data;
-        public BattleEventArgs (BattleData data) {
+    public class NavigateEventArgs : EventArgs {
+        private readonly NavigateData data;
+        public NavigateEventArgs (NavigateData data) {
             this.data = data;
         }
-        public BattleData Data {
+        public NavigateData Data {
             get { return this.data; }
             set { this.Data = value; }
         }
     }
 
-    public class BattleData {
+    public class NavigateData {
         public string Type{ get; private set; }
-        public JToken Data { get; private set; }
+        public JToken Json { get; private set; }
         public DateTime Time { get; private set; }
-        public BattleData (string type, JToken data) {
+        public NavigateData (string type, JToken json) {
             Type = type;
-            Data = data;
+            Json = json;
             Time = DateTime.Now;
         }
     }

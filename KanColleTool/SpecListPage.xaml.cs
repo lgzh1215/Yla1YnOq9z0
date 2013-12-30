@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.IO;
 
 namespace KanColleTool {
     /// <summary>
@@ -17,6 +18,14 @@ namespace KanColleTool {
 
         Thread UIThread;
 
+        bool isNextEnemy;
+
+        string eid;
+
+        //JToken eDeck;
+
+        static Dictionary<string, JToken> EDecks = new Dictionary<string, JToken>();
+        
         public SpecListPage () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
@@ -36,9 +45,26 @@ namespace KanColleTool {
             reflash();
         }
 
-        private void KCODt_StartBattle (object sender, BattleEventArgs e) {
-            battle();
+        private void KCODt_MapNavigation (object sender, NavigateEventArgs e) {
+            if (e.Data.Json["api_enemy"] != null) {
+                isNextEnemy = true;
+                eid = e.Data.Json["api_enemy"]["api_enemy_id"].ToString();
+            }
+            navigate();
         }
+
+        private void KCODt_Battle (object sender, NavigateEventArgs e) {
+            try {
+                if (isNextEnemy) {
+                    isNextEnemy = false;
+                    JToken eDeck = e.Data.Json["api_ship_ke"];
+                }
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+            
+        }
+
 
         private void reflash () {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
@@ -57,11 +83,11 @@ namespace KanColleTool {
             }, null);
         }
 
-        private void battle () {
+        private void navigate () {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 try {
-                    BattleGrid.ItemsSource = null;
-                    BattleGrid.ItemsSource = KCODt.Instance.BattleQueue;
+                    NaviGrid.ItemsSource = null;
+                    NaviGrid.ItemsSource = KCODt.Instance.NavigationQueue;
                 } catch (Exception ex) {
                     Debug.Print(ex.ToString());
                 }
@@ -75,12 +101,15 @@ namespace KanColleTool {
         }
 
         private void Page_Loaded (object sender, RoutedEventArgs e) {
+            KCODt.Instance.MapNavigate += new KCODt.MapNavigateEventHandler(KCODt_MapNavigation);
+            KCODt.Instance.Battle += new KCODt.BattleEventHandler(KCODt_Battle);
             reflash();
-            KCODt.Instance.StartBattle += new KCODt.StartBattleEventHandler(KCODt_StartBattle);
+            navigate();
         }
 
         private void Page_Unloaded (object sender, RoutedEventArgs e) {
-            KCODt.Instance.StartBattle -= new KCODt.StartBattleEventHandler(KCODt_StartBattle);
+            KCODt.Instance.MapNavigate -= new KCODt.MapNavigateEventHandler(KCODt_MapNavigation);
+            KCODt.Instance.Battle -= new KCODt.BattleEventHandler(KCODt_Battle);
         }
 
     }
