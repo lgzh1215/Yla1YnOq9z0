@@ -117,23 +117,6 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Expander>
-
-            <Expander Header="BattleTable">
-                <DataGrid AlternationCount="2" AutoGenerateColumns="False" RowHeaderWidth="0" 
-              SelectionMode="Extended" HorizontalAlignment="Stretch" Name="NaviGrid" 
-              VerticalAlignment="Stretch" AlternatingRowBackground="Azure"
-              IsReadOnly="True" FontSize="14" RowStyle="{StaticResource DefaultRowStyle}"
-              KeyDown="ShipGrid_KeyDown" Height="340">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Time" Binding="{Binding Time}" />
-                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" />
-                        <DataGridTextColumn Header="海域" Binding="{Binding Json.api_maparea_id}" />
-                        <DataGridTextColumn Header="位置" Binding="{Binding Json.api_mapinfo_no}" />
-                        <DataGridTextColumn Header="No" Binding="{Binding Json.api_no}" />
-                        <DataGridTextColumn Header="EID" Binding="{Binding Json.api_enemy.api_enemy_id}" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Expander>
         </StackPanel>
     </ScrollViewer>
 </Page>

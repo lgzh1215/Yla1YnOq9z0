@@ -20,24 +20,48 @@ namespace KanColleTool {
 
         Thread UIThread;
 
+        Timer UITimer;
+
         List<Timer> NDTimers = new List<Timer>();
 
         List<NDockPanel> NDPanels = new List<NDockPanel>();
 
-        Timer UITimer;
+        List<Image> edi = new List<Image>();
 
         List<DashBoardPanel> Panel = new List<DashBoardPanel>();
 
-        UriToImageConverter uic = new UriToImageConverter();
+        static UriToImageConverter uic = new UriToImageConverter();
 
-        DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        static DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        List<Image> edi = new List<Image>();
+        static Dictionary<string, string> formationMap = new Dictionary<string, string>();
+
+        static Dictionary<string, string> itemgetMap = new Dictionary<string, string>();
 
         BitmapImage eng0;
         BitmapImage eng1;
         BitmapImage eng2;
         BitmapImage eng3;
+
+        static DashBoard () {
+            formationMap.Add("1", "単縦陣");
+            formationMap.Add("2", "複縦陣");
+            formationMap.Add("3", "輪形陣");
+            formationMap.Add("4", "梯形陣");
+            formationMap.Add("5", "単横陣");
+            itemgetMap.Add("1", "燃料");
+            itemgetMap.Add("2", "弾薬");
+            itemgetMap.Add("3", "鋼材");
+            itemgetMap.Add("4", "ボーキサイト");
+            itemgetMap.Add("5", "高速建造材");
+            itemgetMap.Add("6", "高速修復材");
+            itemgetMap.Add("7", "開発資材");
+            itemgetMap.Add("8", "家具コイン");
+            itemgetMap.Add("9", "家具コイン");
+            itemgetMap.Add("10", "家具箱（小）");
+            itemgetMap.Add("11", "家具箱（中）");
+            itemgetMap.Add("12", "家具箱（大）");
+        }
 
         public DashBoard () {
             UIThread = Thread.CurrentThread;
@@ -45,26 +69,32 @@ namespace KanColleTool {
             InitializeMission();
             InitializeTimer();
             KCODt.Instance.NDockDataChanged += new KCODt.NDockDataChangedEventHandler(KCODt_NDockDataChanged);
-            
-            JToken ed = KCODt.Instance.EnemyDeckMap["60"];
-            labArea.Content = "2-3";
-            EnemyShip.Children.Clear();
-            foreach (JToken shipId in ed["Ship"]) {
-                if (shipId.ToString() == "-1") {
-                    continue;
+            KCODt.Instance.MapNavigate += new KCODt.MapNavigateEventHandler(KCODt_MapNavigate);
+            edi.Add(imgED1);
+            edi.Add(imgED2);
+            edi.Add(imgED3);
+            edi.Add(imgED4);
+            edi.Add(imgED5);
+            edi.Add(imgED6);
+        }
+
+        private void KCODt_MapNavigate (object sender, NavigateEventArgs e) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                labArea.Content = string.Format("{0}-{1}-{2}",
+                    e.Data["api_maparea_id"].ToString(),
+                    e.Data["api_mapinfo_no"].ToString(),
+                    e.Data["api_no"].ToString());
+            });
+            if (e.Data["api_enemy"] != null) {
+                string eid = e.Data["api_enemy"]["api_enemy_id"].ToString();
+                if (KCODt.Instance.EnemyDeckMap.ContainsKey(eid)) {
+                    setupEnemyPanel(e);
+                } else {
+                    clearEnemyPanel();
                 }
-                Image img = new Image();
-                var qs = from spec in KCODt.Instance.ShipSpec
-                         from stype in KCODt.Instance.ShipType
-                         where spec["api_id"].ToString() == shipId.ToString()
-                         && spec["api_stype"].ToString() == stype["api_id"].ToString()
-                         select JToken.FromObject(new ShipSpecDetail(spec, stype));
-                JToken sd = qs.First() as JToken;
-                Int32Rect rect = new Int32Rect(50, 40, 85, 60);
-                img.Source = (CroppedBitmap) uic.Convert(new Uri(sd["ShipIcoName"].ToString()),
-                        null, rect, null);
-                img.Margin = new Thickness(3, 0, 3, 0);
-                EnemyShip.Children.Add(img);
+            } else if (e.Data["api_itemget"] != null) {
+                clearEnemyPanel();
+                setupGetItemPanel(e);
             }
         }
 
@@ -379,6 +409,54 @@ namespace KanColleTool {
             });
         }
 
+        private void clearEnemyPanel () {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                for (int i = 0; i < edi.Count; i++) {
+                    edi[i].Source = null;
+                }
+                labEnemyName.Content = "";
+                labFormation.Content = "";
+            });
+        }
+
+        private void setupEnemyPanel (NavigateEventArgs e) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                try {
+                    string eid = e.Data["api_enemy"]["api_enemy_id"].ToString();
+                    JToken ed = KCODt.Instance.EnemyDeckMap[eid];
+                    labEnemyName.Content = ed["Name"].ToString();
+                    labFormation.Content = formationMap[ed["Formation"].ToString()];
+                    JArray esh = ed["Ship"] as JArray;
+                    for (int i = 0; i < edi.Count; i++) {
+                        string shipId = esh[i + 1].ToString();
+                        var qs = from spec in KCODt.Instance.ShipSpec
+                                 from stype in KCODt.Instance.ShipType
+                                 where spec["api_id"].ToString() == shipId
+                                 && spec["api_stype"].ToString() == stype["api_id"].ToString()
+                                 select JToken.FromObject(new ShipSpecDetail(spec, stype));
+                        if (qs.Count() == 0) {
+                            edi[i].Source = null;
+                        } else {
+                            JToken sd = qs.First() as JToken;
+                            Int32Rect rect = new Int32Rect(50, 40, 85, 60);
+                            edi[i].Source = (CroppedBitmap) uic.Convert(new Uri(sd["ShipIcoName"].ToString()),
+                                    null, rect, null);
+                        }
+                    }
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
+            });
+        }
+
+        private void setupGetItemPanel (NavigateEventArgs e) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                string ammo = e.Data["api_itemget"]["api_getcount"].ToString();
+                string kind = e.Data["api_itemget"]["api_id"].ToString();
+                labEnemyName.Content = string.Format("獲得 {0} {1}", ammo, itemgetMap[kind]);
+            });
+        }
+
         private void chkAutoNDock_Checked (object sender, RoutedEventArgs e) {
             try {
                 CheckBox cbx = sender as CheckBox;
@@ -389,6 +467,7 @@ namespace KanColleTool {
                 Debug.Print(ex.ToString());
             }
         }
+
     }
 
     class DashBoardPanel {

@@ -484,6 +484,9 @@ namespace KanColleTool {
                             battleEvent(oS, "midnight");
                         }
                         break;
+                    case "sp_midnight":
+                        battleEvent(oS, "sp_midnight");
+                        break;
                     case "battleresult":
                         battleEvent(oS, "end");
                         break;

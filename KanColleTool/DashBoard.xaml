@@ -110,18 +110,18 @@
             <Label Margin="60,0,0,0" Style="{StaticResource BaseStyle}" />
         </StackPanel>
 
-        <WrapPanel Name="EnemyShip" Height="120" Width="364" HorizontalAlignment="Left" Margin="0,307,0,0" >
-            <StackPanel Name="ScenarioInfo" Height="60" Width="176" Margin="3,0,3,0">
+        <WrapPanel Name="EnemyShip" Height="130" Width="358" HorizontalAlignment="Left" Margin="0,307,0,0" >
+            <StackPanel Name="ScenarioInfo" Height="60" Width="174" Margin="2">
                 <Label Name="labArea" Style="{StaticResource BaseStyle}" />
                 <Label Name="labFormation" Style="{StaticResource BaseStyle}" />
                 <Label Name="labEnemyName" Style="{StaticResource BaseStyle}" Margin="50,-56,0,0"/>
             </StackPanel>
-            <Image Name="imgED1" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
-            <Image Name="imgED2" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
-            <Image Name="imgED3" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
-            <Image Name="imgED4" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
-            <Image Name="imgED5" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
-            <Image Name="imgED6" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
+            <Image Name="imgED1" Stretch="None" Width="85" Height="60" Margin="2" />
+            <Image Name="imgED2" Stretch="None" Width="85" Height="60" Margin="2" />
+            <Image Name="imgED3" Stretch="None" Width="85" Height="60" Margin="2" />
+            <Image Name="imgED4" Stretch="None" Width="85" Height="60" Margin="2" />
+            <Image Name="imgED5" Stretch="None" Width="85" Height="60" Margin="2" />
+            <Image Name="imgED6" Stretch="None" Width="85" Height="60" Margin="2" />
         </WrapPanel>
         
     </Grid>
