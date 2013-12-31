@@ -89,12 +89,12 @@ namespace KanColleTool {
                     bi.BeginInit();
                     bi.DecodePixelWidth = 170;
                     bi.UriSource = (Uri) value;
-                    bi.EndInit();
-
                     Int32Rect rect = new Int32Rect(0, 50, 170, 60);
                     if (parameter is Int32Rect) {
                         rect = (Int32Rect) parameter;
+                        bi.DecodePixelWidth = Math.Max(bi.DecodePixelWidth, rect.Width);
                     }
+                    bi.EndInit();
                     CroppedBitmap cb = new CroppedBitmap(bi, rect);
                     return cb;
                 }
@@ -157,24 +157,33 @@ namespace KanColleTool {
     }
 
     public class NavigateEventArgs : EventArgs {
-        private readonly NavigateData data;
-        public NavigateEventArgs (NavigateData data) {
+        private readonly JToken data;
+        private readonly string type;
+        public NavigateEventArgs (string type, JToken data) {
+            this.type = type;
             this.data = data;
         }
-        public NavigateData Data {
+        public JToken Data {
             get { return this.data; }
-            set { this.Data = value; }
+        }
+        public string Type {
+            get { return this.type; }
         }
     }
 
-    public class NavigateData {
-        public string Type{ get; private set; }
-        public JToken Json { get; private set; }
-        public DateTime Time { get; private set; }
-        public NavigateData (string type, JToken json) {
-            Type = type;
-            Json = json;
-            Time = DateTime.Now;
+    public class BattleEventArgs : EventArgs {
+        private readonly JToken data;
+        private readonly string type;
+        public BattleEventArgs (string type, JToken data) {
+            this.type = type;
+            this.data = data;
+        }
+        public JToken Data {
+            get { return this.data; }
+        }
+        public string Type {
+            get { return this.type; }
         }
     }
+
 }

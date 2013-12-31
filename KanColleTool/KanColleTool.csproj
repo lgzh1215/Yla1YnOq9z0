@@ -82,6 +82,7 @@
     </Compile>
     <Compile Include="KCODt.cs" />
     <Compile Include="MissionDetail.cs" />
+    <Compile Include="NavigateDetail.cs" />
     <Compile Include="QuestDetail.cs" />
     <Compile Include="QuestListPage.xaml.cs">
       <DependentUpon>QuestListPage.xaml</DependentUpon>

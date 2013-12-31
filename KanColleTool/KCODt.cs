@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Fiddler;
 using Newtonsoft.Json.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace KanColleTool {
 
@@ -17,7 +18,7 @@ namespace KanColleTool {
 
         private static KCODt instance = null;
 
-        public bool IsInBattle { get; private set; }
+        public bool IsInScenario { get; private set; }
         public JToken ShipSpec { get; private set; }
         public JToken ShipData { get; private set; }
         public JToken ItemSpec { get; private set; }
@@ -34,61 +35,42 @@ namespace KanColleTool {
         public Dictionary<string, string> NavalFleet { get; private set; }
         public Dictionary<int, List<int>> SlotTypeMap { get; private set; }
         public Dictionary<int, JToken> QuestDataMap { get; private set; }
-        public Stack<NavigateData> NavigationQueue { get; private set; }
-        public Dictionary<string, JToken> EnemyMap { get; private set; }
+        public Stack<NavigateDetail> NavigateStack { get; private set; }
+        public Dictionary<string, JToken> EnemyDeckMap { get; private set; }
 
         public delegate void ShipSpecChangedEventHandler (object sender, DataChangedEventArgs e);
-
         public delegate void ShipDataChangedEventHandler (object sender, DataChangedEventArgs e);
-
         public delegate void ItemSpecChangedEventHandler (object sender, DataChangedEventArgs e);
-
         public delegate void ItemDataChangedEventHandler (object sender, DataChangedEventArgs e);
-
         public delegate void SlotTypeChangedEventHandler (object sender, DataChangedEventArgs e);
-
         public delegate void DeckDataChangedEventHandler (object sender, DataChangedEventArgs e);
-
         public delegate void QuestDataChangedEventHandler (object sender, DataChangedEventArgs e);
-
         public delegate void NDockDataChangedEventHandler (object sender, DataChangedEventArgs e);
-
+        public delegate void ScenarioEventHandler (object sender, EventArgs e);
         public delegate void MapNavigateEventHandler (object sender, NavigateEventArgs e);
-
-        public delegate void BattleEventHandler (object sender, NavigateEventArgs e);
-
-        //public delegate void EnemyIncomingEventHandler (object sender, NavigateEventArgs e);
-
+        public delegate void BattleEventHandler (object sender, BattleEventArgs e);
         public event ShipSpecChangedEventHandler ShipSpecChanged;
-
         public event ShipDataChangedEventHandler ShipDataChanged;
-
         public event ItemSpecChangedEventHandler ItemSpecChanged;
-
         public event ItemDataChangedEventHandler ItemDataChanged;
-
         public event SlotTypeChangedEventHandler SlotTypeChanged;
-
         public event DeckDataChangedEventHandler DeckDataChanged;
-
         public event QuestDataChangedEventHandler QuestDataChanged;
-
         public event NDockDataChangedEventHandler NDockDataChanged;
-
+        public event ScenarioEventHandler ScenarioStart;
+        public event ScenarioEventHandler ScenarioFinish;
         public event MapNavigateEventHandler MapNavigate;
-
-        public event BattleEventHandler Battle;
-
-        //public event EnemyIncomingEventHandler EnemyIncoming;
+        public event BattleEventHandler BattleStart;
+        public event BattleEventHandler BattleFinish;
 
         private string defMasterShip = @"D:\usr\KanColleTool\masterShip.json";
-
         private string defMasterSlotItem = @"D:\usr\KanColleTool\masterSlotItem.json";
-
         private string defMasterSType = @"D:\usr\KanColleTool\masterSType.json";
-
         private string enemyDeck = @"D:\usr\KanColleTool\enemyDeck.json";
+        private string enemyDeckId = "";
+        private string enemyFormation = "";
 
+        #region stadycode
         static public KCODt Instance {
             get {
                 if (instance == null) {
@@ -238,26 +220,68 @@ namespace KanColleTool {
                 handler(this, e);
             }
         }
+        #endregion
+
+        protected virtual void OnScenarioStartEvent (EventArgs e) {
+            IsInScenario = true;
+            ScenarioEventHandler handler = ScenarioStart;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnScenarioFinishEvent (EventArgs e) {
+            IsInScenario = false;
+            ScenarioEventHandler handler = ScenarioFinish;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
 
         protected virtual void OnMapNavigateEvent (NavigateEventArgs e) {
-            NavigationQueue.Push(e.Data);
+            NavigateStack.Push(new NavigateDetail(e.Type, e.Data));
+            if (e.Data["api_enemy"] != null) {
+                string eid = e.Data["api_enemy"]["api_enemy_id"].ToString();
+                if (EnemyDeckMap.ContainsKey(eid)) {
+                    Debug.Print(EnemyDeckMap[eid].ToString());
+                } else {
+                    Debug.Print("EnemyDeckMap doesn't had data on " + eid);
+                    enemyDeckId = eid;
+                }
+            }
             MapNavigateEventHandler handler = MapNavigate;
             if (handler != null) {
                 handler(this, e);
             }
         }
 
-        protected virtual void OnBattleEvent (NavigateEventArgs e) {
-            BattleEventHandler handler = Battle;
+        protected virtual void OnBattleStartEvent (BattleEventArgs e) {
+            if (enemyDeckId != "" && e.Type == "day") {
+                if (e.Data["api_formation"] != null) {
+                    enemyFormation = e.Data["api_formation"][1].ToString();
+                }
+            }
+            BattleEventHandler handler = BattleStart;
             if (handler != null) {
                 handler(this, e);
             }
         }
 
-        protected virtual void OnEnemyIncoming (NavigateEventArgs e) {
-            //EnemyMap.Add(deck["eid"].ToString(), deck);
-
-            BattleEventHandler handler = Battle;
+        protected virtual void OnBattleFinishEvent (BattleEventArgs e) {
+            if (enemyDeckId != "") {
+                EnemyDeckInfo info = new EnemyDeckInfo(enemyDeckId, enemyFormation,
+                    e.Data["api_enemy_info"]["api_deck_name"].ToString(), e.Data["api_ship_id"]);
+                EnemyDeckMap.Add(enemyDeckId, JToken.FromObject(info));
+                enemyDeckId = "";
+                enemyFormation = "";
+                List<string> lx = new List<string>();
+                foreach (JToken item in EnemyDeckMap.Values) {
+                    lx.Add(item.ToString());
+                }
+                Debug.Print(string.Join(",", lx));
+                File.WriteAllText(enemyDeck, string.Format("[{0}]", string.Join(",", lx)));
+            }
+            BattleEventHandler handler = BattleFinish;
             if (handler != null) {
                 handler(this, e);
             }
@@ -276,8 +300,8 @@ namespace KanColleTool {
             SlotTypeMap = new Dictionary<int, List<int>>();
             QuestDataMap = new Dictionary<int, JToken>();
             NavalFleet = new Dictionary<string, string>();
-            NavigationQueue = new Stack<NavigateData>();
-            EnemyMap = new Dictionary<string, JToken>();
+            NavigateStack = new Stack<NavigateDetail>();
+            EnemyDeckMap = new Dictionary<string, JToken>();
             Assembly assembly = typeof(MainWindow).Assembly;
             if (File.Exists(defMasterShip)) {
                 string json = File.ReadAllText(defMasterShip);
@@ -314,13 +338,12 @@ namespace KanColleTool {
                     ShipType = JToken.Parse(json)["api_data"];
                 }
             }
-            // TODO check
             if (File.Exists(enemyDeck)) {
                 string json = File.ReadAllText(enemyDeck);
-                JToken temp = JToken.Parse(json);
-                JToken edeck = JToken.Parse(json);
-                foreach (JToken deck in edeck) {
-                    EnemyMap.Add(deck["eid"].ToString(), deck);
+                JArray temp = JArray.Parse(json);
+                foreach (JToken item in temp) {
+                    string id = item["Id"].ToString();
+                    EnemyDeckMap.Add(id, item);
                 }
             }
         }
@@ -441,18 +464,28 @@ namespace KanColleTool {
                         }
                         break;
                     case "mapcell":
-                        IsInBattle = true;
+                        OnScenarioStartEvent(null);
                         break;
                     case "logincheck":
-                        IsInBattle = false;
+                        OnScenarioFinishEvent(null);
                         break;
                     case "next":
-                        naviInfo(oS, "next");
+                        naviEvent(oS, "next");
                         break;
                     case "start":
                         if (m.Groups[1].ToString() == "api_req_map") {
-                            naviInfo(oS, "start");
+                            naviEvent(oS, "start");
                         }
+                        break;
+                    case "battle":
+                        if (m.Groups[1].ToString() == "api_req_sortie") {
+                            battleEvent(oS, "day");
+                        } else if (m.Groups[1].ToString() == "api_req_battle_midnight") {
+                            battleEvent(oS, "midnight");
+                        }
+                        break;
+                    case "battleresult":
+                        battleEvent(oS, "end");
                         break;
                     case "ndock":
                         try {
@@ -482,14 +515,42 @@ namespace KanColleTool {
             FiddlerApplication.Log.LogFormat("Gateway: {0}", CONFIG.UpstreamGateway.ToString());
         }
 
-        private void naviInfo (Fiddler.Session oS, string type) {
+        private void naviEvent (Fiddler.Session oS, string type) {
             try {
                 string svdata = oS.GetResponseBodyAsString();
                 string json = svdata.Substring(7);
                 JToken temp = JToken.Parse(json);
-                OnMapNavigateEvent(new NavigateEventArgs(new NavigateData(type, temp["api_data"])));
+                OnMapNavigateEvent(new NavigateEventArgs(type, temp["api_data"]));
             } catch (Exception exception) {
                 Debug.Print(exception.ToString());
+            }
+        }
+
+        private void battleEvent (Fiddler.Session oS, string type) {
+            try {
+                string svdata = oS.GetResponseBodyAsString();
+                string json = svdata.Substring(7);
+                JToken temp = JToken.Parse(json);
+                if (type == "end") {
+                    OnBattleFinishEvent(new BattleEventArgs(type, temp["api_data"]));
+                } else {
+                    OnBattleStartEvent(new BattleEventArgs(type, temp["api_data"]));
+                }
+            } catch (Exception exception) {
+                Debug.Print(exception.ToString());
+            }
+        }
+
+        class EnemyDeckInfo {
+            public string Id { get; set; }
+            public string Formation { get; set; }
+            public string Name { get; set; }
+            public JToken Ship { get; set; }
+            public EnemyDeckInfo (string id, string formation, string name, JToken ship) {
+                Id = id;
+                Formation = formation;
+                Name = name;
+                Ship = ship;
             }
         }
     }

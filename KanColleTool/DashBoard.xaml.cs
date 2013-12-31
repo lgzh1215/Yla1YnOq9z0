@@ -32,6 +32,8 @@ namespace KanColleTool {
 
         DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
+        List<Image> edi = new List<Image>();
+
         BitmapImage eng0;
         BitmapImage eng1;
         BitmapImage eng2;
@@ -43,6 +45,27 @@ namespace KanColleTool {
             InitializeMission();
             InitializeTimer();
             KCODt.Instance.NDockDataChanged += new KCODt.NDockDataChangedEventHandler(KCODt_NDockDataChanged);
+            
+            JToken ed = KCODt.Instance.EnemyDeckMap["60"];
+            labArea.Content = "2-3";
+            EnemyShip.Children.Clear();
+            foreach (JToken shipId in ed["Ship"]) {
+                if (shipId.ToString() == "-1") {
+                    continue;
+                }
+                Image img = new Image();
+                var qs = from spec in KCODt.Instance.ShipSpec
+                         from stype in KCODt.Instance.ShipType
+                         where spec["api_id"].ToString() == shipId.ToString()
+                         && spec["api_stype"].ToString() == stype["api_id"].ToString()
+                         select JToken.FromObject(new ShipSpecDetail(spec, stype));
+                JToken sd = qs.First() as JToken;
+                Int32Rect rect = new Int32Rect(50, 40, 85, 60);
+                img.Source = (CroppedBitmap) uic.Convert(new Uri(sd["ShipIcoName"].ToString()),
+                        null, rect, null);
+                img.Margin = new Thickness(3, 0, 3, 0);
+                EnemyShip.Children.Add(img);
+            }
         }
 
         private void KCODt_NDockDataChanged (object sender, DataChangedEventArgs e) {
@@ -254,7 +277,7 @@ namespace KanColleTool {
                     int shipId = int.Parse(sd["Ship"]["api_id"].ToString());
                     Debug.Print(String.Format("next nd ship is ({0}) {1} enter No.{2} dock", shipId, sd["Spec"]["api_name"], api_ndock_id));
                     Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
-                        if (chkAutoNDock.IsChecked == true && !KCODt.Instance.IsInBattle) {
+                        if (chkAutoNDock.IsChecked == true && !KCODt.Instance.IsInScenario) {
                             RequestBuilder.Instance.NDockStart(shipId, ndockId, 0);
                         }
                     });
@@ -436,14 +459,22 @@ namespace KanColleTool {
     }
 
     class NDockPanel {
-        private int imgIcon = 0;
-        private int prgBar = 1;
-        private int labCD = 2;
-        private int labETA = 3;
+        private int labName = 0;
+        private int imgIcon = 1;
+        private int prgBar = 2;
+        private int labCD = 3;
+        private int labETA = 4;
 
         public Image Icon {
             get {
                 return stackPanel.Children[imgIcon] as Image;
+            }
+            private set { }
+        }
+
+        public Label Name {
+            get {
+                return stackPanel.Children[labName] as Label;
             }
             private set { }
         }
@@ -482,6 +513,7 @@ namespace KanColleTool {
 
         public NDockPanel (StackPanel stackPanel) {
             this.stackPanel = stackPanel;
+            this.Name.VerticalAlignment = VerticalAlignment.Center;
             this.CD.VerticalAlignment = VerticalAlignment.Center;
             this.ETA.VerticalAlignment = VerticalAlignment.Center;
             this.Visibility = Visibility.Hidden;

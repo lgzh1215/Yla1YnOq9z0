@@ -92,20 +92,37 @@
         </StackPanel>
 
         <Label Name="labShipCount" Margin="12,142,0,0" Content="" Style="{StaticResource BaseStyle}" />
-        <Label Name="labItemCount" Margin="12,176,0,0" Content="" Style="{StaticResource BaseStyle}" />
+        <Label Name="labItemCount" Margin="111,142,0,0" Content="" Style="{StaticResource BaseStyle}" />
         <CheckBox Name="chkAutoNDock" Margin="384,142,0,0" Content="自動入渠" Height="28" HorizontalAlignment="Left" Width="84" VerticalAlignment="Top" Checked="chkAutoNDock_Checked" />
 
-        <StackPanel Name="stpNDock1Panel" Style="{StaticResource SPStyle}" Height="60" Margin="0,210,0,0">
+        <StackPanel Name="stpNDock1Panel" Style="{StaticResource SPStyle}" Height="60" Margin="0,175,0,0">
+            <Label Content="渠一" Style="{StaticResource BaseStyle}" />
             <Image Stretch="None" Width="170" />
             <ProgressBar Width="170" Height="6" Margin="-170,54,0,0" />
             <Label Margin="22,0,0,0" Style="{StaticResource BaseStyle}" />
             <Label Margin="60,0,0,0" Style="{StaticResource BaseStyle}" />
         </StackPanel>
-        <StackPanel Name="stpNDock2Panel" Style="{StaticResource SPStyle}" Height="60" Margin="0,276,0,0">
+        <StackPanel Name="stpNDock2Panel" Style="{StaticResource SPStyle}" Height="60" Margin="0,241,0,0">
+            <Label Content="渠二" Style="{StaticResource BaseStyle}" />
             <Image Stretch="None" Width="170" />
             <ProgressBar Width="170" Height="6" Margin="-170,54,0,0" />
             <Label Margin="22,0,0,0" Style="{StaticResource BaseStyle}" />
             <Label Margin="60,0,0,0" Style="{StaticResource BaseStyle}" />
         </StackPanel>
+
+        <WrapPanel Name="EnemyShip" Height="120" Width="364" HorizontalAlignment="Left" Margin="0,307,0,0" >
+            <StackPanel Name="ScenarioInfo" Height="60" Width="176" Margin="3,0,3,0">
+                <Label Name="labArea" Style="{StaticResource BaseStyle}" />
+                <Label Name="labFormation" Style="{StaticResource BaseStyle}" />
+                <Label Name="labEnemyName" Style="{StaticResource BaseStyle}" Margin="50,-56,0,0"/>
+            </StackPanel>
+            <Image Name="imgED1" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
+            <Image Name="imgED2" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
+            <Image Name="imgED3" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
+            <Image Name="imgED4" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
+            <Image Name="imgED5" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
+            <Image Name="imgED6" Stretch="None" Width="85" Height="60" Margin="3,0,3,0" />
+        </WrapPanel>
+        
     </Grid>
 </Page>

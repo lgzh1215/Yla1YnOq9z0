@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       xmlns:local="clr-namespace:KanColleTool"
-	Title="SpecListPage" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
+	Title="SpecListPage" Loaded="Page_Loaded">
 
     <Page.Resources>
         <ContextMenu x:Key="RowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">

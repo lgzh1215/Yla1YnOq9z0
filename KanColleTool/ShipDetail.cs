@@ -92,5 +92,14 @@ namespace KanColleTool {
             Spec = spec;
             SType = stype;
         }
+
+        public string ShipIcoName {
+            get {
+                string filename = "";
+                string formatting = @"file:///D:/usr/KanColleTool/No.{0}-{1}.png";
+                filename = String.Format(formatting, Spec["api_id"].ToString(), Spec["api_name"].ToString());
+                return filename;
+            }
+        }
     }
 }
