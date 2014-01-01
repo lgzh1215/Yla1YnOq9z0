@@ -70,6 +70,7 @@ namespace KanColleTool {
             InitializeTimer();
             KCODt.Instance.NDockDataChanged += new KCODt.NDockDataChangedEventHandler(KCODt_NDockDataChanged);
             KCODt.Instance.MapNavigate += new KCODt.MapNavigateEventHandler(KCODt_MapNavigate);
+            KCODt.Instance.ScenarioFinish += new KCODt.ScenarioEventHandler(KCODt_ScenarioFinish);
             edi.Add(imgED1);
             edi.Add(imgED2);
             edi.Add(imgED3);
@@ -84,18 +85,26 @@ namespace KanColleTool {
                     e.Data["api_maparea_id"].ToString(),
                     e.Data["api_mapinfo_no"].ToString(),
                     e.Data["api_no"].ToString());
+                clearEnemyPanel();
             });
             if (e.Data["api_enemy"] != null) {
                 string eid = e.Data["api_enemy"]["api_enemy_id"].ToString();
                 if (KCODt.Instance.EnemyDeckMap.ContainsKey(eid)) {
                     setupEnemyPanel(e);
-                } else {
-                    clearEnemyPanel();
                 }
             } else if (e.Data["api_itemget"] != null) {
-                clearEnemyPanel();
                 setupGetItemPanel(e);
+            } else {
+                Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                    labEnemyName.Content = "無戰鬥";
+                });
             }
+        }
+
+        void KCODt_ScenarioFinish (object sender, EventArgs e) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                clearEnemyPanel();
+            });
         }
 
         private void KCODt_NDockDataChanged (object sender, DataChangedEventArgs e) {
@@ -425,7 +434,10 @@ namespace KanColleTool {
                     string eid = e.Data["api_enemy"]["api_enemy_id"].ToString();
                     JToken ed = KCODt.Instance.EnemyDeckMap[eid];
                     labEnemyName.Content = ed["Name"].ToString();
-                    labFormation.Content = formationMap[ed["Formation"].ToString()];
+                    string fk = ed["Formation"].ToString();
+                    if (fk != "" && formationMap.ContainsKey(fk)) {
+                        labFormation.Content = formationMap[ed["Formation"].ToString()];
+                    }
                     JArray esh = ed["Ship"] as JArray;
                     for (int i = 0; i < edi.Count; i++) {
                         string shipId = esh[i + 1].ToString();
