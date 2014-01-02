@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace KanColleTool {
 
@@ -47,12 +48,14 @@ namespace KanColleTool {
         public string ShipIcoName {
             get {
                 string filename = "";
-                string formatting = @"file:///D:/usr/KanColleTool/No.{0}-{1}{2}.png";
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "images").Replace("\\", "/");
+                string formatting = "file:///{0}/No.{1}-{2}{3}.png";
                 string cond = "1";
                 if (HPRatio <= 0.5) {
                     cond = "2";
                 }
-                filename = String.Format(formatting, Spec["api_id"].ToString(), Spec["api_name"].ToString(), cond);
+                filename = String.Format(formatting,
+                    path, Spec["api_id"].ToString(), Spec["api_name"].ToString(), cond);
                 return filename;
             }
         }
@@ -96,8 +99,10 @@ namespace KanColleTool {
         public string ShipIcoName {
             get {
                 string filename = "";
-                string formatting = @"file:///D:/usr/KanColleTool/No.{0}-{1}.png";
-                filename = String.Format(formatting, Spec["api_id"].ToString(), Spec["api_name"].ToString());
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "images").Replace("\\", "/");
+                string formatting = "file:///{0}/No.{1}-{2}.png";
+                filename = String.Format(formatting,
+                    path, Spec["api_id"].ToString(), Spec["api_name"].ToString());
                 return filename;
             }
         }

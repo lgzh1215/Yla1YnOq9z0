@@ -94,6 +94,22 @@ namespace KanColleTool {
                 }
             } else if (e.Data["api_itemget"] != null) {
                 setupGetItemPanel(e);
+            } else if (e.Data["api_happening"] != null) {
+                Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                    string mstName = "UnKnow";
+                    switch (e.Data["api_happening"]["api_mst_id"].ToString()) {
+                        case "1":
+                            mstName = "燃料";
+                            break;
+                        case "2":
+                            mstName = "弾薬";
+                            break;
+                        default:
+                            break;
+                    }
+                    labEnemyName.Content = string.Format("掉落 {0} {1}", 
+                        e.Data["api_happening"]["api_count"].ToString(), mstName);
+                });
             } else {
                 Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                     labEnemyName.Content = "無戰鬥";
@@ -104,6 +120,7 @@ namespace KanColleTool {
         void KCODt_ScenarioFinish (object sender, EventArgs e) {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 clearEnemyPanel();
+                labArea.Content = "";
             });
         }
 
@@ -423,7 +440,7 @@ namespace KanColleTool {
                 for (int i = 0; i < edi.Count; i++) {
                     edi[i].Source = null;
                 }
-                labEnemyName.Content = "";
+                labEnemyName.Content = "無資料";
                 labFormation.Content = "";
             });
         }

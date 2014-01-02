@@ -25,7 +25,6 @@ namespace KanColleTool {
         public JToken ItemData { get; private set; }
         public JToken DeckData { get; private set; }
         public JToken ShipType { get; private set; }
-        public JToken SlotType { get; private set; }
         public JToken QuestData { get; private set; }
         public JToken NDockData { get; private set; }
         public Dictionary<string, JToken> ShipSpecMap { get; private set; }
@@ -33,7 +32,6 @@ namespace KanColleTool {
         public Dictionary<string, JToken> ItemDataMap { get; private set; }
         public Dictionary<string, JToken> ItemSpecMap { get; private set; }
         public Dictionary<string, string> NavalFleet { get; private set; }
-        public Dictionary<int, List<int>> SlotTypeMap { get; private set; }
         public Dictionary<int, JToken> QuestDataMap { get; private set; }
         public Stack<NavigateDetail> NavigateStack { get; private set; }
         public Dictionary<string, JToken> EnemyDeckMap { get; private set; }
@@ -42,7 +40,7 @@ namespace KanColleTool {
         public delegate void ShipDataChangedEventHandler (object sender, DataChangedEventArgs e);
         public delegate void ItemSpecChangedEventHandler (object sender, DataChangedEventArgs e);
         public delegate void ItemDataChangedEventHandler (object sender, DataChangedEventArgs e);
-        public delegate void SlotTypeChangedEventHandler (object sender, DataChangedEventArgs e);
+        public delegate void ShipTypeChangedEventHandler (object sender, DataChangedEventArgs e);
         public delegate void DeckDataChangedEventHandler (object sender, DataChangedEventArgs e);
         public delegate void QuestDataChangedEventHandler (object sender, DataChangedEventArgs e);
         public delegate void NDockDataChangedEventHandler (object sender, DataChangedEventArgs e);
@@ -53,7 +51,7 @@ namespace KanColleTool {
         public event ShipDataChangedEventHandler ShipDataChanged;
         public event ItemSpecChangedEventHandler ItemSpecChanged;
         public event ItemDataChangedEventHandler ItemDataChanged;
-        public event SlotTypeChangedEventHandler SlotTypeChanged;
+        public event ShipTypeChangedEventHandler ShipTypeChanged;
         public event DeckDataChangedEventHandler DeckDataChanged;
         public event QuestDataChangedEventHandler QuestDataChanged;
         public event NDockDataChangedEventHandler NDockDataChanged;
@@ -63,10 +61,10 @@ namespace KanColleTool {
         public event BattleEventHandler BattleStart;
         public event BattleEventHandler BattleFinish;
 
-        private string defMasterShip = @"D:\usr\KanColleTool\masterShip.json";
-        private string defMasterSlotItem = @"D:\usr\KanColleTool\masterSlotItem.json";
-        private string defMasterSType = @"D:\usr\KanColleTool\masterSType.json";
-        private string enemyDeck = @"D:\usr\KanColleTool\enemyDeck.json";
+        private string defMasterShip = "masterShip.json";
+        private string defMasterSlotItem = "masterSlotItem.json";
+        private string defMasterSType = "masterSType.json";
+        private string defEnemyDeck = "enemyDeck.json";
         private string enemyDeckId = "";
         private string enemyFormation = "";
 
@@ -85,7 +83,8 @@ namespace KanColleTool {
 
         protected virtual void OnShipSpecChangedEvent (DataChangedEventArgs e) {
             lock (ShipSpecMap) {
-                File.WriteAllText(defMasterShip, e.Data.ToString());
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", defMasterShip);
+                File.WriteAllText(path, e.Data.ToString());
                 ShipSpec = e.Data;
                 ShipSpecMap.Clear();
                 foreach (JToken sh in ShipSpec) {
@@ -114,7 +113,8 @@ namespace KanColleTool {
 
         public virtual void OnItemSpecChangedEvent (DataChangedEventArgs e) {
             lock (ItemSpecMap) {
-                File.WriteAllText(defMasterSlotItem, e.Data.ToString());
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", defMasterSlotItem);
+                File.WriteAllText(path, e.Data.ToString());
                 ItemSpec = e.Data;
                 ItemSpecMap.Clear();
                 foreach (JToken it in ItemSpec) {
@@ -141,33 +141,13 @@ namespace KanColleTool {
             }
         }
 
-        public virtual void OnSlotTypeChangedEvent (DataChangedEventArgs e) {
-            string pattern = @"api_slottype(\d*)";
-            Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            lock (SlotTypeMap) {
-                SlotType = e.Data;
-                SlotTypeMap.Clear();
-                foreach (JToken element in SlotType) {
-                    JProperty prop = element as JProperty;
-                    Match m = Regex.Match(prop.Name, pattern);
-                    string group = m.Groups[1].ToString();
-                    int typeId = int.Parse(group);
-                    List<JToken> items = prop.Value.ToList();
-                    if (items.Count == 0) {
-                        continue;
-                    }
-                    if (!SlotTypeMap.ContainsKey(typeId)) {
-                        SlotTypeMap[typeId] = new List<int>();
-                    }
-                    foreach (var item in items) {
-                        int id = int.Parse(item.ToString());
-                        SlotTypeMap[typeId].Add(id);
-                    }
-                }
-                SlotTypeChangedEventHandler handler = SlotTypeChanged;
-                if (handler != null) {
-                    handler(this, e);
-                }
+        public virtual void OnShipTypeChangedEvent (DataChangedEventArgs e) {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", defMasterSType);
+            File.WriteAllText(path, e.Data.ToString());
+            ShipType = e.Data;
+            ShipTypeChangedEventHandler handler = ShipTypeChanged;
+            if (handler != null) {
+                handler(this, e);
             }
         }
 
@@ -242,9 +222,7 @@ namespace KanColleTool {
             NavigateStack.Push(new NavigateDetail(e.Type, e.Data));
             if (e.Data["api_enemy"] != null) {
                 string eid = e.Data["api_enemy"]["api_enemy_id"].ToString();
-                if (EnemyDeckMap.ContainsKey(eid)) {
-                    Debug.Print(EnemyDeckMap[eid].ToString());
-                } else {
+                if (!EnemyDeckMap.ContainsKey(eid)) {
                     Debug.Print("EnemyDeckMap doesn't had data on " + eid);
                     enemyDeckId = eid;
                 }
@@ -278,8 +256,8 @@ namespace KanColleTool {
                 foreach (JToken item in EnemyDeckMap.Values) {
                     lx.Add(item.ToString());
                 }
-                Debug.Print(string.Join(",", lx));
-                File.WriteAllText(enemyDeck, string.Format("[{0}]", string.Join(",", lx)));
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", defEnemyDeck);
+                File.WriteAllText(path, string.Format("[{0}]", string.Join(",", lx)));
             }
             BattleEventHandler handler = BattleFinish;
             if (handler != null) {
@@ -297,14 +275,15 @@ namespace KanColleTool {
             ShipDataMap = new Dictionary<string, JToken>();
             ItemSpecMap = new Dictionary<string, JToken>();
             ItemDataMap = new Dictionary<string, JToken>();
-            SlotTypeMap = new Dictionary<int, List<int>>();
             QuestDataMap = new Dictionary<int, JToken>();
             NavalFleet = new Dictionary<string, string>();
             NavigateStack = new Stack<NavigateDetail>();
             EnemyDeckMap = new Dictionary<string, JToken>();
             Assembly assembly = typeof(MainWindow).Assembly;
-            if (File.Exists(defMasterShip)) {
-                string json = File.ReadAllText(defMasterShip);
+            string path;
+            path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", defMasterShip);
+            if (File.Exists(path)) {
+                string json = File.ReadAllText(path);
                 JToken temp = JToken.Parse(json);
                 OnShipSpecChangedEvent(new DataChangedEventArgs(temp));
             } else {
@@ -315,8 +294,9 @@ namespace KanColleTool {
                     OnShipSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                 }
             }
-            if (File.Exists(defMasterSlotItem)) {
-                string json = File.ReadAllText(defMasterSlotItem);
+            path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", defMasterSlotItem);
+            if (File.Exists(path)) {
+                string json = File.ReadAllText(path);
                 JToken temp = JToken.Parse(json);
                 OnItemSpecChangedEvent(new DataChangedEventArgs(temp));
             } else {
@@ -327,19 +307,22 @@ namespace KanColleTool {
                     OnItemSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                 }
             }
-            if (File.Exists(defMasterSType)) {
-                string json = File.ReadAllText(defMasterSType);
+            path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", defMasterSType);
+            if (File.Exists(path)) {
+                string json = File.ReadAllText(path);
                 JToken temp = JToken.Parse(json);
                 ShipType = JToken.Parse(json);
             } else {
                 using (Stream stream = assembly.GetManifestResourceStream("KanColleTool.JSON.masterSType.json"))
                 using (StreamReader reader = new StreamReader(stream)) {
                     string json = reader.ReadToEnd();
-                    ShipType = JToken.Parse(json)["api_data"];
+                    JToken temp = JToken.Parse(json);
+                    OnShipTypeChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                 }
             }
-            if (File.Exists(enemyDeck)) {
-                string json = File.ReadAllText(enemyDeck);
+            path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", defEnemyDeck);
+            if (File.Exists(path)) {
+                string json = File.ReadAllText(path);
                 JArray temp = JArray.Parse(json);
                 foreach (JToken item in temp) {
                     string id = item["Id"].ToString();
@@ -375,133 +358,114 @@ namespace KanColleTool {
                 }
                 Match m = Regex.Match(oS.fullUrl, pattern);
                 Debug.Print(String.Format("{0:hh:mm:ss.fff}\tEd session:\t{1}", DateTime.Now, oS.fullUrl));
-                switch (m.Groups[2].ToString()) {
-                    case "ship":
-                        try {
+                try {
+                    string svdata;
+                    string json;
+                    JToken temp;
+                    switch (m.Groups[2].ToString()) {
+                        case "ship":
                             if (m.Groups[1].ToString() == "api_get_master") {
-                                string svdata = oS.GetResponseBodyAsString();
-                                string json = svdata.Substring(7);
-                                JToken temp = JToken.Parse(json);
+                                svdata = oS.GetResponseBodyAsString();
+                                json = svdata.Substring(7);
+                                temp = JToken.Parse(json);
                                 OnShipSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                             } else {
-                                string svdata = oS.GetResponseBodyAsString();
-                                string json = svdata.Substring(7);
-                                JToken temp = JToken.Parse(json);
+                                svdata = oS.GetResponseBodyAsString();
+                                json = svdata.Substring(7);
+                                temp = JToken.Parse(json);
                                 OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                             }
-                        } catch (Exception exception) {
-                            Debug.Print(exception.ToString());
-                        }
-                        break;
-                    case "ship2":
-                        try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            JToken temp = JToken.Parse(json);
+                            break;
+                        case "ship2":
+                            svdata = oS.GetResponseBodyAsString();
+                            json = svdata.Substring(7);
+                            temp = JToken.Parse(json);
                             OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data_deck"]));
-                        } catch (Exception exception) {
-                            Debug.Print(exception.ToString());
-                        }
-                        break;
-                    case "ship3":
-                        try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            JToken temp = JToken.Parse(json);
+                            break;
+                        case "ship3":
+                            svdata = oS.GetResponseBodyAsString();
+                            json = svdata.Substring(7);
+                            temp = JToken.Parse(json);
                             OnShipDataChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_ship_data"]));
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_deck_data"]));
-                            OnSlotTypeChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_slot_data"]));
-                        } catch (Exception exception) {
-                            Debug.Print(exception.ToString());
-                        }
-                        break;
-                    case "deck_port":
-                        try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            JToken temp = JToken.Parse(json);
+                            //OnSlotTypeChangedEvent(new DataChangedEventArgs(temp["api_data"]["api_slot_data"]));
+                            break;
+                        case "deck_port":
+                            svdata = oS.GetResponseBodyAsString();
+                            json = svdata.Substring(7);
+                            temp = JToken.Parse(json);
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
-                        } catch (Exception exception) {
-                            Debug.Print(exception.ToString());
-                        }
-                        break;
-                    case "deck":
-                        try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            JToken temp = JToken.Parse(json);
+                            break;
+                        case "deck":
+                            svdata = oS.GetResponseBodyAsString();
+                            json = svdata.Substring(7);
+                            temp = JToken.Parse(json);
                             OnDeckDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
-                        } catch (Exception exception) {
-                            Debug.Print(exception.ToString());
-                        }
-                        break;
-                    case "slotitem":
-                        try {
+                            break;
+                        case "slotitem":
                             if (m.Groups[1].ToString() == "api_get_master") {
-                                string svdata = oS.GetResponseBodyAsString();
-                                string json = svdata.Substring(7);
-                                JToken temp = JToken.Parse(json);
+                                svdata = oS.GetResponseBodyAsString();
+                                json = svdata.Substring(7);
+                                temp = JToken.Parse(json);
                                 OnItemSpecChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                             } else {
-                                string svdata = oS.GetResponseBodyAsString();
-                                string json = svdata.Substring(7);
-                                JToken temp = JToken.Parse(json);
+                                svdata = oS.GetResponseBodyAsString();
+                                json = svdata.Substring(7);
+                                temp = JToken.Parse(json);
                                 OnItemDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
                             }
-                        } catch (Exception exception) {
-                            Debug.Print(exception.ToString());
-                        }
-                        break;
-                    case "questlist":
-                        try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            JToken temp = JToken.Parse(json);
+                            break;
+                        case "questlist":
+                            svdata = oS.GetResponseBodyAsString();
+                            json = svdata.Substring(7);
+                            temp = JToken.Parse(json);
                             OnQuestDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
-                        } catch (Exception exception) {
-                            Debug.Print(exception.ToString());
-                        }
-                        break;
-                    case "mapcell":
-                        OnScenarioStartEvent(null);
-                        break;
-                    case "logincheck":
-                        OnScenarioFinishEvent(null);
-                        break;
-                    case "next":
-                        naviEvent(oS, "next");
-                        break;
-                    case "start":
-                        if (m.Groups[1].ToString() == "api_req_map") {
-                            naviEvent(oS, "start");
-                        }
-                        break;
-                    case "battle":
-                        if (m.Groups[1].ToString() == "api_req_sortie") {
-                            battleEvent(oS, "day");
-                        } else if (m.Groups[1].ToString() == "api_req_battle_midnight") {
-                            battleEvent(oS, "midnight");
-                        }
-                        break;
-                    case "sp_midnight":
-                        battleEvent(oS, "sp_midnight");
-                        break;
-                    case "battleresult":
-                        battleEvent(oS, "end");
-                        break;
-                    case "ndock":
-                        try {
-                            string svdata = oS.GetResponseBodyAsString();
-                            string json = svdata.Substring(7);
-                            JToken temp = JToken.Parse(json);
+                            break;
+                        case "stype":
+                            svdata = oS.GetResponseBodyAsString();
+                            json = svdata.Substring(7);
+                            temp = JToken.Parse(json);
+                            OnShipTypeChangedEvent(new DataChangedEventArgs(temp["api_data"]));
+                            break;
+                        case "mapcell":
+                            OnScenarioStartEvent(null);
+                            break;
+                        case "logincheck":
+                            OnScenarioFinishEvent(null);
+                            break;
+                        case "next":
+                            naviEvent(oS, "next");
+                            break;
+                        case "start":
+                            if (m.Groups[1].ToString() == "api_req_map") {
+                                naviEvent(oS, "start");
+                            }
+                            break;
+                        case "battle":
+                            if (m.Groups[1].ToString() == "api_req_sortie") {
+                                battleEvent(oS, "day");
+                            } else if (m.Groups[1].ToString() == "api_req_battle_midnight") {
+                                battleEvent(oS, "midnight");
+                            }
+                            break;
+                        case "sp_midnight":
+                            battleEvent(oS, "sp_midnight");
+                            break;
+                        case "battleresult":
+                            battleEvent(oS, "end");
+                            break;
+                        case "ndock":
+                            svdata = oS.GetResponseBodyAsString();
+                            json = svdata.Substring(7);
+                            temp = JToken.Parse(json);
                             OnNDockDataChangedEvent(new DataChangedEventArgs(temp["api_data"]));
-                        } catch (Exception exception) {
-                            Debug.Print(exception.ToString());
-                        }
-                        break;
-                    default:
-                        break;
+                            break;
+                        default:
+                            break;
+                    }
+                } catch (Exception exception) {
+                    Debug.Print(exception.ToString());
                 }
             };
             Fiddler.CONFIG.IgnoreServerCertErrors = false;
@@ -541,19 +505,6 @@ namespace KanColleTool {
                 }
             } catch (Exception exception) {
                 Debug.Print(exception.ToString());
-            }
-        }
-
-        class EnemyDeckInfo {
-            public string Id { get; set; }
-            public string Formation { get; set; }
-            public string Name { get; set; }
-            public JToken Ship { get; set; }
-            public EnemyDeckInfo (string id, string formation, string name, JToken ship) {
-                Id = id;
-                Formation = formation;
-                Name = name;
-                Ship = ship;
             }
         }
     }

@@ -186,4 +186,16 @@ namespace KanColleTool {
         }
     }
 
+    public class EnemyDeckInfo {
+        public string Id { get; set; }
+        public string Formation { get; set; }
+        public string Name { get; set; }
+        public JToken Ship { get; set; }
+        public EnemyDeckInfo (string id, string formation, string name, JToken ship) {
+            Id = id;
+            Formation = formation;
+            Name = name;
+            Ship = ship;
+        }
+    }
 }
