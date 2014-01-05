@@ -58,7 +58,8 @@
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="0" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
-            <Label Margin="60,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <Label Margin="40,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <CheckBox Margin="60,0,0,0" Content="Auto" Style="{StaticResource BaseStyle}" />
         </StackPanel>
 
         <StackPanel Name="stpFleet2Panel" Style="{StaticResource SPStyle}" Margin="0,36,0,0">
@@ -68,7 +69,8 @@
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="1" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
-            <Label Margin="60,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <Label Margin="40,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <CheckBox Margin="60,0,0,0" Content="Auto" Style="{StaticResource BaseStyle}" />
         </StackPanel>
 
         <StackPanel Name="stpFleet3Panel" Style="{StaticResource SPStyle}" Margin="0,72,0,0">
@@ -78,7 +80,8 @@
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="2" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
-            <Label Margin="60,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <Label Margin="40,0,0,0" Content="" Style="{StaticResource BaseStyle}" />
+            <CheckBox Margin="60,0,0,0" Content="Auto" Style="{StaticResource BaseStyle}" />
         </StackPanel>
 
         <StackPanel Name="stpFleet4Panel" Style="{StaticResource SPStyle}" Margin="0,108,0,0">
@@ -88,7 +91,8 @@
             <ComboBox Margin="6,0,0,0" Style="{StaticResource MissionStyle}" ItemTemplate="{StaticResource MissionTemplate}" KeyDown="cbxMission_KeyDown" Width="235" />
             <Button Margin="6,0,0,0" Uid="3" Content="補給&amp;遠征" Width="75" Click="btnFleet_Click" Style="{StaticResource BaseStyle}" />
             <Label Margin="6,0,0,0" Style="{StaticResource BaseStyle}" />
-            <Label Margin="60,0,0,0" Style="{StaticResource BaseStyle}" />
+            <Label Margin="40,0,0,0" Style="{StaticResource BaseStyle}" />
+            <CheckBox Margin="60,0,0,0" Content="Auto" Style="{StaticResource BaseStyle}" />
         </StackPanel>
 
         <Label Name="labShipCount" Margin="12,142,0,0" Content="" Style="{StaticResource BaseStyle}" />

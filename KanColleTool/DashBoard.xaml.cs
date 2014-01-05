@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -23,6 +22,8 @@ namespace KanColleTool {
         Timer UITimer;
 
         List<Timer> NDTimers = new List<Timer>();
+
+        List<Timer> FMTimers = new List<Timer>();
 
         List<NDockPanel> NDPanels = new List<NDockPanel>();
 
@@ -63,22 +64,21 @@ namespace KanColleTool {
             itemgetMap.Add("12", "家具箱（大）");
         }
 
+        #region public method
         public DashBoard () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
-            InitializeMission();
+            InitializePanels();
             InitializeTimer();
             KCODt.Instance.NDockDataChanged += new KCODt.NDockDataChangedEventHandler(KCODt_NDockDataChanged);
             KCODt.Instance.MapNavigate += new KCODt.MapNavigateEventHandler(KCODt_MapNavigate);
             KCODt.Instance.ScenarioFinish += new KCODt.ScenarioEventHandler(KCODt_ScenarioFinish);
-            edi.Add(imgED1);
-            edi.Add(imgED2);
-            edi.Add(imgED3);
-            edi.Add(imgED4);
-            edi.Add(imgED5);
-            edi.Add(imgED6);
+            KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
         }
 
+        #endregion
+
+        #region event handler
         private void KCODt_MapNavigate (object sender, NavigateEventArgs e) {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 labArea.Content = string.Format("{0}-{1}-{2}",
@@ -107,7 +107,7 @@ namespace KanColleTool {
                         default:
                             break;
                     }
-                    labEnemyName.Content = string.Format("掉落 {0} {1}", 
+                    labEnemyName.Content = string.Format("掉落 {0} {1}",
                         e.Data["api_happening"]["api_count"].ToString(), mstName);
                 });
             } else {
@@ -117,7 +117,7 @@ namespace KanColleTool {
             }
         }
 
-        void KCODt_ScenarioFinish (object sender, EventArgs e) {
+        private void KCODt_ScenarioFinish (object sender, EventArgs e) {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 clearEnemyPanel();
                 labArea.Content = "";
@@ -128,6 +128,47 @@ namespace KanColleTool {
             ndocking(e);
         }
 
+        private void KCODt_DeckDataChanged (object sender, DataChangedEventArgs e) {
+            missionCheck(e);
+        }
+
+        private void btnFleet_Click (object sender, RoutedEventArgs e) {
+            try {
+                Button btn = sender as Button;
+                int pId = int.Parse(btn.Uid);
+                ICollection<string> chargeIds = listChargeShips(pId);
+                if (chargeIds.Count > 0) {
+                    RequestBuilder.Instance.FleetCharge(pId, chargeIds);
+                }
+                MissionDetail md = (MissionDetail) Panel[pId].Mission.SelectedItem;
+                if (md != null && md.Id != 0) {
+                    RequestBuilder.Instance.StartMission(pId + 1, md.Id);
+                }
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
+
+        private void cbxMission_KeyDown (object sender, KeyEventArgs e) {
+            if (e.Key == Key.Delete) {
+                ComboBox cb = sender as ComboBox;
+                cb.SelectedItem = null;
+            }
+        }
+
+        private void chkAutoNDock_Checked (object sender, RoutedEventArgs e) {
+            try {
+                CheckBox cbx = sender as CheckBox;
+                if (cbx.IsChecked.HasValue && (bool) cbx.IsChecked) {
+                    checkNDock(null);
+                }
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
+        #endregion
+
+        #region private method
         private void InitializeTimer () {
             TimerCallback tcb = this.update;
             UITimer = new Timer(tcb, null, 0, 1000);
@@ -136,11 +177,14 @@ namespace KanColleTool {
             NDTimers.Add(null);
             NDTimers.Add(null);
             NDTimers.Add(null);
-            NDPanels.Add(new NDockPanel(stpNDock1Panel));
-            NDPanels.Add(new NDockPanel(stpNDock2Panel));
+            FMTimers.Add(null);
+            FMTimers.Add(null);
+            FMTimers.Add(null);
+            FMTimers.Add(null);
+            FMTimers.Add(null);
         }
 
-        private void InitializeMission () {
+        private void InitializePanels () {
             eng0 = (BitmapImage) this.FindResource("eng0");
             eng1 = (BitmapImage) this.FindResource("eng1");
             eng2 = (BitmapImage) this.FindResource("eng2");
@@ -152,6 +196,14 @@ namespace KanColleTool {
             foreach (DashBoardPanel item in Panel) {
                 item.Mission.ItemsSource = MissionDetail.All;
             }
+            NDPanels.Add(new NDockPanel(stpNDock1Panel));
+            NDPanels.Add(new NDockPanel(stpNDock2Panel));
+            edi.Add(imgED1);
+            edi.Add(imgED2);
+            edi.Add(imgED3);
+            edi.Add(imgED4);
+            edi.Add(imgED5);
+            edi.Add(imgED6);
         }
 
         private void update (Object context) {
@@ -233,30 +285,6 @@ namespace KanColleTool {
             }, null);
         }
 
-        private void btnFleet_Click (object sender, RoutedEventArgs e) {
-            try {
-                Button btn = sender as Button;
-                int pId = int.Parse(btn.Uid);
-                ICollection<string> chargeIds = listChargeShips(pId);
-                if (chargeIds.Count > 0) {
-                    RequestBuilder.Instance.FleetCharge(pId, chargeIds);
-                }
-                MissionDetail md = (MissionDetail) Panel[pId].Mission.SelectedItem;
-                if (md != null && md.Id != 0) {
-                    RequestBuilder.Instance.StartMission(pId + 1, md.Id);
-                }
-            } catch (Exception ex) {
-                Debug.Print(ex.ToString());
-            }
-        }
-
-        private void cbxMission_KeyDown (object sender, KeyEventArgs e) {
-            if (e.Key == Key.Delete) {
-                ComboBox cb = sender as ComboBox;
-                cb.SelectedItem = null;
-            }
-        }
-
         private ICollection<string> listChargeShips (int fleet) {
             List<JToken> shipIds = KCODt.Instance.DeckData[fleet]["api_ship"].ToList();
             List<string> tgtShipIds = new List<string>();
@@ -298,6 +326,9 @@ namespace KanColleTool {
             return chargeIds;
         }
 
+        #endregion
+
+        #region ndock panel
         private IEnumerable<JToken> availableNDock () {
             IEnumerable<JToken> qm = from ndock in KCODt.Instance.NDockData
                                      where ndock["api_state"].ToString() != "-1"
@@ -434,7 +465,75 @@ namespace KanColleTool {
                 }
             });
         }
+        #endregion
 
+        #region mission panel
+        private void missionCheck (DataChangedEventArgs e) {
+            try {
+                if (KCODt.Instance.DeckData == null || KCODt.Instance.ShipSpec == null || KCODt.Instance.ShipData == null) {
+                    return;
+                }
+                IEnumerable<JToken> decks = KCODt.Instance.DeckData;
+                foreach (JToken deck in decks) {
+                    int timerId = int.Parse(deck["api_id"].ToString());
+                    Timer timer;
+                    int dueTime = 2000;
+                    if (deck["api_mission"][2].ToString() == "0") {
+                        if (FMTimers[timerId] != null) {
+                            FMTimers[timerId].Dispose();
+                        }
+                        timer = null;
+                    } else {
+                        long x = long.Parse(deck["api_mission"][2].ToString());
+                        x -= 50000;
+                        DateTime dt = Utils.parseUTC(x.ToString());
+                        TimeSpan ts = dt - DateTime.Now;
+                        dueTime = int.Parse(ts.TotalMilliseconds.ToString("0"));
+                        if (dueTime < 0) {
+                            continue;
+                        }
+                        timer = new Timer(this.checkMission, timerId, dueTime, Timeout.Infinite);
+                        Debug.Print(string.Format("deck {0} mission finish after {1} ms", deck["api_id"], ts));
+                    }
+                    if (FMTimers[timerId] != null) {
+                        FMTimers[timerId].Dispose();
+                    }
+                    FMTimers[timerId] = timer;
+                }
+            } catch (Exception ex) {
+                Debug.Print(ex.ToString());
+            }
+        }
+
+        private void checkMission (Object context) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                try {
+                    int deckId = (int) context;
+                    int fleet = deckId - 1;
+                    bool isAuto = Panel[fleet].Auto.IsChecked == true;
+                    if (!KCODt.Instance.IsInScenario && isAuto) {
+                        RequestBuilder.Instance.MissionReturn(deckId);
+                        ICollection<string> chargeIds = new List<string>();
+                        List<JToken> shipIds = KCODt.Instance.DeckData[fleet]["api_ship"].ToList();
+                        foreach (JToken shipId in shipIds) {
+                            if (shipId.ToString() != "-1") {
+                                chargeIds.Add(shipId.ToString());
+                            }
+                        }
+                        RequestBuilder.Instance.FleetCharge(deckId, chargeIds);
+                        MissionDetail md = (MissionDetail) Panel[fleet].Mission.SelectedItem;
+                        if (md != null && md.Id != 0) {
+                            RequestBuilder.Instance.StartMission(deckId, md.Id);
+                        }
+                    }
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
+            });
+        }
+        #endregion
+
+        #region enemy panel
         private void clearEnemyPanel () {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 for (int i = 0; i < edi.Count; i++) {
@@ -485,18 +584,7 @@ namespace KanColleTool {
                 labEnemyName.Content = string.Format("獲得 {0} {1}", ammo, itemgetMap[kind]);
             });
         }
-
-        private void chkAutoNDock_Checked (object sender, RoutedEventArgs e) {
-            try {
-                CheckBox cbx = sender as CheckBox;
-                if (cbx.IsChecked.HasValue && (bool) cbx.IsChecked) {
-                    checkNDock(null);
-                }
-            } catch (Exception ex) {
-                Debug.Print(ex.ToString());
-            }
-        }
-
+        #endregion
     }
 
     class DashBoardPanel {
@@ -507,6 +595,7 @@ namespace KanColleTool {
         private int btnButton = 4;
         private int labCD = 5;
         private int labETA = 6;
+        private int chkAuto = 7;
 
         #region getter
         public Image Cond {
@@ -554,6 +643,13 @@ namespace KanColleTool {
         public Label CondNo {
             get {
                 return stackPanel.Children[labCond] as Label;
+            }
+            private set { }
+        }
+
+        public CheckBox Auto {
+            get {
+                return stackPanel.Children[chkAuto] as CheckBox;
             }
             private set { }
         }

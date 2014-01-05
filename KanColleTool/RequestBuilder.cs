@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Web;
 using Fiddler;
+using System.IO;
 
 namespace KanColleTool {
 
@@ -43,25 +44,39 @@ namespace KanColleTool {
         }
 
         private RequestBuilder () {
-            Token = HttpUtility.ParseQueryString(Session.GetRequestBodyAsString())["api_token"];
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "token.txt");
+            string fileToken = "";
+            string sessToken = "";
+            if (File.Exists(path)) {
+                fileToken = File.ReadAllText(path);
+            }
+            if (Session != null) {
+                sessToken = HttpUtility.ParseQueryString(Session.GetRequestBodyAsString())["api_token"];
+            }
+            if (sessToken != "") {
+                Token = sessToken;
+            } else if (fileToken != "") {
+                Token = fileToken;
+            }
+            File.WriteAllText(path, Token);
             IsInvoke = false;
             tasks = new Queue<KCRequest>();
         }
 
-        private void MissionReturn (int deckId) {
-            DoActionlog();
-            DoLoginCheck();
-            DoMaterial();
+        public void MissionReturn (int deckId) {
+            //DoActionlog();
+            //DoLoginCheck();
+            //DoMaterial();
             DoDeckPort();
             DoNDock();
-            DoShip2();
+            DoShip3();
             DoResult(deckId);
-            DoBasic();
+            //DoBasic();
             DoDeckPort();
-            DoBasic();
-            DoShip2();
-            DoMaterial();
-            DoUseItem();
+            //DoBasic();
+            //DoShip2();
+            //DoMaterial();
+            //DoUseItem();
             Invoke();
         }
 
