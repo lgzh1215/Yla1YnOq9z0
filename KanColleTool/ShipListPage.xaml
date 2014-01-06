@@ -74,9 +74,10 @@
                         <MenuItem Header="六番艦" Uid="5" Click="HenseiItem_Click" />
                     </MenuItem>
                 </MenuItem>
-                <!--
-                <MenuItem Header="入渠" Name="NDocking" Click="NDocking_click" />
-                -->
+                <MenuItem Header="兵裝">
+                    <MenuItem Header="驅-對潛" Click="DDTais_click" />
+                    <MenuItem Header="驅-火力" Click="DDHoge_click" />
+                </MenuItem>
                 <MenuItem Header="解體" Click="Destroy_click" />
             </ContextMenu>
         </DataGrid.ContextMenu>

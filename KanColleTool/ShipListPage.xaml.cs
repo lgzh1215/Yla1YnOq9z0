@@ -23,6 +23,23 @@ namespace KanColleTool {
 
         IEnumerable<JToken> SubMenuItems;
 
+        static List<int> taisWeapon = new List<int>();
+
+        static List<int> hogeWeapon = new List<int>();
+
+        static ShipListPage () {
+            taisWeapon.Add(5129);
+            taisWeapon.Add(1174);
+            taisWeapon.Add(4538);
+            taisWeapon.Add(5689);
+            taisWeapon.Add(4413);
+            hogeWeapon.Add(5453);
+            hogeWeapon.Add(5455);
+            hogeWeapon.Add(5898);
+            hogeWeapon.Add(242);
+            hogeWeapon.Add(4616);
+        }
+
         public ShipListPage () {
             UIThread = Thread.CurrentThread;
             InitializeComponent();
@@ -42,20 +59,6 @@ namespace KanColleTool {
             Panel.Add(eq4);
         }
 
-        void KCODt_ShipDataChanged (object sender, DataChangedEventArgs e) {
-            reflash();
-        }
-
-        void KCODt_ItemDataChanged (object sender, DataChangedEventArgs e) {
-            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
-                try {
-                    queryItems();
-                } catch (Exception ex) {
-                    Debug.Print(ex.ToString());
-                }
-            }, null);
-        }
-
         private void reflash () {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 try {
@@ -70,6 +73,30 @@ namespace KanColleTool {
                                  .OrderBy(x => x["FleetInfo"].ToString());
                         ShipGrid.ItemsSource = qm;
                     }
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
+            }, null);
+        }
+
+        private void queryItems () {
+            var qm = (from spec in KCODt.Instance.ItemSpec
+                      from item in KCODt.Instance.ItemData
+                      where spec["api_id"].ToString() == item["api_slotitem_id"].ToString()
+                      select JToken.FromObject(new ItemDetail(spec, item)))
+                     .OrderByDescending(x => x["Spec"]["api_sortno"].ToString());
+            SubMenuItems = qm;
+        }
+
+        #region even handler
+        private void KCODt_ShipDataChanged (object sender, DataChangedEventArgs e) {
+            reflash();
+        }
+
+        private void KCODt_ItemDataChanged (object sender, DataChangedEventArgs e) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                try {
+                    queryItems();
                 } catch (Exception ex) {
                     Debug.Print(ex.ToString());
                 }
@@ -123,15 +150,6 @@ namespace KanColleTool {
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
             }
-        }
-
-        private void queryItems () {
-            var qm = (from spec in KCODt.Instance.ItemSpec
-                      from item in KCODt.Instance.ItemData
-                      where spec["api_id"].ToString() == item["api_slotitem_id"].ToString()
-                      select JToken.FromObject(new ItemDetail(spec, item)))
-                     .OrderByDescending(x => x["Spec"]["api_sortno"].ToString());
-            SubMenuItems = qm;
         }
 
         private void SlotSet_Click (object sender, RoutedEventArgs e) {
@@ -189,5 +207,25 @@ namespace KanColleTool {
             }
         }
 
+        private void DDTais_click (object sender, RoutedEventArgs e) {
+            MenuItem muPos = sender as MenuItem;
+            MenuItem muFle = muPos.Parent as MenuItem;
+            ContextMenu contextMenu = muFle.Parent as ContextMenu;
+            DataGrid dataGrid = contextMenu.PlacementTarget as DataGrid;
+            JToken shipDetail = dataGrid.CurrentItem as JToken;
+            int shipId = int.Parse(shipDetail["Ship"]["api_id"].ToString());
+            RequestBuilder.Instance.SlotSet(taisWeapon, shipId);
+        }
+
+        private void DDHoge_click (object sender, RoutedEventArgs e) {
+            MenuItem muPos = sender as MenuItem;
+            MenuItem muFle = muPos.Parent as MenuItem;
+            ContextMenu contextMenu = muFle.Parent as ContextMenu;
+            DataGrid dataGrid = contextMenu.PlacementTarget as DataGrid;
+            JToken shipDetail = dataGrid.CurrentItem as JToken;
+            int shipId = int.Parse(shipDetail["Ship"]["api_id"].ToString());
+            RequestBuilder.Instance.SlotSet(hogeWeapon, shipId);
+        }
+        #endregion
     }
 }

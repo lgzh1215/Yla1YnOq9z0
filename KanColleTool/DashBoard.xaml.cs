@@ -593,9 +593,9 @@ namespace KanColleTool {
         private int labCond = 2;
         private int cbxMission = 3;
         private int btnButton = 4;
-        private int labCD = 5;
-        private int labETA = 6;
-        private int chkAuto = 7;
+        private int chkAuto = 5;
+        private int labCD = 6;
+        private int labETA = 7;
 
         #region getter
         public Image Cond {
