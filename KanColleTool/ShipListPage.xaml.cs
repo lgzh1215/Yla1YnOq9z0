@@ -23,22 +23,20 @@ namespace KanColleTool {
 
         IEnumerable<JToken> SubMenuItems;
 
-        static List<int> taisWeapon = new List<int>();
+        static List<int> dcFigWeapon = new List<int>() { 5453, 5455, 5898, 242, 1032 };
+        static List<int> dcAtkWeapon = new List<int>() { 5453, 5455, 5898, 242, 4616 };
+        static List<int> dcAssWeapon = new List<int>() { 5129, 1174, 4538, 5689, 4413 };
 
-        static List<int> hogeWeapon = new List<int>();
+        static List<int> bcFigWeapon = new List<int>() { 1771, 1947, 2374, 5453, 5455 };
+        static List<int> bcAtkWeapon = new List<int>() { 5717, 1046, 6508, 5453, 5455 };
+        static List<int> bcAssWeapon = new List<int>() { 5717, 6145, 5129, 1771, 5455 };
 
-        static ShipListPage () {
-            taisWeapon.Add(5129);
-            taisWeapon.Add(1174);
-            taisWeapon.Add(4538);
-            taisWeapon.Add(5689);
-            taisWeapon.Add(4413);
-            hogeWeapon.Add(5453);
-            hogeWeapon.Add(5455);
-            hogeWeapon.Add(5898);
-            hogeWeapon.Add(242);
-            hogeWeapon.Add(4616);
-        }
+        static List<int> cvAtkWeapon = new List<int>() { 1046, 6508, 1082, 1089, 242 };
+        static List<int> cvFigWeapon = new List<int>() { 3987, 1554, 1108, 6038, 1771 };
+
+        static List<int> ssAtkWeapon = new List<int>() { 1046, 6508, 1082, 1089, 242 };
+
+        static List<int> emptyWeapon = new List<int>() { -1, -1, -1, -1, -1 };
 
         public ShipListPage () {
             UIThread = Thread.CurrentThread;
@@ -57,6 +55,21 @@ namespace KanColleTool {
             Panel.Add(eq2);
             Panel.Add(eq3);
             Panel.Add(eq4);
+
+            dcFig.Header = new SlotTemplate("巡洋-對空", dcFigWeapon, SlotTemplate.OrderType.Normal);
+            dcAtk.Header = new SlotTemplate("巡洋-火力", dcAtkWeapon, SlotTemplate.OrderType.Normal);
+            dcAss.Header = new SlotTemplate("巡洋-對潛", dcAssWeapon, SlotTemplate.OrderType.Normal);
+
+            bcFig.Header = new SlotTemplate("航戰-對空", bcFigWeapon, SlotTemplate.OrderType.Normal);
+            bcAtk.Header = new SlotTemplate("航戰-火力", bcAtkWeapon, SlotTemplate.OrderType.Size);
+            bcAss.Header = new SlotTemplate("航戰-對潛", bcAssWeapon, SlotTemplate.OrderType.Size);
+
+            cvAtk.Header = new SlotTemplate("航母-火力", cvAtkWeapon, SlotTemplate.OrderType.Size);
+            cvFig.Header = new SlotTemplate("航母-對空", cvFigWeapon, SlotTemplate.OrderType.Normal);
+
+            ssAtk.Header = new SlotTemplate("潛-火力", ssAtkWeapon, SlotTemplate.OrderType.Normal);
+
+            empty.Header = new SlotTemplate("解除武裝", emptyWeapon, SlotTemplate.OrderType.AlwaysOne);
         }
 
         private void reflash () {
@@ -207,25 +220,80 @@ namespace KanColleTool {
             }
         }
 
-        private void DDTais_click (object sender, RoutedEventArgs e) {
-            MenuItem muPos = sender as MenuItem;
-            MenuItem muFle = muPos.Parent as MenuItem;
-            ContextMenu contextMenu = muFle.Parent as ContextMenu;
-            DataGrid dataGrid = contextMenu.PlacementTarget as DataGrid;
-            JToken shipDetail = dataGrid.CurrentItem as JToken;
-            int shipId = int.Parse(shipDetail["Ship"]["api_id"].ToString());
-            RequestBuilder.Instance.SlotSet(taisWeapon, shipId);
+        private void SlotTemplate_click (object sender, RoutedEventArgs e) {
+            changeCVSlot(sender);
         }
 
-        private void DDHoge_click (object sender, RoutedEventArgs e) {
+        private void changeCVSlot (object sender) {
             MenuItem muPos = sender as MenuItem;
             MenuItem muFle = muPos.Parent as MenuItem;
             ContextMenu contextMenu = muFle.Parent as ContextMenu;
             DataGrid dataGrid = contextMenu.PlacementTarget as DataGrid;
             JToken shipDetail = dataGrid.CurrentItem as JToken;
+            SlotTemplate st = muPos.Header as SlotTemplate;
+            List<int> slots = new List<int>();
             int shipId = int.Parse(shipDetail["Ship"]["api_id"].ToString());
-            RequestBuilder.Instance.SlotSet(hogeWeapon, shipId);
+            switch (st.Order) {
+                case SlotTemplate.OrderType.Normal:
+                    slots = st.Weapon;
+                    RequestBuilder.Instance.SlotSet(slots, shipId);
+                    break;
+                case SlotTemplate.OrderType.Size:
+                    List<KeyValuePair<int, int>> slotList = getSlotBySize(shipDetail, st.Weapon);
+                    for (int i = 0; i < 5; i++) {
+                        slots.Add(slotList[i].Value);
+                    }
+                    RequestBuilder.Instance.SlotSet(slots, shipId);
+                    break;
+                case SlotTemplate.OrderType.AlwaysOne:
+                    slots = st.Weapon;
+                    RequestBuilder.Instance.EmptySlot(slots, shipId);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private List<KeyValuePair<int, int>> getSlotBySize (JToken shipDetail, List<int> eqList) {
+            List<KeyValuePair<int, int>> slotList = new List<KeyValuePair<int, int>>();
+            for (int i = 0; i < 5; i++) {
+                int onslot = int.Parse(shipDetail["Ship"]["api_onslot"][i].ToString());
+                slotList.Add(new KeyValuePair<int, int>(i, onslot));
+            }
+            slotList.Sort((firstPair, nextPair) => {
+                return firstPair.Value.CompareTo(nextPair.Value);
+            });
+            for (int i = 4; i >= 0; i--) {
+                int key = slotList[i].Key;
+                int value = eqList[4 - i];
+                slotList[i] = new KeyValuePair<int, int>(key, value);
+            }
+            slotList.Sort((firstPair, nextPair) => {
+                return firstPair.Key.CompareTo(nextPair.Key);
+            });
+            return slotList;
         }
         #endregion
+    }
+
+    class SlotTemplate {
+
+        public enum OrderType { Normal, Size, AlwaysOne }
+
+        public List<int> Weapon { get; private set; }
+
+        public string Name { get; private set; }
+
+        public OrderType Order { get; private set; }
+
+        public SlotTemplate (string name, List<int> weapon, OrderType order) {
+            Name = name;
+            Weapon = weapon;
+            Order = order;
+        }
+
+        public override string ToString () {
+            return Name;
+        }
     }
 }

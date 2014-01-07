@@ -114,6 +114,13 @@ namespace KanColleTool {
             Invoke();
         }
 
+        public void EmptySlot (IList<int> items, int shipId) {
+            for (int i = 0; i < items.Count; i++) {
+                DoSlotSetT(0, items[i], shipId);
+            }
+            Invoke();
+        }
+
         public void SlotSet (int slotIdx, int itemId, int shipId) {
             DoSlotSet(slotIdx, itemId, shipId);
             Invoke();
@@ -354,7 +361,6 @@ namespace KanColleTool {
             tasks.Enqueue(req);
         }
         #endregion
-
     }
 
     class KCRequest {

@@ -75,8 +75,20 @@
                     </MenuItem>
                 </MenuItem>
                 <MenuItem Header="兵裝">
-                    <MenuItem Header="驅-對潛" Click="DDTais_click" />
-                    <MenuItem Header="驅-火力" Click="DDHoge_click" />
+                    <MenuItem Name="dcFig" Header="{Binding}" Click="SlotTemplate_click" />
+                    <MenuItem Name="dcAtk" Header="{Binding}" Click="SlotTemplate_click" />
+                    <MenuItem Name="dcAss" Header="{Binding}" Click="SlotTemplate_click" />
+                    <Separator />
+                    <MenuItem Name="bcFig" Header="{Binding}" Click="SlotTemplate_click" />
+                    <MenuItem Name="bcAtk" Header="{Binding}" Click="SlotTemplate_click" />
+                    <MenuItem Name="bcAss" Header="{Binding}" Click="SlotTemplate_click" />
+                    <Separator />
+                    <MenuItem Name="cvAtk" Header="{Binding}" Click="SlotTemplate_click" />
+                    <MenuItem Name="cvFig" Header="{Binding}" Click="SlotTemplate_click" />
+                    <Separator />
+                    <MenuItem Name="ssAtk" Header="{Binding}" Click="SlotTemplate_click" />
+                    <Separator />
+                    <MenuItem Name="empty" Header="{Binding}" Click="SlotTemplate_click" />
                 </MenuItem>
                 <MenuItem Header="解體" Click="Destroy_click" />
             </ContextMenu>

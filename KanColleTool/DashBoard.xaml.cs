@@ -217,7 +217,11 @@ namespace KanColleTool {
                         JToken mission = fleet["api_mission"];
                         Panel[i].ETA.Content = Utils.valueOfUTC(mission[2].ToString());
                         TimeSpan cd = Utils.countSpan(mission[2].ToString());
-                        Panel[i].CD.Content = String.Format("{0:00}:{1}", (int) cd.TotalHours, cd.ToString(@"mm\:ss"));
+                        if (cd.Seconds < 0) {
+                            Panel[i].CD.Content = "Return!";
+                        } else {
+                            Panel[i].CD.Content = String.Format("{0:00}:{1}", (int) cd.TotalHours, cd.ToString(@"mm\:ss"));
+                        }
                         if (mission[0].ToString() != "0") {
                             Panel[i].Mission.SelectedIndex = MissionDetail.IdMap[int.Parse(mission[1].ToString())];
                             Panel[i].Mission.IsEnabled = false;
