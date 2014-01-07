@@ -34,7 +34,7 @@ namespace KanColleTool {
         static List<int> cvAtkWeapon = new List<int>() { 1046, 6508, 1082, 1089, 242 };
         static List<int> cvFigWeapon = new List<int>() { 3987, 1554, 1108, 6038, 1771 };
 
-        static List<int> ssAtkWeapon = new List<int>() { 1046, 6508, 1082, 1089, 242 };
+        static List<int> ssAtkWeapon = new List<int>() { 3650, 4616, 210, 3709, 242 };
 
         static List<int> emptyWeapon = new List<int>() { -1, -1, -1, -1, -1 };
 
