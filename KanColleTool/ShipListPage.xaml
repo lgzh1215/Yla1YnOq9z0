@@ -83,8 +83,12 @@
                     <MenuItem Name="bcAtk" Header="{Binding}" Click="SlotTemplate_click" />
                     <MenuItem Name="bcAss" Header="{Binding}" Click="SlotTemplate_click" />
                     <Separator />
-                    <MenuItem Name="cvAtk" Header="{Binding}" Click="SlotTemplate_click" />
+                    <MenuItem Name="cvlFig" Header="{Binding}" Click="SlotTemplate_click" />
+                    <MenuItem Name="cvlAtk" Header="{Binding}" Click="SlotTemplate_click" />
+                    <MenuItem Name="cvlAss" Header="{Binding}" Click="SlotTemplate_click" />
+                    <Separator />
                     <MenuItem Name="cvFig" Header="{Binding}" Click="SlotTemplate_click" />
+                    <MenuItem Name="cvAtk" Header="{Binding}" Click="SlotTemplate_click" />
                     <Separator />
                     <MenuItem Name="ssAtk" Header="{Binding}" Click="SlotTemplate_click" />
                     <Separator />

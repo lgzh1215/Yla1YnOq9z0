@@ -23,7 +23,7 @@ namespace KanColleTool {
 
         IEnumerable<JToken> SubMenuItems;
 
-        static List<int> dcFigWeapon = new List<int>() { 5453, 5455, 5898, 242, 1032 };
+        static List<int> dcFigWeapon = new List<int>() { 5453, 5455, 5898, 242, 1771 };
         static List<int> dcAtkWeapon = new List<int>() { 5453, 5455, 5898, 242, 4616 };
         static List<int> dcAssWeapon = new List<int>() { 5129, 1174, 4538, 5689, 4413 };
 
@@ -31,8 +31,12 @@ namespace KanColleTool {
         static List<int> bcAtkWeapon = new List<int>() { 5717, 1046, 6508, 5453, 5455 };
         static List<int> bcAssWeapon = new List<int>() { 5717, 6145, 5129, 1771, 5455 };
 
-        static List<int> cvAtkWeapon = new List<int>() { 1046, 6508, 1082, 1089, 242 };
+        static List<int> cvlFigWeapon = new List<int>() { 3987, 1554, 1108, 1683, 1771 };
+        static List<int> cvlAtkWeapon = new List<int>() { 1046, 6508, 1082, 1683, 242 };
+        static List<int> cvlAssWeapon = new List<int>() { 5717, 6145, 6038, 1683, 5129 };
+
         static List<int> cvFigWeapon = new List<int>() { 3987, 1554, 1108, 6038, 1771 };
+        static List<int> cvAtkWeapon = new List<int>() { 1046, 6508, 1082, 1089, 242 };
 
         static List<int> ssAtkWeapon = new List<int>() { 3650, 4616, 210, 3709, 242 };
 
@@ -64,8 +68,12 @@ namespace KanColleTool {
             bcAtk.Header = new SlotTemplate("航戰-火力", bcAtkWeapon, SlotTemplate.OrderType.Size);
             bcAss.Header = new SlotTemplate("航戰-對潛", bcAssWeapon, SlotTemplate.OrderType.Size);
 
-            cvAtk.Header = new SlotTemplate("航母-火力", cvAtkWeapon, SlotTemplate.OrderType.Size);
+            cvlFig.Header = new SlotTemplate("輕母-對空", cvlFigWeapon, SlotTemplate.OrderType.Size);
+            cvlAtk.Header = new SlotTemplate("輕母-火力", cvlAtkWeapon, SlotTemplate.OrderType.Size);
+            cvlAss.Header = new SlotTemplate("輕母-對潛", cvlAssWeapon, SlotTemplate.OrderType.Size);
+
             cvFig.Header = new SlotTemplate("航母-對空", cvFigWeapon, SlotTemplate.OrderType.Normal);
+            cvAtk.Header = new SlotTemplate("航母-火力", cvAtkWeapon, SlotTemplate.OrderType.Size);
 
             ssAtk.Header = new SlotTemplate("潛-火力", ssAtkWeapon, SlotTemplate.OrderType.Normal);
 
