@@ -127,6 +127,10 @@
             <Image Name="imgED5" Stretch="None" Width="85" Height="60" Margin="2" />
             <Image Name="imgED6" Stretch="None" Width="85" Height="60" Margin="2" />
         </WrapPanel>
-
+        <StackPanel Margin="360,307,0,0">
+            <Label Name="labAirSup" Style="{StaticResource BaseStyle}" />
+            <Label Name="labAirS1" Style="{StaticResource BaseStyle}" Height="48" />
+            <Label Name="labAirS2" Style="{StaticResource BaseStyle}" Height="48" />
+        </StackPanel>
     </Grid>
 </Page>

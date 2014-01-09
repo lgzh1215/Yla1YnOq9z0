@@ -39,6 +39,8 @@ namespace KanColleTool {
 
         static Dictionary<string, string> itemgetMap = new Dictionary<string, string>();
 
+        static Dictionary<string, string> seikuMap = new Dictionary<string, string>();
+
         BitmapImage eng0;
         BitmapImage eng1;
         BitmapImage eng2;
@@ -62,6 +64,11 @@ namespace KanColleTool {
             itemgetMap.Add("10", "家具箱（小）");
             itemgetMap.Add("11", "家具箱（中）");
             itemgetMap.Add("12", "家具箱（大）");
+            seikuMap.Add("1", "制空権確保");
+            seikuMap.Add("2", "拮抗状態");
+            seikuMap.Add("3", "制空権確保");
+            seikuMap.Add("4", "制空権喪失");
+            seikuMap.Add("5", "???");
         }
 
         #region public method
@@ -74,8 +81,9 @@ namespace KanColleTool {
             KCODt.Instance.MapNavigate += new KCODt.MapNavigateEventHandler(KCODt_MapNavigate);
             KCODt.Instance.ScenarioFinish += new KCODt.ScenarioEventHandler(KCODt_ScenarioFinish);
             KCODt.Instance.DeckDataChanged += new KCODt.DeckDataChangedEventHandler(KCODt_DeckDataChanged);
+            KCODt.Instance.BattleStart += new KCODt.BattleEventHandler(KCODt_BattleStart);
+            KCODt.Instance.BattleFinish += new KCODt.BattleEventHandler(KCODt_BattleFinish);
         }
-
         #endregion
 
         #region event handler
@@ -121,6 +129,7 @@ namespace KanColleTool {
             Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
                 clearEnemyPanel();
                 labArea.Content = "";
+                labAirSup.Content = "";
             });
         }
 
@@ -165,6 +174,10 @@ namespace KanColleTool {
             } catch (Exception ex) {
                 Debug.Print(ex.ToString());
             }
+        }
+
+        private void KCODt_BattleStart (object sender, BattleEventArgs e) {
+            airSupremacy(e);
         }
         #endregion
 
@@ -330,6 +343,51 @@ namespace KanColleTool {
             return chargeIds;
         }
 
+        private void airSupremacy (BattleEventArgs e) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                try {
+                    if (e.Data["api_kouku"] == null) {
+                        return;
+                    }
+                    labAirSup.Content = seikuMap[e.Data["api_kouku"]["api_stage1"]["api_disp_seiku"].ToString()];
+                    int ec1 = int.Parse(e.Data["api_kouku"]["api_stage1"]["api_e_lostcount"].ToString());
+                    int elc1 = int.Parse(e.Data["api_kouku"]["api_stage1"]["api_e_count"].ToString());
+                    double elp1 = ec1 == 0 ? 0 : (double) ec1 / (double) elc1;
+                    int fc1 = int.Parse(e.Data["api_kouku"]["api_stage1"]["api_f_lostcount"].ToString());
+                    int flc1 = int.Parse(e.Data["api_kouku"]["api_stage1"]["api_f_count"].ToString());
+                    double flp1 = fc1 == 0 ? 0 : (double) fc1 / (double) flc1;
+                    labAirS1.Content = string.Format("Stage1:\n  敵軍 {0,3}/{1,3}({2:P1})   我軍 {3,3}/{4,3}({5:P1})",
+                        ec1, elc1, elp1, fc1, flc1, flp1);
+                    if (e.Data["api_kouku"]["api_stage2"]["api_e_lostcount"] == null) {
+                        labAirS2.Content = "Stage2:無";
+                        return;
+                    }
+                    int ec2 = int.Parse(e.Data["api_kouku"]["api_stage2"]["api_e_lostcount"].ToString());
+                    int elc2 = int.Parse(e.Data["api_kouku"]["api_stage2"]["api_e_count"].ToString());
+                    double elp2 = elc2 == 0 ? 0 : (double) ec2 / (double) elc2;
+                    int fc2 = int.Parse(e.Data["api_kouku"]["api_stage2"]["api_f_lostcount"].ToString());
+                    int flc2 = int.Parse(e.Data["api_kouku"]["api_stage2"]["api_f_count"].ToString());
+                    double flp2 = flc2 == 0 ? 0 : (double) fc2 / (double) flc2;
+                    labAirS2.Content = string.Format("Stage2:\n  敵軍 {0,3}/{1,3}({2:P1})   我軍 {3,3}/{4,3}({5:P1})",
+                        ec2, elc2, elp2, fc2, flc2, flp2);
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
+            }, null);
+        }
+
+        private void KCODt_BattleFinish (object sender, BattleEventArgs e) {
+            Dispatcher.FromThread(UIThread).Invoke((MainWindow.Invoker) delegate {
+                try {
+                    labAirSup.Content = "";
+                    if (e.Data["api_get_ship"] != null) {
+                        labAirSup.Content = "發見: " + e.Data["api_get_ship"]["api_ship_name"].ToString();
+                    }
+                } catch (Exception ex) {
+                    Debug.Print(ex.ToString());
+                }
+            }, null);
+        }
         #endregion
 
         #region ndock panel
