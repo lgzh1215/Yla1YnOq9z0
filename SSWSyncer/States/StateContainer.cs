@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using Common.Logging;
 using SSWSyncer.Commands;
+using SSWSyncer.Core;
 
 namespace SSWSyncer.States {
 
@@ -46,6 +47,8 @@ namespace SSWSyncer.States {
         }
 
         public BackgroundWorker Worker { get; private set; }
+
+        public IniFile ini { get; set; }
 
         public StateContainer () {
             // 新狀態要來這邊註冊

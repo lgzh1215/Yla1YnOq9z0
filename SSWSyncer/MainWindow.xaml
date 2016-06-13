@@ -8,7 +8,7 @@
         <ComboBox HorizontalAlignment="Right" Margin="0,12,12,0" Name="cmbInitState" VerticalAlignment="Top" Width="187" />
         <WrapPanel Height="Auto" HorizontalAlignment="Left" Name="wrapPanel1" VerticalAlignment="Top" Width="270" ItemHeight="28" ItemWidth="90">
             <Button x:Uid="btnLogin" Click="btnLogin_Click">
-                <TextBlock>登入</TextBlock>
+                <TextBlock>開啟並登入</TextBlock>
             </Button>
             <Button x:Uid="btnEnterGalaxy" Click="btnEnterGalaxy_Click">
                 <TextBlock TextWrapping="Wrap">進入銀河系</TextBlock>
@@ -56,7 +56,7 @@
                 <TextBlock TextWrapping="Wrap">等待</TextBlock>
             </Button>
             <Button x:Uid="btnLogout" Click="btnLogout_Click">
-                <TextBlock TextWrapping="Wrap">登出</TextBlock>
+                <TextBlock TextWrapping="Wrap">登出並結束</TextBlock>
             </Button>
             <Button x:Uid="btnFleet" Click="btnFleet_Click">
                 <TextBlock TextWrapping="Wrap">第2階段</TextBlock>

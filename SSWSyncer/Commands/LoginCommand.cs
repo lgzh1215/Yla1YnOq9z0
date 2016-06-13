@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using SSWSyncer.Core;
 using WindowsInput.Native;
+using System.IO;
+using System.Diagnostics;
 
 namespace SSWSyncer.Commands {
 
@@ -35,6 +37,8 @@ namespace SSWSyncer.Commands {
         }
 
         public override void Invoke (bool isSimulate, bool async) {
+            string launcher = StateContainer.ini.Read("SSWLauncherPath", "Settings");
+            
             log.Debug(this.ToString());
             StateContainer.Login();
             int tries = 0;
@@ -44,6 +48,7 @@ namespace SSWSyncer.Commands {
             Graphics gfx;
             byte Luminosity;
             if (isSimulate) {
+                Process.Start(launcher);
                 while (!loading) {
                     if (!signIn) {
                         doLogin();
@@ -82,7 +87,7 @@ namespace SSWSyncer.Commands {
         }
 
         public override string ToString () {
-            return "登入:" + UserInfo;
+            return "開啟並登入:" + UserInfo;
         }
 
         private void doLogin () {
