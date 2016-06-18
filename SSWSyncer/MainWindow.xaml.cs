@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Management;
 using System.Net.NetworkInformation;
 using System.Reflection;
@@ -20,7 +20,6 @@ using Quartz.Impl;
 using SSWSyncer.Commands;
 using SSWSyncer.Core;
 using SSWSyncer.States;
-using System.Linq;
 
 namespace SSWSyncer {
     /// <summary>
@@ -47,6 +46,7 @@ namespace SSWSyncer {
         public MainWindow () {
             InitializeComponent();
             loadInit();
+            loadNetworkInterface();
             listBox1.ItemsSource = ListItems;
             //initScheduler();
             foreach (string key in script.StateMap.Keys) {
@@ -64,51 +64,18 @@ namespace SSWSyncer {
             try {
                 string path = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "SSWSyncer.ini");
                 script.ini = new IniFile(path);
-                //GetInterfaces();
-                changeMac();
-            } catch (Exception e) {
-                Debug.Print(e.StackTrace);
-            }
-        }
-
-        public void GetInterfaces () {
-            var dict = new Dictionary<string, string>();
-            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
-                if (nic.NetworkInterfaceType == NetworkInterfaceType.Ethernet|| 
-                    nic.NetworkInterfaceType == NetworkInterfaceType.FastEthernetFx ||
-                    nic.NetworkInterfaceType == NetworkInterfaceType.FastEthernetT) {
-                    PhysicalAddress physicalAddress = nic.GetPhysicalAddress();
-                    dict.Add(nic.Description, physicalAddress.ToString());
-                    Debug.Print(nic.Description + ", " + physicalAddress.ToString());
-                }
-            }
-        }
-
-        public void changeMac () {
-            try {
-                log.Debug("MAC:start");
-                //string nicid = "{5F1B8095-2EEA-44F3-9129-05980A492E9E}";
-                string nicid = "0001";
-                string newmac = "0A0027000012";
-                string baseReg = @"SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002bE10318}\";
-                using (RegistryKey bkey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
-                using (RegistryKey key = bkey.OpenSubKey(baseReg + nicid, RegistryKeyPermissionCheck.ReadWriteSubTree)) {
-                    log.Debug("MAC:" + key.ToString());
-                    if (key != null) {
-                        key.SetValue("NetworkAddress", newmac, RegistryValueKind.String);
-                        ManagementObjectSearcher mos = new ManagementObjectSearcher(
-                            new SelectQuery("SELECT * FROM Win32_NetworkAdapter WHERE Index = " + nicid));
-
-                        foreach (ManagementObject o in mos.Get().OfType<ManagementObject>()) {
-                            o.InvokeMethod("Disable", null);
-                            o.InvokeMethod("Enable", null);
-                            log.Debug(o.Path);
-                        }
-                    }
-                }
             } catch (Exception e) {
                 log.Debug(e.StackTrace);
             }
+        }
+
+        private void loadNetworkInterface () {
+            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
+                if (nic.OperationalStatus == OperationalStatus.Up) {
+                    cmbNetworkInterface.Items.Add(nic);
+                }
+            }
+            cmbNetworkInterface.SelectedIndex = 0;
         }
 
         private void testFunc () {
@@ -682,6 +649,11 @@ namespace SSWSyncer {
                 listBox1.SelectedItem = null;
             }
         }
+
+        private void cmbNetworkInterface_SelectionChanged (object sender, SelectionChangedEventArgs e) {
+            script.nic = (sender as ComboBox).SelectedItem as NetworkInterface;
+        }
+
         #endregion
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Media.Imaging;
 using Common.Logging;
 
@@ -39,7 +40,7 @@ namespace SSWSyncer.Core {
                         int absG = Math.Abs(col1.G - col2.G);
                         int absB = Math.Abs(col1.B - col2.B);
                         int deff = absA + absR + absG + absB;
-                        if (deff > 10) {
+                        if (deff > 500) {
                             log.Info("Pixel Mismatch @(" + x + ", " + y + ")");
                             log.Info("col1: " + col1.ToString());
                             log.Info("col2: " + col2.ToString());
@@ -49,6 +50,22 @@ namespace SSWSyncer.Core {
                 }
             }
             return true;
+        }
+
+        public static void saveScreen (string path, Bitmap bmp) {
+            try {
+                DirectoryInfo dir = Directory.CreateDirectory(path);
+                int count = dir.EnumerateFiles().Count();
+                if (count >= 10) {
+                    FileInfo file = dir.EnumerateFiles().OrderBy(x => x.CreationTime).First();
+                    file.Delete();
+                }
+                string filename = DateTime.Now.ToString("MM-dd-HH-mm-ss");
+                string savedFilename = Path.Combine(path, filename + ".bmp");
+                bmp.Save(savedFilename);
+            } catch (Exception e) {
+                log.Debug(e.Message);
+            }
         }
 
         //Bitmap bmpScreenshot = new Bitmap(145, 23, PixelFormat.Format32bppArgb);

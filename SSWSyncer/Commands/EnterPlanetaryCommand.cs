@@ -5,13 +5,12 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using SSWSyncer.Core;
 
-
 namespace SSWSyncer.Commands {
 
     [Serializable]
     class EnterPlanetaryCommand : AbstractCommand {
 
-        private static BitmapImage planetaryProof = new BitmapImage(new Uri("pack://application:,,,/Images/planetaryProof.bmp"));
+        private static BitmapImage planetaryProof;
 
         public Point Point { get; set; }
 
@@ -36,6 +35,10 @@ namespace SSWSyncer.Commands {
 
         public override void Invoke (bool isSimulate, bool async) {
             log.Debug(this.ToString());
+            bool saveScreen;
+            Boolean.TryParse(StateContainer.ini.Read("saveScreen", "Settings"), out saveScreen);
+            Uri proofImg = new Uri(Environment.CurrentDirectory + @"\proofImg\planetary.bmp");
+            planetaryProof = new BitmapImage(proofImg);
             StateContainer.EnterPlanetary();
             int tries = 0;
             bool loading = false;
@@ -68,6 +71,8 @@ namespace SSWSyncer.Commands {
                     log.Debug("Loading...");
                     if (loading) {
                         break;
+                    } else if (saveScreen) {
+                        Utils.saveScreen(Environment.CurrentDirectory + @"\planetaryTry", bmpScreenshot);
                     }
                 }
             }
